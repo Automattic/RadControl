@@ -25,6 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
+
 define( 'WORDADS_VERSION', '0.1-alpha' );
 define( 'WORDADS_ROOT' , dirname( __FILE__ ) );
 define( 'WORDADS_FILE_PATH' , WORDADS_ROOT . '/' . basename( __FILE__ ) );
@@ -41,6 +42,8 @@ class WordAds {
 			'wordads',
 			false,
 			plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
+
+		require_once( WORDADS_ROOT . '/includes/admin.php' );
 	}
 }
 
