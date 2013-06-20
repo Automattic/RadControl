@@ -37,7 +37,10 @@ class WordAds {
 	}
 
 	function init() {
-		echo 'foo';
+		load_plugin_textdomain(
+			'wordads',
+			false,
+			plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 }
 
