@@ -44,6 +44,24 @@ class WordAds {
 			plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
 
 		require_once( WORDADS_ROOT . '/php/admin.php' );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+	}
+
+	function enqueue_scripts() {
+		wp_enqueue_script(
+			'wa-adclk',
+			WORDADS_URL . 'js/adclk.js',
+			array( 'jquery' ),
+			'2013-06-21',
+			true
+		);
+
+		$params = array(
+			'theme' => wp_get_theme()->Name,
+			'slot'  => 'belowpost' // TODO add other slots?
+		);
+		wp_localize_script( 'wa-adclk', 'wa_adclk', $params );
 	}
 }
 
