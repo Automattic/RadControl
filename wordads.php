@@ -43,7 +43,7 @@ class WordAds {
 			false,
 			plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
 
-		require_once( WORDADS_ROOT . '/includes/admin.php' );
+		require_once( WORDADS_ROOT . '/php/admin.php' );
 	}
 }
 
