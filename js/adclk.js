@@ -6,7 +6,7 @@ window.wa_adclk = {
 	recorded: false,
 	theme: wa_adclk.theme,
 	slot: wa_adclk.slot,
-	network: ( typeof network === "undefined" ) ? "" : network,
+	network: ( typeof window.wa_adclk_network === "undefined" ) ? "" : window.wa_adclk_network,
 
 	impression: function() {
 		var stat_gif = document.location.protocol + "//stats.wordpress.com/g.gif?v=wpcom-no-pv";
