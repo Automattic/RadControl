@@ -33,10 +33,20 @@ define( 'WORDADS_URL' , plugins_url( '/', __FILE__ ) );
 
 class WordAds {
 
+	/**
+	 * Instantiate the plugin
+	 *
+	 * @since 0.1
+	 */
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 	}
 
+	/**
+	 * Code to run on WordPress 'init' hook
+	 *
+	 * @since 0.1
+	 */
 	function init() {
 		load_plugin_textdomain(
 			'wordads',
@@ -48,6 +58,11 @@ class WordAds {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
+	/**
+	 * Register scripts and styles
+	 *
+	 * @since 0.1
+	 */
 	function enqueue_scripts() {
 		wp_enqueue_script(
 			'wa-adclk',

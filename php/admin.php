@@ -2,10 +2,20 @@
 
 class WordAds_Admin {
 
+	/**
+	 * Instantiate admin code
+	 *
+	 * @since 0.1
+	 */
 	function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
 	}
 
+	/**
+	 * Add the options page to settings admin menu
+	 *
+	 * @since 0.1
+	 */
 	function add_options_page() {
 		add_options_page(
 			'WordAds',
@@ -16,6 +26,11 @@ class WordAds_Admin {
 		);
 	}
 
+	/**
+	 * Code for the options page
+	 *
+	 * @since 0.1
+	 */
 	function options_page() {
 		echo <<<HTML
 		<div class="wrap">
