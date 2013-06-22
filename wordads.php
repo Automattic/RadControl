@@ -23,7 +23,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
 define( 'WORDADS_VERSION', '0.1-alpha' );
@@ -48,10 +47,19 @@ class WordAds {
 	 * @since 0.1
 	 */
 	function init() {
+		// bail on infinite scroll
+		if ( current_theme_supports( 'infinite-scroll' ) &&
+				class_exists( 'The_Neverending_Home_Page' ) &&
+				The_Neverending_Home_Page::got_infinity() ) {
+
+			return;
+		}
+
 		load_plugin_textdomain(
 			'wordads',
 			false,
-			plugin_basename( dirname( __FILE__ ) ) . '/languages/' );
+			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
+		);
 
 		require_once( WORDADS_ROOT . '/php/admin.php' );
 
