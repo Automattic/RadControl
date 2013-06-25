@@ -1,0 +1,63 @@
+/**
+	WordAds V2! This CSS applies to all WordAds and Adsense themes
+
+	HTML markup structure of an ad:
+
+	<div class="wpcnt">
+		<div class="wpa [wpmrec|wpwidesky|wpleaderboard]">
+			<a class="wpa-about" href="http://wordpress.com/about-these-ads/" rel="nofollow">
+			About these ads
+			</a>
+			<div class="u">
+				[ad unit here]
+			</div>
+		</div>
+	</div>
+*/
+
+/* outer container */
+.wpcnt {
+	text-align: center;
+	line-height: 2;
+}
+
+/* inner container */
+.wpa {
+	position: relative;
+	overflow: hidden;			/* this hides "about these ads" when there's no adfill */
+	display: inline-block;
+	max-width: 100%;			/* important! this bit of CSS will *crop* any ad that's larger than the parent container! */
+}
+
+/* about these ads */
+.wpa-about {
+	text-align: left;
+	position: absolute;
+	font: 9px/1 sans-serif !important;		/* !important unfortunatey necessary to ensure consistency */
+	display: block;
+	text-decoration: none !important;		/* !important necessary, since themes override this routinely */
+	color: #888;
+	margin-top: 5px;
+	border-bottom: none !important;			/* some themes ad dotted underlines, that won't look nice */
+}
+
+.wpa-about:before {
+	font: 16px/7px "Genericons";
+	content: '\f300';
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	width: 16px;
+	margin-left: -3px;
+}
+
+.wpa-about:hover, .wa_infobox a:hover {
+	text-decoration: underline !important;	/* !important necessary, since themes override this routinely */
+	color: #444;
+}
+
+/* ad unit wrapper */
+.wpa .u>div {	/* @todo: deprecate wpdvert */
+	display: block;
+	margin-top: 17px;			/* this makes "about these ads" visible */
+	margin-bottom: 1em;			/* every ad should have a little space below it */
+}

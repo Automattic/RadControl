@@ -64,6 +64,8 @@ class WordAds {
 		require_once( WORDADS_ROOT . '/php/admin.php' );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		add_filter( 'the_content', array( $this, 'insert_ad' ) );
 	}
 
 	/**
@@ -72,6 +74,7 @@ class WordAds {
 	 * @since 0.1
 	 */
 	function enqueue_scripts() {
+		// JS
 		wp_enqueue_script(
 			'wa-adclk',
 			WORDADS_URL . 'js/adclk.js',
@@ -85,6 +88,36 @@ class WordAds {
 			'slot'  => 'belowpost' // TODO add other slots?
 		);
 		wp_localize_script( 'wa-adclk', 'wa_adclk', $params );
+
+		// CSS
+		wp_enqueue_style(
+			'genericon-font',
+			WORDADS_URL . 'css/genericons/genericons.css',
+			false,
+			'2.0'
+		);
+
+		wp_enqueue_style(
+			'wordads',
+			WORDADS_URL . 'css/wordads.css',
+			array( 'genericon-font' ),
+			'2013-06-24'
+		);
+	}
+
+	function insert_ad( $content ) {
+		$ad = <<<HTML
+<div class="wpcnt">
+		<div class="wpa">
+			<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
+			<div class="u">
+				 Accumsan rutrum toss the mousie tail flick, vel bat lay down in your way enim ut eat lick I don’t like that food chase the red dot
+			</div>
+		</div>
+</div>
+HTML;
+
+	return $content . $ad;
 	}
 }
 
