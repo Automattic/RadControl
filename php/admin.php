@@ -1,6 +1,6 @@
 <?php
 
-class WordAds_Admin {
+class AdControl_Admin {
 
 	/**
 	 * Instantiate admin code
@@ -18,10 +18,10 @@ class WordAds_Admin {
 	 */
 	function add_options_page() {
 		add_options_page(
-			'WordAds',
-			'WordAds',
+			'AdControl',
+			'AdControl',
 			'manage_options',
-			'wordads',
+			'adcontrol',
 			array( $this, 'options_page' )
 		);
 	}
@@ -35,11 +35,11 @@ class WordAds_Admin {
 		echo <<<HTML
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br></div>
-			<h2>WordAds Settings</h2>
+			<h2>AdControl Settings</h2>
 		</div>
 HTML;
 	}
 }
 
-global $wordads_admin;
-$wordads_admin = new WordAds_Admin();
+global $adcontrol_admin;
+$adcontrol_admin = new AdControl_Admin();

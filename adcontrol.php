@@ -1,10 +1,10 @@
 <?php
 
 /*
-Plugin Name: WordAds for WordPress
+Plugin Name: AdControl for WordPress
 Plugin URI: http://automattic.com
 Description: Harness the power of WordPress.com's advertising partners for your own blog.
-Author: Automattic, Derek Springer
+Author: Automattic
 Version: 0.1-alpha
 Author URI: http://automattic.com
 
@@ -25,12 +25,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'WORDADS_VERSION', '0.1-alpha' );
-define( 'WORDADS_ROOT' , dirname( __FILE__ ) );
-define( 'WORDADS_FILE_PATH' , WORDADS_ROOT . '/' . basename( __FILE__ ) );
-define( 'WORDADS_URL' , plugins_url( '/', __FILE__ ) );
+define( 'ADCONTROL_VERSION', '0.1-alpha' );
+define( 'ADCONTROL_ROOT' , dirname( __FILE__ ) );
+define( 'ADCONTROL_FILE_PATH' , ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
+define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
 
-class WordAds {
+class AdControl {
 
 	/**
 	 * Instantiate the plugin
@@ -56,12 +56,12 @@ class WordAds {
 		}
 
 		load_plugin_textdomain(
-			'wordads',
+			'adcontrol',
 			false,
 			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
 		);
 
-		require_once( WORDADS_ROOT . '/php/admin.php' );
+		require_once( ADCONTROL_ROOT . '/php/admin.php' );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
@@ -77,7 +77,7 @@ class WordAds {
 		// JS
 		wp_enqueue_script(
 			'wa-adclk',
-			WORDADS_URL . 'js/adclk.js',
+			ADCONTROL_URL . 'js/adclk.js',
 			array( 'jquery' ),
 			'2013-06-21',
 			true
@@ -92,14 +92,14 @@ class WordAds {
 		// CSS
 		wp_enqueue_style(
 			'genericon-font',
-			WORDADS_URL . 'css/genericons/genericons.css',
+			ADCONTROL_URL . 'css/genericons/genericons.css',
 			false,
 			'2.0'
 		);
 
 		wp_enqueue_style(
-			'wordads',
-			WORDADS_URL . 'css/wordads.css',
+			'adcontrol',
+			WORDADS_URL . 'css/adcontrol.css',
 			array( 'genericon-font' ),
 			'2013-06-24'
 		);
@@ -121,5 +121,5 @@ HTML;
 	}
 }
 
-global $wordads;
-$wordads = new WordAds();
+global $adcontrol;
+$adcontrol = new AdControl();
