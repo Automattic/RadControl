@@ -51,7 +51,6 @@ class AdControl {
 		if ( current_theme_supports( 'infinite-scroll' ) &&
 				class_exists( 'The_Neverending_Home_Page' ) &&
 				The_Neverending_Home_Page::got_infinity() ) {
-
 			return;
 		}
 
@@ -64,7 +63,6 @@ class AdControl {
 		require_once( ADCONTROL_ROOT . '/php/admin.php' );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
 		add_filter( 'the_content', array( $this, 'insert_ad' ) );
 	}
 
@@ -85,7 +83,7 @@ class AdControl {
 
 		$params = array(
 			'theme' => wp_get_theme()->Name,
-			'slot'  => 'belowpost' // TODO add other slots?
+			'slot'  => 'belowpost', // TODO add other slots?
 		);
 		wp_localize_script( 'wa-adclk', 'wa_adclk', $params );
 
