@@ -1,7 +1,7 @@
 === AdControl for WordPress ===
 Contributors: Automattic
 Tags: advertising, ad codes, ads, adsense
-Requires at least: 3.1
+Requires at least: 3.4
 Tested up to: 3.6-beta3
 Stable tag: 0.1
 

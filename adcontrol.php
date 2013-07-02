@@ -61,6 +61,7 @@ class AdControl {
 		);
 
 		require_once( ADCONTROL_ROOT . '/php/admin.php' );
+		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'the_content', array( $this, 'insert_ad' ) );
@@ -97,7 +98,7 @@ class AdControl {
 
 		wp_enqueue_style(
 			'adcontrol',
-			WORDADS_URL . 'css/adcontrol.css',
+			ADCONTROL_URL . 'css/adcontrol.css',
 			array( 'genericon-font' ),
 			'2013-06-24'
 		);
