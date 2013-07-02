@@ -32,6 +32,8 @@ define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
 
 class AdControl {
 
+	private $params = null;
+
 	/**
 	 * Instantiate the plugin
 	 *
@@ -47,6 +49,10 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function init() {
+		// TODO requires Jetpack for now
+		if ( ! self::check_jetpack() )
+			return;
+
 		// bail on infinite scroll
 		if ( current_theme_supports( 'infinite-scroll' ) &&
 				class_exists( 'The_Neverending_Home_Page' ) &&
@@ -60,8 +66,11 @@ class AdControl {
 			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
 		);
 
-		require_once( ADCONTROL_ROOT . '/php/admin.php' );
 		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
+		require_once( ADCONTROL_ROOT . '/php/admin.php' );
+		require_once( ADCONTROL_ROOT . '/php/params.php' );
+
+		$this->params = new AdControl_Params();
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'the_content', array( $this, 'insert_ad' ) );
@@ -83,7 +92,7 @@ class AdControl {
 		);
 
 		$params = array(
-			'theme' => wp_get_theme()->Name,
+			'theme' => $this->params->theme,
 			'slot'  => 'belowpost', // TODO add other slots?
 		);
 		wp_localize_script( 'wa-adclk', 'wa_adclk', $params );
@@ -104,7 +113,13 @@ class AdControl {
 		);
 	}
 
+	/**
+	 * Insert the ad onto the page
+	 *
+	 * @since 0.1
+	 */
 	function insert_ad( $content ) {
+		echo $this->params->get_page_type();
 		$ad = <<<HTML
 <div class="wpcnt">
 		<div class="wpa">
@@ -117,6 +132,16 @@ class AdControl {
 HTML;
 
 	return $content . $ad;
+	}
+
+	private static function check_jetpack() {
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		if ( ! is_plugin_active( 'jetpack/jetpack.php' ) || ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
+			require_once( ADCONTROL_ROOT . '/php/no-jetpack.php' );
+			return false;
+		}
+
+		return true;
 	}
 }
 
