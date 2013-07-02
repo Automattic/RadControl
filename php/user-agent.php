@@ -1,10 +1,13 @@
 <?php
 
+global $agent_info;
+
 if ( function_exists( 'jetpack_is_mobile' ) ):
 
 function ac_is_mobile( $kind = 'any', $return_matched_agent = false ) {
 	return jetpack_is_mobile( $kind, $return_matched_agent );
 }
+$agent_info = new Jetpack_User_Agent_Info();
 
 else: // jetpack not installed
 
@@ -1369,5 +1372,6 @@ class User_Agent_Info {
 		return $is_bot;
 	}
 }
+$agent_info = new User_Agent_Info();
 
 endif; // if ( function_exists( 'jetpack_is_mobile' ) )
