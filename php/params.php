@@ -8,12 +8,99 @@ class AdControl_Params {
 	 * @since 0.1
 	 */
 	public function __construct() {
+		$this->url = ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST']  . $_SERVER['REQUEST_URI'];
+		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) )
+			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
+
+		$this->blog_id = Jetpack::get_option( 'id', 0 );
 		$this->mobile_device = ac_is_mobile( 'any', true );
 		$this->theme = wp_get_theme()->Name;
 		$this->targeting_tags = array(
-			'WordAds'	=>	1,
-			
+			'WordAds'    => 1,
+			'BlogId'     => Jetpack::is_development_mode() ? 0 : Jetpack::get_option( 'id' ),
+			'Domain'     => home_url(),
+			'WordAds-MI' => 1,
+			'AdSafe'     => 1,  // TODO figure out better solution
+			'NoNetFill'  => 0,  // TODO is this even needed?
+			'Partner'    => '', // TODO
+			'LangId'     => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
 		);
+		$this->dfp_slots = array();
+	}
+
+	/**
+	 * Add a DFP slot
+	 * @param string $slotname
+	 * @param string $name
+	 * @param int $width
+	 * @param int $height
+	 * @param int $id
+	 *
+	 * @since 0.1
+	 */
+	public function add_slot( $slotname, $name, $width, $height, $id ) {
+		$this->dfp_slots[$slotname . '.name'] = $name;
+		$this->dfp_slots[$slotname . '.width'] = $width;
+		$this->dfp_slots[$slotname . '.height'] = $height;
+		$this->dfp_slots[$slotname . '.id'] = $id;
+	}
+
+	/**
+	 * Returns the network appropriate targeting tags
+	 *
+	 * @since 0.1
+	 */
+	public function get_dfp_targetting() {
+		$fn = 'GA_googleAddAttr';
+		$tag_attrs = '';
+		foreach ( $this->targeting_tags as $k => $v ) {
+			if ( is_array( $v ) ) {
+				foreach ( $v as $tag )
+					$tag_attrs .= $fn . "( '$k', '$tag' );\n";
+			} else {
+				$tag_attrs .= $fn . "( '$k', '$v' );\n";
+			}
+		}
+
+		$tags_and_cats = self::get_tags_and_categories();
+		if ( ! empty( $tags_and_cats ) ) {
+			if ( $is_gpt ) {
+				$tag_attrs .= $fn . "( 'Tag', " . json_encode( $tags_and_cats ) . " );\n";
+			} else {
+				foreach ( $tags_and_cats as $cat ) {
+					$tag_attrs .= $fn . "( 'Tag', '" . strtolower( $cat ) . "' )\n";
+				}
+			}
+		}
+
+		return $tag_attrs;
+	}
+
+	/**
+	 * Convenience function to collect tags and categories of current page
+	 *
+	 * @since 0.1
+	 */
+	static function get_tags_and_categories() {
+		global $tags_and_cats;
+
+		// If we've already looked up tags and categories during this page,
+		// we'll have an array (may be empty if post has no tags or cat, or if not a post page),
+		if ( ! is_array( $tags_and_cats ) ) {
+			$tags_and_cats = array();
+			foreach ( get_the_category() as $cat ) {
+				if ( 1 != $cat->cat_ID ) { // don't add 'Uncategorized'
+					$tags_and_cats[] = strtolower( $cat->category_nicename );
+				}
+			}
+
+			foreach ( (array) get_the_tags() as $tag ) {
+				if ( ! empty($tag) ) {
+					$tags_and_cats[] = strtolower( $tag->slug );
+				}
+			}
+		}
+		return $tags_and_cats;
 	}
 
 	/**
@@ -90,5 +177,20 @@ class AdControl_Params {
 		return is_front_page() &&
 			'page' == get_option( 'show_on_front' ) &&
 			get_option( 'page_on_front' );
+	}
+
+	public static function should_show_mobile() {
+		global $wp_query;
+
+		if ( ! in_the_loop() || ! did_action( 'wp_head' ) )
+			return false;
+
+		if ( is_single() || ( is_page() && ! is_home() ) )
+			return true;
+
+		if ( ( is_home() || is_archive() ) && 0 == $wp_query->current_post )
+			return true;
+
+		return false;
 	}
 }

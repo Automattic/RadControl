@@ -71,9 +71,20 @@ class AdControl {
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
+		if ( $this->params->is_mobile() ) {
+			if ( $this->params->should_show_mobile() ) {
+				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
+				add_filter( 'the_content', array( $this, 'insert_advert_mopub' ) );
+				add_filter( 'the_excerpt', array( $this, 'insert_advert_mopub' ) );
+			}
+		} else {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_filter( 'the_content', array( $this, 'insert_ad' ) );
+			add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_filter( 'the_content', array( $this, 'insert_ad' ) );
+			$slot_name = 'Wordads_MIS_Mrec_Below_adsafe'; // TODO check adsafe
+			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
+		}
 	}
 
 	/**
@@ -91,11 +102,14 @@ class AdControl {
 			true
 		);
 
-		$params = array(
+		$data = array(
 			'theme' => $this->params->theme,
 			'slot'  => 'belowpost', // TODO add other slots?
 		);
-		wp_localize_script( 'wa-adclk', 'wa_adclk', $params );
+		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
+
+		add_action( 'wp_head', array( $this, 'insert_head_wordads' ) );
+		add_action( 'wp_head', array( $this, 'insert_head_gam' ) ); // TODO still GAM?
 
 		// CSS
 		wp_enqueue_style(
@@ -114,26 +128,159 @@ class AdControl {
 	}
 
 	/**
+	 * Register mobile scripts and styles
+	 *
+	 * @since 0.1
+	 */
+	function enqueue_mobile_scripts() {
+		// JS
+		wp_enqueue_script(
+			'wa-adclk',
+			ADCONTROL_URL . 'js/adclk.js',
+			array( 'jquery' ),
+			'2013-06-21',
+			true
+		);
+
+		$data = array(
+			'theme' => $this->params->theme,
+			'slot'  => 'belowpost', // TODO add other slots?
+		);
+		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
+
+		wp_enqueue_script(
+			'mopub',
+			'http://ads.mopub.com/js/client/mopub.js',
+			array(),
+			false,
+			true
+		);
+	}
+
+	function insert_head_wordads() {
+		$part = ( is_home() || is_archive() ) ? 'index' : 'permalink';
+		$domain = esc_js( $_SERVER['HTTP_HOST'] );
+		$current_page_url = esc_js( esc_url_raw( $this->params->url ) );
+
+		echo <<<HTML
+		<script type="text/javascript">
+		var wpcom_ads = { bid: {$this->params->blog_id}, pt: '$part', wa: 1, domain: '$domain', url: '$current_page_url', };
+		</script>
+HTML;
+	}
+
+	function insert_head_gam() {
+		$about = __( 'About these ads' );
+		echo '
+		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
+		<script type="text/javascript">
+			GS_googleAddAdSenseService("ca-pub-3443918307802676");
+			GS_googleEnableAllServices();
+		</script>
+		<script type="text/javascript">
+		' . $this->params->get_dfp_targetting() . '
+		</script>
+		<script type="text/javascript">
+			' . $this->get_google_add_slots() . '
+		</script>
+		<script type="text/javascript">
+			GA_googleFetchAds();
+		</script>
+		<script type="text/javascript">
+		jQuery( window ).load( function() {
+			jQuery( "a.wpadvert-about" ).text( "' . $about . '" );
+		} );
+		</script>
+		';
+	}
+
+	function get_google_add_slots() {
+		$slots = '';
+		if ( isset( $this->params->dfp_slots['top.name'] ) )
+			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['top.id']}', '{$this->params->dfp_slots['top.name']}');\n";
+		if ( isset( $this->params->dfp_slots['side.name'] ) )
+			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['side.id']}', '{$this->params->dfp_slots['side.name']}');\n";
+		if ( isset( $this->params->dfp_slots['inpost.name'] ) )
+			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['inpost.id']}', '{$this->params->dfp_slots['inpost.name']}');\n";
+		if ( isset( $this->params->dfp_slots['belowpost.name'] ) )
+			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['belowpost.id']}', '{$this->params->dfp_slots['belowpost.name']}');\n";
+
+		return $slots;
+	}
+
+	/**
 	 * Insert the ad onto the page
 	 *
 	 * @since 0.1
 	 */
 	function insert_ad( $content ) {
-		echo $this->params->get_page_type();
-		$ad = <<<HTML
-<div class="wpcnt">
-		<div class="wpa">
+		$dfp_script = 'GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");' . "\n";
+		// The class="wpadvert" is required to hide clicks in this div from click tracking
+		$aux_class = '';
+		$dfp_under = <<<GAM
+		<div class="wpcnt">
+		<div class="wpa{$aux_class}">
+
 			<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
-			<div class="u">
-				 Accumsan rutrum toss the mousie tail flick, vel bat lay down in your way enim ut eat lick I don’t like that food chase the red dot
+
+			<div class="u"></div>
+
+		</div>
+		</div>
+GAM;
+
+		$ad = <<<HTML
+		<div class="wpcnt">
+			<div class="wpa">
+				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
+				<div class="u">
+					<script type='text/javascript'>
+					$dfp_script
+					</script>
+				</div>
 			</div>
 		</div>
-</div>
 HTML;
 
 	return $content . $ad;
 	}
 
+	function insert_advert_mopub( $content ) {
+		if ( ! $this->params->should_show_mobile() )
+			return $content;
+
+		// TODO check adsafe
+		$mopub_under = '
+		<div class="mpb" style="text-align: center; margin: 0px auto; width: 100%">
+			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a></div>
+		<script type="text/javascript">
+			var mopub_ad_unit="agltb3B1Yi1pbmNyDQsSBFNpdGUY5_TTFQw";
+			var mopub_ad_width=300;
+			var mopub_ad_height=250;
+			var mopub_keywords="adsafe";
+			jQuery( window ).load( function() {
+				if ( jQuery(".mpb script[src*=\'shareth.ru\']").length > 0 || jQuery(".mpb iframe[src*=\'viewablemedia.net\']").length > 0 ) {
+					jQuery( \'.mpb iframe\' ).css( {\'width\':\'400px\',\'height\':\'267px\'} );
+				} else if ( jQuery(".mpb script[src*=\'googlesyndication.com\']").length > 0 ) {
+					jQuery( \'.mpb iframe\' ).css( {\'width\':\'350px\',\'height\':\'250px\'} );
+				}
+			});
+		</script>
+		<script src="http://ads.mopub.com/js/client/mopub.js"></script>
+		</div>
+		';
+
+		$content .= $mopub_under;
+		return $content;
+	}
+
+	/**
+	 * Enforce Jetpack activated otherwise, load special no-jetpack admin.
+	 *
+	 * @return true if Jetpack is active and activated
+	 *
+	 * @since 0.1
+	 */
 	private static function check_jetpack() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if ( ! is_plugin_active( 'jetpack/jetpack.php' ) || ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
