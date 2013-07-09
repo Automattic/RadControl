@@ -72,11 +72,9 @@ class AdControl {
 
 		$this->params = new AdControl_Params();
 		if ( $this->params->is_mobile() ) {
-			if ( $this->params->should_show_mobile() ) {
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
-				add_filter( 'the_content', array( $this, 'insert_advert_mopub' ) );
-				add_filter( 'the_excerpt', array( $this, 'insert_advert_mopub' ) );
-			}
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
+			add_filter( 'the_content', array( $this, 'insert_mobile_ad' ) );
+			add_filter( 'the_excerpt', array( $this, 'insert_mobile_ad' ) );
 		} else {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( $this, 'insert_ad' ) );
@@ -160,7 +158,7 @@ class AdControl {
 	function insert_head_wordads() {
 		$part = ( is_home() || is_archive() ) ? 'index' : 'permalink';
 		$domain = esc_js( $_SERVER['HTTP_HOST'] );
-		$current_page_url = esc_js( esc_url_raw( $this->params->url ) );
+		$current_page_url = esc_url( $this->params->url );
 
 		echo <<<HTML
 		<script type="text/javascript">
@@ -171,27 +169,27 @@ HTML;
 
 	function insert_head_gam() {
 		$about = __( 'About these ads' );
-		echo '
+		echo <<<HTML
 		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
 		<script type="text/javascript">
 			GS_googleAddAdSenseService("ca-pub-3443918307802676");
 			GS_googleEnableAllServices();
 		</script>
 		<script type="text/javascript">
-		' . $this->params->get_dfp_targetting() . '
+			{$this->params->get_dfp_targetting()}
 		</script>
 		<script type="text/javascript">
-			' . $this->get_google_add_slots() . '
+			{$this->get_google_add_slots()}
 		</script>
 		<script type="text/javascript">
 			GA_googleFetchAds();
 		</script>
 		<script type="text/javascript">
 		jQuery( window ).load( function() {
-			jQuery( "a.wpadvert-about" ).text( "' . $about . '" );
+			jQuery( "a.wpadvert-about" ).text( "$about" );
 		} );
 		</script>
-		';
+HTML;
 	}
 
 	function get_google_add_slots() {
@@ -245,37 +243,36 @@ HTML;
 	return $content . $ad;
 	}
 
-	function insert_advert_mopub( $content ) {
+	function insert_mobile_ad( $content ) {
 		if ( ! $this->params->should_show_mobile() )
 			return $content;
 
 		// TODO check adsafe
-		$mopub_under = '
+		$mopub_under = <<<HTML
 		<div class="mpb" style="text-align: center; margin: 0px auto; width: 100%">
 			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a></div>
-		<script type="text/javascript">
-			var mopub_ad_unit="agltb3B1Yi1pbmNyDQsSBFNpdGUY5_TTFQw";
-			var mopub_ad_width=300;
-			var mopub_ad_height=250;
-			var mopub_keywords="adsafe";
-			jQuery( window ).load( function() {
-				if ( jQuery(".mpb script[src*=\'shareth.ru\']").length > 0 || jQuery(".mpb iframe[src*=\'viewablemedia.net\']").length > 0 ) {
-					jQuery( \'.mpb iframe\' ).css( {\'width\':\'400px\',\'height\':\'267px\'} );
-				} else if ( jQuery(".mpb script[src*=\'googlesyndication.com\']").length > 0 ) {
-					jQuery( \'.mpb iframe\' ).css( {\'width\':\'350px\',\'height\':\'250px\'} );
-				}
-			});
-		</script>
-		<script src="http://ads.mopub.com/js/client/mopub.js"></script>
+			<script type="text/javascript">
+				var mopub_ad_unit="agltb3B1Yi1pbmNyDQsSBFNpdGUY5_TTFQw";
+				var mopub_ad_width=300;
+				var mopub_ad_height=250;
+				var mopub_keywords="adsafe";
+				jQuery( window ).load( function() {
+					if ( jQuery(".mpb script[src*='shareth.ru']").length > 0 || jQuery(".mpb iframe[src*='viewablemedia.net']").length > 0 ) {
+						jQuery( '.mpb iframe' ).css( {'width':'400px','height':'267px'} );
+					} else if ( jQuery(".mpb script[src*='googlesyndication.com']").length > 0 ) {
+						jQuery( '.mpb iframe' ).css( {'width':'350px','height':'250px'} );
+					}
+				});
+			</script>
+			<script src="http://ads.mopub.com/js/client/mopub.js"></script>
 		</div>
-		';
+HTML;
 
-		$content .= $mopub_under;
-		return $content;
+		return $content . $mopub_under;
 	}
 
 	/**
-	 * Enforce Jetpack activated otherwise, load special no-jetpack admin.
+	 * Enforce Jetpack activated. Otherwise, load special no-jetpack admin.
 	 *
 	 * @return true if Jetpack is active and activated
 	 *
