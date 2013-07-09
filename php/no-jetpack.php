@@ -32,7 +32,11 @@ class AdControl_No_Jetpack {
 	 * @since 0.1
 	 */
 	function options_page() {
-		$notice = __( 'AdControl requires Jetpack to be installed and activated at this time.', 'adcontrol' );
+		$notice = sprintf(
+			__( 'AdControl requires %sJetpack%s to be installed and activated at this time.', 'adcontrol' ),
+			'<a href="http://jetpack.me/" target="_blank">',
+			'</a>'
+		);
 		echo <<<HTML
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br></div>
