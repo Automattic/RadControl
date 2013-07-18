@@ -32,6 +32,7 @@ class AdControl_No_Jetpack {
 	 * @since 0.1
 	 */
 	function options_page() {
+		$settings = __( 'AdControl Settings', 'adcontrol' );
 		$notice = sprintf(
 			__( 'AdControl requires %sJetpack%s to be installed and activated at this time.', 'adcontrol' ),
 			'<a href="http://jetpack.me/" target="_blank">',
@@ -40,7 +41,7 @@ class AdControl_No_Jetpack {
 		echo <<<HTML
 		<div class="wrap">
 			<div id="icon-options-general" class="icon32"><br></div>
-			<h2>AdControl Settings</h2>
+			<h2>$settings</h2>
 			<p>$notice</p>
 		</div>
 HTML;
