@@ -168,7 +168,7 @@ HTML;
 	}
 
 	function insert_head_gam() {
-		$about = __( 'About these ads' );
+		$about = __( 'About these ads', 'adcontrol' );
 		echo <<<HTML
 		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
 		<script type="text/javascript">
