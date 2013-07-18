@@ -4,6 +4,8 @@ class AdControl_Admin {
 	private $valid_settings = array(
 		'show_to_logged_in',
 		'tos',
+		'publisher_id',
+		'tag_id',
 	);
 	private $active_tab = "settings";
 	private $tabs = array(
@@ -72,7 +74,7 @@ class AdControl_Admin {
 		echo '<div class="wrap">';
 		$prompts = $actions = array();
 		if ( $this->is_paused() )
-			echo '<div class="updated" id="wpcom-tip"><p><strong>' . __( 'WordAds is paused. Please choose which visitors should see ads.' ) . '</strong></p></div>';
+			echo '<div class="updated" id="wpcom-tip"><p><strong>' . __( 'WordAds is paused. Please choose which visitors should see ads.', 'adcontrol' ) . '</strong></p></div>';
 		?>
 		<form action="options.php" method="post" id="wordads_settings">
 			<?php
@@ -114,7 +116,18 @@ class AdControl_Admin {
 		if ( 'signed' == $settings[ 'tos' ] || 'signed' == $this->get_option( 'tos' ) )
 			$to_save[ 'tos' ] = 'signed';
 		else
-			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.' ) );
+			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', 'adcontrol' ) );
+
+		$matches = array();
+		if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
+			$to_save[ 'publisher_id' ] = 'pub-' . $matches[2];
+		else
+			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' ) );
+
+		if ( is_numeric( $settings['tag_id'] ) )
+			$to_save[ 'tag_id' ] = $settings['tag_id'];
+		else
+			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
 
 		return $to_save;
 	}
@@ -158,11 +171,37 @@ class AdControl_Admin {
 
 		add_settings_field(
 			'adcontrol_userdash_show_to_logged_in_id',
-			__( 'Show ads to:' ),
+			__( 'Show ads to:', 'adcontrol' ),
 			array( &$this, 'setting_show_to_logged_in' ),
 			'adcontrol_userdash',
 			'adcontrol_userdash_config_section',
 			array( 'label_for' => 'radio_show_to_logged_in' )
+		);
+
+		// AdSense section
+		add_settings_section(
+			'adcontrol_userdash_adsense_section',
+			__( 'AdSense Options', 'adcontrol' ),
+			'__return_null',
+			'adcontrol_userdash'
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_publisher_id',
+			__( 'Publisher ID:', 'adcontrol' ),
+			array( &$this, 'setting_publisher_id' ),
+			'adcontrol_userdash',
+			'adcontrol_userdash_config_section',
+			array( 'label_for' => 'publisher_id' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_tag_id',
+			__( 'Tag ID:', 'adcontrol' ),
+			array( &$this, 'setting_tag_id' ),
+			'adcontrol_userdash',
+			'adcontrol_userdash_config_section',
+			array( 'label_for' => 'tag_id' )
 		);
 
 		// TOS section of the form
@@ -175,13 +214,12 @@ class AdControl_Admin {
 
 		add_settings_field(
 			'adcontrol_userdash_tos_id',
-			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service' ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">' ) . '</a>',
+			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service', 'adcontrol' ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">' ) . '</a>',
 			array( &$this, 'setting_tos' ),
 			'adcontrol_userdash',
 			'adcontrol_userdash_tos_section',
 			array( 'label_for' => 'chk_agreement' )
 		);
-
 	}
 
 	/**
@@ -206,11 +244,27 @@ class AdControl_Admin {
 	/**
 	 * @since 0.1
 	 */
+	function setting_publisher_id() {
+		$pid = $this->get_option( 'publisher_id' );
+		echo "<input type='text' name='adcontrol_userdash_options[publisher_id]' value='$pid' />";
+	}
+
+	/**
+	 * @since 0.1
+	 */
+	function setting_tag_id() {
+		$tid = $this->get_option( 'tag_id' );
+		echo "<input type='text' name='adcontrol_userdash_options[tag_id]' value='$tid' />";
+	}
+
+	/**
+	 * @since 0.1
+	 */
 	function setting_tos() {
 		if ( 'signed' != $this->get_option( 'tos' ) )
 			echo '<p><input type="checkbox" name="adcontrol_userdash_options[tos]" id="chk_agreement" value="signed" />';
 		else
-			echo '<span class="checkmark"></span>' .  __( 'Thank you for accepting the WordAds Terms of Service' );
+			echo '<span class="checkmark"></span>' .  __( 'Thank you for accepting the WordAds Terms of Service', 'adcontrol' );
 	}
 
 	/**
