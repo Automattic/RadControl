@@ -40,7 +40,7 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function __construct() {
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', array( &$this, 'init' ) );
 	}
 
 	/**
@@ -72,13 +72,13 @@ class AdControl {
 
 		$this->params = new AdControl_Params();
 		if ( $this->params->is_mobile() ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
-			add_filter( 'the_content', array( $this, 'insert_mobile_ad' ) );
-			add_filter( 'the_excerpt', array( $this, 'insert_mobile_ad' ) );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_mobile_scripts' ) );
+			add_filter( 'the_content', array( &$this, 'insert_mobile_ad' ) );
+			add_filter( 'the_excerpt', array( &$this, 'insert_mobile_ad' ) );
 		} else {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			add_filter( 'the_content', array( $this, 'insert_ad' ) );
-			add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
+			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
+			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
 
 			$slot_name = 'Wordads_MIS_Mrec_Below_adsafe'; // TODO check adsafe
 			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
@@ -106,8 +106,8 @@ class AdControl {
 		);
 		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
 
-		add_action( 'wp_head', array( $this, 'insert_head_wordads' ) );
-		add_action( 'wp_head', array( $this, 'insert_head_gam' ) ); // TODO still GAM?
+		add_action( 'wp_head', array( &$this, 'insert_head_wordads' ) );
+		add_action( 'wp_head', array( &$this, 'insert_head_gam' ) ); // TODO still GAM?
 
 		// CSS
 		wp_enqueue_style(
