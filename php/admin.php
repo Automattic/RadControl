@@ -6,6 +6,7 @@ class AdControl_Admin {
 		'tos',
 		'publisher_id',
 		'tag_id',
+		'tag_unit',
 	);
 	private $active_tab = "settings";
 	private $tabs = array(
@@ -129,6 +130,8 @@ class AdControl_Admin {
 		else
 			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
 
+		$to_save[ 'tag_unit' ] = $settings['tag_unit'];
+
 		return $to_save;
 	}
 
@@ -191,7 +194,7 @@ class AdControl_Admin {
 			__( 'Publisher ID:', 'adcontrol' ),
 			array( &$this, 'setting_publisher_id' ),
 			'adcontrol_userdash',
-			'adcontrol_userdash_config_section',
+			'adcontrol_userdash_adsense_section',
 			array( 'label_for' => 'publisher_id' )
 		);
 
@@ -200,8 +203,17 @@ class AdControl_Admin {
 			__( 'Tag ID:', 'adcontrol' ),
 			array( &$this, 'setting_tag_id' ),
 			'adcontrol_userdash',
-			'adcontrol_userdash_config_section',
+			'adcontrol_userdash_adsense_section',
 			array( 'label_for' => 'tag_id' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_tag_unit',
+			__( 'Tag Dimensions:', 'adcontrol' ),
+			array( &$this, 'setting_tag_unit' ),
+			'adcontrol_userdash',
+			'adcontrol_userdash_adsense_section',
+			array( 'label_for' => 'tag_unit' )
 		);
 
 		// TOS section of the form
@@ -255,6 +267,19 @@ class AdControl_Admin {
 	function setting_tag_id() {
 		$tid = $this->get_option( 'tag_id' );
 		echo "<input type='text' name='adcontrol_userdash_options[tag_id]' value='$tid' />";
+	}
+
+		/**
+	 * Callback for units option
+	 */
+	function setting_tag_unit() {
+		$tag = $this->get_option( 'tag_unit' );
+		echo '<select id="tag_unit" name="adcontrol_userdash_options[tag_unit]">';
+		foreach ( AdControl::$ad_tag_ids as $unit => $properties ) {
+			$selected = selected( $unit, $tag, false );
+			echo "<option value='$unit' $selected>{$properties['tag']}</option>";
+		}
+		echo '</select>';
 	}
 
 	/**
