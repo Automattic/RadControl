@@ -8,6 +8,7 @@ class AdControl_Params {
 	 * @since 0.1
 	 */
 	public function __construct() {
+		$this->options = get_option( 'adcontrol_userdash_options', array() );
 		$this->url = ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST']  . $_SERVER['REQUEST_URI'];
 		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) )
 			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
