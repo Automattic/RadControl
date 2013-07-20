@@ -34,6 +34,29 @@ class AdControl {
 
 	private $params = null;
 
+	public static $ad_tag_ids = array(
+		'mrec' => array(
+			'tag'       => '300x250_mediumrectangle',
+			'height'    => '250',
+			'width'     => '300',
+		),
+		'lrec' => array(
+			'tag'       => '336x280_largerectangle',
+			'height'    => '280',
+			'width'     => '336',
+		),
+		'leaderboard' => array(
+			'tag'       => '728x90_leaderboard',
+			'height'    => '90',
+			'width'     => '728',
+		),
+		'wideskyscraper' => array(
+			'tag'       => '160x600_wideskyscraper',
+			'height'    => '600',
+			'width'     => '160',
+		),
+	);
+
 	/**
 	 * Instantiate the plugin
 	 *
@@ -53,6 +76,11 @@ class AdControl {
 		if ( ! self::check_jetpack() )
 			return;
 
+		if ( is_admin() ) {
+			require_once( ADCONTROL_ROOT . '/php/admin.php' );
+			return;
+		}
+
 		// bail on infinite scroll
 		if ( current_theme_supports( 'infinite-scroll' ) &&
 				class_exists( 'The_Neverending_Home_Page' ) &&
@@ -67,7 +95,6 @@ class AdControl {
 		);
 
 		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
-		require_once( ADCONTROL_ROOT . '/php/admin.php' );
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
@@ -281,7 +308,9 @@ HTML;
 	private static function check_jetpack() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if ( ! is_plugin_active( 'jetpack/jetpack.php' ) || ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
-			require_once( ADCONTROL_ROOT . '/php/no-jetpack.php' );
+			if ( is_admin() )
+				require_once( ADCONTROL_ROOT . '/php/no-jetpack.php' );
+
 			return false;
 		}
 
