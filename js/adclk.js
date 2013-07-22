@@ -19,7 +19,7 @@ window.wa_adclk = {
 	},
 
 	click: function() {
-		if (this.recorded) { return true; } // no double counting
+		if ( this.recorded ) { return true; } // no double counting
 		var stat_gif = document.location.protocol + "//stats.wordpress.com/g.gif?v=wpcom-no-pv";
 		stat_gif += "&x_ads_click_theme=" + this.theme;
 		stat_gif += "&x_ads_click_placement=" + this.slot;
@@ -38,7 +38,7 @@ $(document).ready( function() {
 	function hover_yes() { wa_adclk.hovering = true; }
 	function hover_no() { wa_adclk.hovering = false; }
 
-	$(".wpa").click( wa_adclk.click() );
+	$(".wpa").click( wa_adclk.click );
 	$(".wpa iframe").hover( hover_yes, hover_no );
 	$(".wpa object").hover( hover_yes, hover_no );
 
