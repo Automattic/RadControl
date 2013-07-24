@@ -17,9 +17,10 @@ WordAds is a new service from Automattic that extends our advertising scale and 
 
 Since the plugin is in its early stages, there are a couple additional configuration steps:
 
-1. Upload `wordads` to the `/wp-content/plugins/` directory
+1. [Install and activate Jetpack](http://wordpress.org/plugins/jetpack/installation/)
+1. Upload `AdControl` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. TODO
+1. Accept the Terms of Service and fill in other options in the Dashboard -> Settings -> AdControl page
 
 == Screenshots ==
 
