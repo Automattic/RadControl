@@ -103,12 +103,12 @@ class AdControl {
 			add_filter( 'the_content', array( &$this, 'insert_mobile_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_mobile_ad' ) );
 		} else {
+			$slot_name = 'Wordads_MIS_Mrec_Below_adsafe'; // TODO check adsafe
+			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
+
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
-
-			$slot_name = 'Wordads_MIS_Mrec_Below_adsafe'; // TODO check adsafe
-			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
 		}
 	}
 
@@ -239,29 +239,24 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_ad( $content ) {
-		$dfp_script = 'GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");' . "\n";
-		// The class="wpadvert" is required to hide clicks in this div from click tracking
-		$aux_class = '';
-		$dfp_under = <<<GAM
-		<div class="wpcnt">
-		<div class="wpa{$aux_class}">
-
-			<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
-
-			<div class="u"></div>
-
-		</div>
-		</div>
-GAM;
+		$dfp_script = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");</script>';
+		$adsense = '';
+		if ( $this->params->options['adsense_set'] ) {
+			$pub = $this->params->options['publisher_id'];
+			$tag = $this->params->options['tag_id'];
+			$unit = $this->params->options['tag_unit'];
+			$width = self::$ad_tag_ids[$unit]['width'];
+			$height = self::$ad_tag_ids[$unit]['height'];
+			$adsense = self::get_asynchronous_adsense( $pub, $tag, $width, $height );
+		}
 
 		$ad = <<<HTML
 		<div class="wpcnt">
 			<div class="wpa">
 				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
 				<div class="u">
-					<script type='text/javascript'>
 					$dfp_script
-					</script>
+					$adsense
 				</div>
 			</div>
 		</div>
@@ -270,6 +265,11 @@ HTML;
 	return $content . $ad;
 	}
 
+	/**
+	 * Insert mopub onto the page
+	 *
+	 * @since 0.1
+	 */
 	function insert_mobile_ad( $content ) {
 		if ( ! $this->params->should_show_mobile() )
 			return $content;
@@ -296,6 +296,41 @@ HTML;
 HTML;
 
 		return $content . $mopub_under;
+	}
+
+	/**
+	 * Generate synchronous adsense code
+	 *
+	 * @since 0.1
+	 */
+	public static function get_synchronous_adsense( $pub, $tag, $width, $height ) {
+		return <<<HTML
+		<script type="text/javascript"><!--
+		google_ad_client = "ca-$pub";
+		google_ad_slot = "$tag";
+		google_ad_width = $width;
+		google_ad_height = $height;
+		//-->
+		</script>
+HTML;
+	}
+
+	/**
+	 * Generate asynchronous adsense code
+	 *
+	 * @since 0.1
+	 */
+	public static function get_asynchronous_adsense( $pub, $tag, $width, $height ) {
+		return <<<HTML
+		<ins class="adsbygoogle"
+			style="display:inline-block;width:{$width}px;height:{$height}px"
+			data-ad-client="ca-$pub"
+			data-ad-slot="$tag"></ins>
+		<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+		jQuery('.adsbygoogle').hide();
+		</script>
+HTML;
 	}
 
 	/**

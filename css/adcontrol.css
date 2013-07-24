@@ -54,8 +54,15 @@
 }
 
 /* ad unit wrapper */
-.wpa .u>div {	/* @todo: deprecate wpdvert */
+.wpa .u>div {
 	display: block;
 	margin-top: 17px;			/* this makes "about these ads" visible */
 	margin-bottom: 1em;			/* every ad should have a little space below it */
+}
+
+.wpa .u .adsbygoogle {
+	display: block;
+	margin-top: 17px;			/* this makes "about these ads" visible */
+	margin-bottom: 1em;			/* every ad should have a little space below it */
+	background-color: transparent;
 }

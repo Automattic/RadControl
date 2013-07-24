@@ -4,6 +4,7 @@ class AdControl_Admin {
 	private $valid_settings = array(
 		'show_to_logged_in',
 		'tos',
+		'fallback',
 		'publisher_id',
 		'tag_id',
 		'tag_unit',
@@ -29,6 +30,7 @@ class AdControl_Admin {
 
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ), 11 );
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_scripts' ) );
 	}
 
 	/**
@@ -39,6 +41,22 @@ class AdControl_Admin {
 		if ( ! in_array( $key, $this->valid_settings ) )
 			return;
 		return isset( $this->options[ $key ] ) ? $this->options[ $key ] : null;
+	}
+
+	/**
+	 * @since 0.1
+	 */
+	function admin_scripts( $hook ) {
+		if ( 'settings_page_adcontrol' != $hook )
+			return;
+
+		wp_enqueue_script(
+			'adcontrol-admin',
+			ADCONTROL_URL . 'js/admin.js',
+			array( 'jquery' ),
+			'2013-07-22',
+			true
+		);
 	}
 
 	/**
@@ -106,6 +124,13 @@ class AdControl_Admin {
 	function validate( $settings ) {
 		$to_save = array();
 
+		if ( 'signed' == $settings[ 'tos' ] || 'signed' == $this->get_option( 'tos' ) ) {
+			$to_save[ 'tos' ] = 'signed';
+		} else {
+			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', 'adcontrol' ) );
+			return;
+		}
+
 		if ( 'no' == $settings[ 'show_to_logged_in' ] ) {
 			$to_save[ 'show_to_logged_in' ] = 'no';
 		} elseif ( 'pause' == $settings[ 'show_to_logged_in' ] ) {
@@ -114,23 +139,28 @@ class AdControl_Admin {
 			$to_save[ 'show_to_logged_in' ] = 'yes';
 		}
 
-		if ( 'signed' == $settings[ 'tos' ] || 'signed' == $this->get_option( 'tos' ) )
-			$to_save[ 'tos' ] = 'signed';
-		else
-			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', 'adcontrol' ) );
+		$to_save['fallback'] = absint( $settings['fallback'] );
+
+		if ( ! $settings['fallback'] )
+			return $to_save;
 
 		$matches = array();
 		if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
-			$to_save[ 'publisher_id' ] = 'pub-' . $matches[2];
+			$to_save[ 'publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
 		else
 			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' ) );
 
 		if ( is_numeric( $settings['tag_id'] ) )
-			$to_save[ 'tag_id' ] = $settings['tag_id'];
+			$to_save[ 'tag_id' ] = esc_attr( $settings['tag_id'] );
 		else
 			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
 
-		$to_save[ 'tag_unit' ] = $settings['tag_unit'];
+		$to_save[ 'tag_unit' ] = esc_attr( $settings['tag_unit'] );
+
+		if ( isset( $to_save['tag_id'] ) && isset( $to_save['publisher_id'] ) )
+			$to_save[ 'adsense_set' ] = 1;
+		else
+			$to_save[ 'adsense_set' ] = 0;
 
 		return $to_save;
 	}
@@ -187,6 +217,15 @@ class AdControl_Admin {
 			__( 'AdSense Options', 'adcontrol' ),
 			'__return_null',
 			'adcontrol_userdash'
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_adsense_fallback',
+			__( 'Include AdSense fallback?', 'adcontrol' ),
+			array( &$this, 'setting_adsense_fallback' ),
+			'adcontrol_userdash',
+			'adcontrol_userdash_adsense_section',
+			array( 'label_for' => 'adsense_fallback' )
 		);
 
 		add_settings_field(
@@ -256,9 +295,19 @@ class AdControl_Admin {
 	/**
 	 * @since 0.1
 	 */
+	function setting_adsense_fallback() {
+		$checked = checked( $this->get_option( 'fallback' ), true, false );
+		echo '<input id="adsense_fallback" type="checkbox" name="adcontrol_userdash_options[fallback]" value="1"' . $checked . ' />';
+	}
+
+	/**
+	 * @since 0.1
+	 */
 	function setting_publisher_id() {
 		$pid = $this->get_option( 'publisher_id' );
-		echo "<input type='text' name='adcontrol_userdash_options[publisher_id]' value='$pid' />";
+		$disabled = disabled( $this->get_option( 'fallback' ), false, false );
+		echo "<input class='adsense_opt' $disabled type='text' name='adcontrol_userdash_options[publisher_id]' value='$pid' /> ";
+		_e( 'e.g. pub-123456789', 'adsense' );
 	}
 
 	/**
@@ -266,15 +315,20 @@ class AdControl_Admin {
 	 */
 	function setting_tag_id() {
 		$tid = $this->get_option( 'tag_id' );
-		echo "<input type='text' name='adcontrol_userdash_options[tag_id]' value='$tid' />";
+		$disabled = disabled( $this->get_option( 'fallback' ), false, false );
+		echo "<input class='adsense_opt' $disabled type='text' name='adcontrol_userdash_options[tag_id]' value='$tid' /> ";
+		_e( 'e.g. 123456789', 'adsense' );
 	}
 
-		/**
+	/**
 	 * Callback for units option
+	 *
+	 * @since 0.1
 	 */
 	function setting_tag_unit() {
 		$tag = $this->get_option( 'tag_unit' );
-		echo '<select id="tag_unit" name="adcontrol_userdash_options[tag_unit]">';
+		$disabled = disabled( $this->get_option( 'fallback' ), false, false );
+		echo '<select class="adsense_opt" ' . $disabled . ' id="tag_unit" name="adcontrol_userdash_options[tag_unit]">';
 		foreach ( AdControl::$ad_tag_ids as $unit => $properties ) {
 			$selected = selected( $unit, $tag, false );
 			echo "<option value='$unit' $selected>{$properties['tag']}</option>";
@@ -287,7 +341,7 @@ class AdControl_Admin {
 	 */
 	function setting_tos() {
 		if ( 'signed' != $this->get_option( 'tos' ) )
-			echo '<p><input type="checkbox" name="adcontrol_userdash_options[tos]" id="chk_agreement" value="signed" />';
+			echo '<p><input type="checkbox" name="adcontrol_userdash_options[tos]" id="chk_agreement" value="signed" /></p>';
 		else
 			echo '<span class="checkmark"></span>' .  __( 'Thank you for accepting the WordAds Terms of Service', 'adcontrol' );
 	}

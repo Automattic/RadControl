@@ -25,6 +25,7 @@ class AdControl_Params {
 			'NoNetFill'  => 0,  // TODO is this even needed?
 			'Partner'    => '', // TODO
 			'LangId'     => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
+			'AdSense'    => $this->options['adsense_set'] ? 1 : 0,
 		);
 		$this->dfp_slots = array();
 	}
