@@ -98,6 +98,16 @@ class AdControl {
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
+
+		// check reasons to bail
+		if ( 'signed' != $this->params->options['tos'] )
+			return; // only show ads for folks that have signed the TOS
+		if ( 'pause' == $this->params->options['show_to_logged_in'] )
+			return; // don't show if paused
+		if ( ! is_super_admin() && 'no' == $this->params->options['show_to_logged_in'] && is_user_logged_in() )
+			return; // don't show to logged in users (if that option is selected)
+
+		// check for mobile, then insert ads
 		if ( $this->params->is_mobile() ) {
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_mobile_scripts' ) );
 			add_filter( 'the_content', array( &$this, 'insert_mobile_ad' ) );
@@ -206,7 +216,7 @@ HTML;
 			{$this->params->get_dfp_targetting()}
 		</script>
 		<script type="text/javascript">
-			{$this->get_google_add_slots()}
+			{$this->get_googleAddSlots()}
 		</script>
 		<script type="text/javascript">
 			GA_googleFetchAds();
@@ -219,7 +229,7 @@ HTML;
 HTML;
 	}
 
-	function get_google_add_slots() {
+	function get_googleAddSlots() {
 		$slots = '';
 		if ( isset( $this->params->dfp_slots['top.name'] ) )
 			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['top.id']}', '{$this->params->dfp_slots['top.name']}');\n";
@@ -239,6 +249,9 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_ad( $content ) {
+		if ( ! $this->params->should_show() )
+			return $content;
+
 		$dfp_script = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");</script>';
 		$adsense = '';
 		if ( $this->params->options['adsense_set'] ) {
@@ -279,17 +292,17 @@ HTML;
 		<div class="mpb" style="text-align: center; margin: 0px auto; width: 100%">
 			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a></div>
 			<script type="text/javascript">
-				var mopub_ad_unit="agltb3B1Yi1pbmNyDQsSBFNpdGUY5_TTFQw";
-				var mopub_ad_width=300;
-				var mopub_ad_height=250;
-				var mopub_keywords="adsafe";
-				jQuery( window ).load( function() {
-					if ( jQuery(".mpb script[src*='shareth.ru']").length > 0 || jQuery(".mpb iframe[src*='viewablemedia.net']").length > 0 ) {
-						jQuery( '.mpb iframe' ).css( {'width':'400px','height':'267px'} );
-					} else if ( jQuery(".mpb script[src*='googlesyndication.com']").length > 0 ) {
-						jQuery( '.mpb iframe' ).css( {'width':'350px','height':'250px'} );
-					}
-				});
+			var mopub_ad_unit="agltb3B1Yi1pbmNyDQsSBFNpdGUY5_TTFQw";
+			var mopub_ad_width=300;
+			var mopub_ad_height=250;
+			var mopub_keywords="adsafe";
+			jQuery( window ).load( function() {
+				if ( jQuery(".mpb script[src*='shareth.ru']").length > 0 || jQuery(".mpb iframe[src*='viewablemedia.net']").length > 0 ) {
+					jQuery( '.mpb iframe' ).css( {'width':'400px','height':'267px'} );
+				} else if ( jQuery(".mpb script[src*='googlesyndication.com']").length > 0 ) {
+					jQuery( '.mpb iframe' ).css( {'width':'350px','height':'250px'} );
+				}
+			});
 			</script>
 			<script src="http://ads.mopub.com/js/client/mopub.js"></script>
 		</div>
