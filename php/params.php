@@ -174,6 +174,8 @@ class AdControl_Params {
 	/**
 	 * Returns true if page is static home
 	 * @return boolean true if page is static home
+	 *
+	 * @since 0.1
 	 */
 	public static function is_static_home() {
 		return is_front_page() &&
@@ -181,6 +183,28 @@ class AdControl_Params {
 			get_option( 'page_on_front' );
 	}
 
+	/**
+	 * Logic for if we should show an ad
+	 *
+	 * @since 0.1
+	 */
+	public static function should_show() {
+		global $wp_query;
+		if ( is_single() || ( is_page() && ! is_home() ) )
+			return true;
+
+		// TODO this would be a good place for allowing the user to specify
+		if ( ( is_home() || is_archive() || is_search() ) && 0 == $wp_query->current_post )
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * Logic for if we should show a mobile ad
+	 *
+	 * @since 0.1
+	 */
 	public static function should_show_mobile() {
 		global $wp_query;
 
