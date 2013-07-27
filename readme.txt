@@ -2,7 +2,7 @@
 Contributors: Automattic
 Tags: advertising, ad codes, ads, adsense
 Requires at least: 3.4
-Tested up to: 3.6-beta3
+Tested up to: 3.6-RC2
 Stable tag: 0.1
 
 Harness the power of WordPress.com's advertising partners for your own blog.
