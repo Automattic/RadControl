@@ -130,6 +130,20 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function enqueue_scripts() {
+		// JS
+		wp_enqueue_script(
+			'wa-adclk',
+			ADCONTROL_URL . 'js/adclk.js',
+			array( 'jquery' ),
+			'2013-06-21',
+			true
+		);
+
+		$data = array(
+			'slot'  => 'belowpost', // TODO add other slots?
+		);
+		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
+
 		add_action( 'wp_head', array( &$this, 'insert_head_wordads' ) );
 		add_action( 'wp_head', array( &$this, 'insert_head_gam' ) ); // TODO still GAM?
 
@@ -155,6 +169,20 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function enqueue_mobile_scripts() {
+		// JS
+		wp_enqueue_script(
+			'wa-adclk',
+			ADCONTROL_URL . 'js/adclk.js',
+			array( 'jquery' ),
+			'2013-06-21',
+			true
+		);
+
+		$data = array(
+			'slot'  => 'belowpost', // TODO add other slots?
+		);
+		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
+
 		wp_enqueue_script(
 			'mopub',
 			'http://ads.mopub.com/js/client/mopub.js',
