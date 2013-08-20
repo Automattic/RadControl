@@ -29,6 +29,8 @@ define( 'ADCONTROL_VERSION', '0.1-alpha' );
 define( 'ADCONTROL_ROOT' , dirname( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH' , ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
+define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
+define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
 
 class AdControl {
 
@@ -113,7 +115,7 @@ class AdControl {
 			add_filter( 'the_content', array( &$this, 'insert_mobile_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_mobile_ad' ) );
 		} else {
-			$slot_name = 'Wordads_MIS_Mrec_Below_adsafe'; // TODO check adsafe
+			$slot_name = 'Adcontrol_4_org_300'; // TODO check adsafe
 			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
 
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
@@ -128,21 +130,6 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function enqueue_scripts() {
-		// JS
-		wp_enqueue_script(
-			'wa-adclk',
-			ADCONTROL_URL . 'js/adclk.js',
-			array( 'jquery' ),
-			'2013-06-21',
-			true
-		);
-
-		$data = array(
-			'theme' => $this->params->theme,
-			'slot'  => 'belowpost', // TODO add other slots?
-		);
-		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
-
 		add_action( 'wp_head', array( &$this, 'insert_head_wordads' ) );
 		add_action( 'wp_head', array( &$this, 'insert_head_gam' ) ); // TODO still GAM?
 
@@ -168,21 +155,6 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function enqueue_mobile_scripts() {
-		// JS
-		wp_enqueue_script(
-			'wa-adclk',
-			ADCONTROL_URL . 'js/adclk.js',
-			array( 'jquery' ),
-			'2013-06-21',
-			true
-		);
-
-		$data = array(
-			'theme' => $this->params->theme,
-			'slot'  => 'belowpost', // TODO add other slots?
-		);
-		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
-
 		wp_enqueue_script(
 			'mopub',
 			'http://ads.mopub.com/js/client/mopub.js',
@@ -206,10 +178,11 @@ HTML;
 
 	function insert_head_gam() {
 		$about = __( 'About these ads', 'adcontrol' );
+		$dfp_id = ADCONTROL_DFP_ID;
 		echo <<<HTML
 		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
 		<script type="text/javascript">
-			GS_googleAddAdSenseService("ca-pub-3443918307802676");
+			GS_googleAddAdSenseService("ca-pub-$dfp_id");
 			GS_googleEnableAllServices();
 		</script>
 		<script type="text/javascript">
@@ -288,14 +261,15 @@ HTML;
 			return $content;
 
 		// TODO check adsafe
+		$mopub_id = ADCONTROL_MOPUB_ID;
 		$mopub_under = <<<HTML
 		<div class="mpb" style="text-align: center; margin: 0px auto; width: 100%">
 			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a></div>
 			<script type="text/javascript">
-			var mopub_ad_unit="agltb3B1Yi1pbmNyDQsSBFNpdGUY5_TTFQw";
+			var mopub_ad_unit="$mopub_id";
 			var mopub_ad_width=300;
 			var mopub_ad_height=250;
-			var mopub_keywords="adsafe";
+			var mopub_keywords="adsafe"; // TODO
 			jQuery( window ).load( function() {
 				if ( jQuery(".mpb script[src*='shareth.ru']").length > 0 || jQuery(".mpb iframe[src*='viewablemedia.net']").length > 0 ) {
 					jQuery( '.mpb iframe' ).css( {'width':'400px','height':'267px'} );
