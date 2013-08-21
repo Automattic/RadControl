@@ -9,10 +9,10 @@ class AdControl_Admin {
 		'tag_id',
 		'tag_unit',
 	);
-	private $active_tab = "settings";
+	private $active_tab = 'settings';
 	private $tabs = array(
 		'settings' => 'Settings',
-		'earnings' => 'Earnings'
+		'earnings' => 'Earnings',
 	);
 	private $options = array();
 	private $revenue_states = array( 'active', 'paused',' withdrawn' );
@@ -80,7 +80,7 @@ class AdControl_Admin {
 	 */
 	function userdash_show_page() {
 		$this->admin_tabs();
-		if( 'earnings' == $this->active_tab )
+		if ( 'earnings' == $this->active_tab )
 			$this->userdash_show_revenue();
 		else
 			$this->userdash_show_settings();
