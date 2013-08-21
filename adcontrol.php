@@ -217,7 +217,7 @@ HTML;
 			{$this->params->get_dfp_targetting()}
 		</script>
 		<script type="text/javascript">
-			{$this->get_googleAddSlots()}
+			{$this->get_googleaddslots()}
 		</script>
 		<script type="text/javascript">
 			GA_googleFetchAds();
@@ -230,7 +230,7 @@ HTML;
 HTML;
 	}
 
-	function get_googleAddSlots() {
+	function get_googleaddslots() {
 		$slots = '';
 		if ( isset( $this->params->dfp_slots['top.name'] ) )
 			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['top.id']}', '{$this->params->dfp_slots['top.name']}');\n";
