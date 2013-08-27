@@ -296,7 +296,7 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function setting_adsense_fallback() {
-		$checked = checked( $this->get_option( 'fallback' ), true, false );
+		$checked = checked( $this->get_option( 'fallback' ), 1, false );
 		echo '<input id="adsense_fallback" type="checkbox" name="adcontrol_userdash_options[fallback]" value="1"' . $checked . ' />';
 	}
 
@@ -305,7 +305,7 @@ class AdControl_Admin {
 	 */
 	function setting_publisher_id() {
 		$pid = $this->get_option( 'publisher_id' );
-		$disabled = disabled( $this->get_option( 'fallback' ), false, false );
+		$disabled = disabled( $this->get_option( 'fallback' ), 0, false );
 		echo "<input class='adsense_opt' $disabled type='text' name='adcontrol_userdash_options[publisher_id]' value='$pid' /> ";
 		_e( 'e.g. pub-123456789', 'adsense' );
 	}
@@ -315,7 +315,7 @@ class AdControl_Admin {
 	 */
 	function setting_tag_id() {
 		$tid = $this->get_option( 'tag_id' );
-		$disabled = disabled( $this->get_option( 'fallback' ), false, false );
+		$disabled = disabled( $this->get_option( 'fallback' ), 0, false );
 		echo "<input class='adsense_opt' $disabled type='text' name='adcontrol_userdash_options[tag_id]' value='$tid' /> ";
 		_e( 'e.g. 123456789', 'adsense' );
 	}
@@ -327,7 +327,7 @@ class AdControl_Admin {
 	 */
 	function setting_tag_unit() {
 		$tag = $this->get_option( 'tag_unit' );
-		$disabled = disabled( $this->get_option( 'fallback' ), false, false );
+		$disabled = disabled( $this->get_option( 'fallback' ), 0, false );
 		echo '<select class="adsense_opt" ' . $disabled . ' id="tag_unit" name="adcontrol_userdash_options[tag_unit]">';
 		foreach ( AdControl::$ad_tag_ids as $unit => $properties ) {
 			$selected = selected( $unit, $tag, false );
