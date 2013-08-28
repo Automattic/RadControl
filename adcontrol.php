@@ -149,16 +149,16 @@ class AdControl {
 
 		// CSS
 		wp_enqueue_style(
-			'genericon-font',
-			ADCONTROL_URL . 'css/genericons/genericons.css',
+			'noticon-font',
+			'//s0.wordpress.com/i/noticons/noticons.css',
 			false,
-			'2.0'
+			'2013-08-28'
 		);
 
 		wp_enqueue_style(
 			'adcontrol',
 			ADCONTROL_URL . 'css/adcontrol.css',
-			array( 'genericon-font' ),
+			array( 'noticon-font' ),
 			'2013-06-24'
 		);
 	}

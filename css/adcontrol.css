@@ -35,17 +35,19 @@
 	display: block;
 	text-decoration: none !important;		/* !important necessary, since themes override this routinely */
 	color: #888;
-	margin-top: 5px;
+	margin-top: 1px;
 	border-bottom: none !important;			/* some themes ad dotted underlines, that won't look nice */
 }
 
 .wpa-about:before {
-	font: 16px/7px "Genericons";
-	content: '\f300';
+	font: 16px/7px "Noticons";
+	content: '\f813';
 	-webkit-font-smoothing: antialiased;
 	display: inline-block;
 	width: 16px;
 	margin-left: -3px;
+	position: relative;
+	top: 4px;
 }
 
 .wpa-about:hover, .wa_infobox a:hover {
