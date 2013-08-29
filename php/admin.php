@@ -11,7 +11,7 @@ class AdControl_Admin {
 	);
 	private $active_tab = 'settings';
 	private $tabs = array(
-		'settings' => 'Settings',
+		'settings' => 'AdControl Settings',
 		'earnings' => 'Earnings',
 	);
 	private $options = array();
@@ -100,7 +100,7 @@ class AdControl_Admin {
 			settings_fields( 'adcontrol_userdash_options' );
 			do_settings_sections( 'adcontrol_userdash' );
 			?>
-			<p><input name="adcontrol_userdash_submit" type="submit" class="button-primary" value="<?php _e( 'Save WordAds Settings' ); ?>" /></p>
+			<p><input name="adcontrol_userdash_submit" type="submit" class="button-primary" value="<?php _e( 'Save AdControl Settings' ); ?>" /></p>
 		</form>
 		<?php
 		echo '</div>';
@@ -124,12 +124,10 @@ class AdControl_Admin {
 	function validate( $settings ) {
 		$to_save = array();
 
-		if ( 'signed' == $settings[ 'tos' ] || 'signed' == $this->get_option( 'tos' ) ) {
+		if ( 'signed' == $settings[ 'tos' ] || 'signed' == $this->get_option( 'tos' ) )
 			$to_save[ 'tos' ] = 'signed';
-		} else {
-			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', 'adcontrol' ) );
-			return;
-		}
+		else
+			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.' ) );
 
 		if ( 'no' == $settings[ 'show_to_logged_in' ] ) {
 			$to_save[ 'show_to_logged_in' ] = 'no';
@@ -148,12 +146,12 @@ class AdControl_Admin {
 		if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
 			$to_save[ 'publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
 		else
-			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' ) );
+			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"' ) );
 
 		if ( is_numeric( $settings['tag_id'] ) )
 			$to_save[ 'tag_id' ] = esc_attr( $settings['tag_id'] );
 		else
-			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
+			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"' ) );
 
 		$to_save[ 'tag_unit' ] = esc_attr( $settings['tag_unit'] );
 
