@@ -108,7 +108,10 @@ class AdControl {
 			return; // don't show if paused
 		if ( ! is_super_admin() && 'no' == $this->params->options['show_to_logged_in'] && is_user_logged_in() )
 			return; // don't show to logged in users (if that option is selected)
+		$this->insert_adcode();
+	}
 
+	private function insert_adcode() {
 		// check for mobile, then insert ads
 		if ( $this->params->is_mobile() ) {
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_mobile_scripts' ) );
@@ -117,13 +120,11 @@ class AdControl {
 		} else {
 			$slot_name = 'Adcontrol_4_org_300'; // TODO check adsafe
 			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
-
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
 		}
 	}
-
 	/**
 	 * Register scripts and styles
 	 *
@@ -199,7 +200,7 @@ class AdControl {
 
 		echo <<<HTML
 		<script type="text/javascript">
-		var wpcom_ads = { bid: {$this->params->blog_id}, pt: '$part', wa: 1, domain: '$domain', url: '$current_page_url', };
+		var wpcom_ads = { bid: {$this->params->blog_id}, pt: '$part', ac: 1, domain: '$domain', url: '$current_page_url', };
 		</script>
 HTML;
 	}
