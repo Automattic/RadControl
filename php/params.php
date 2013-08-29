@@ -1,7 +1,5 @@
 <?php
-
 class AdControl_Params {
-
 	/**
 	 * Setup parameters for serving the ads
 	 *
@@ -17,13 +15,9 @@ class AdControl_Params {
 		$this->mobile_device = ac_is_mobile( 'any', true );
 		$this->theme = wp_get_theme()->Name;
 		$this->targeting_tags = array(
-			'WordAds'    => 1,
+			'AdControl'  => 1,
 			'BlogId'     => Jetpack::is_development_mode() ? 0 : Jetpack::get_option( 'id' ),
 			'Domain'     => home_url(),
-			'WordAds-MI' => 1,
-			'AdSafe'     => 1,  // TODO figure out better solution
-			'NoNetFill'  => 0,  // TODO is this even needed?
-			'Partner'    => '', // TODO
 			'LangId'     => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
 			'AdSense'    => $this->options['adsense_set'] ? 1 : 0,
 		);
