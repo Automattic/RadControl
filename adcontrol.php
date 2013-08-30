@@ -108,6 +108,8 @@ class AdControl {
 			return; // don't show if paused
 		if ( ! is_super_admin() && 'no' == $this->params->options['show_to_logged_in'] && is_user_logged_in() )
 			return; // don't show to logged in users (if that option is selected)
+		if ( $this->params->is_mobile() && is_ssl() )
+			return; // Not support mobile ads over SSL at the moment
 		$this->insert_adcode();
 	}
 
