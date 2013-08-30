@@ -31,7 +31,6 @@ define( 'ADCONTROL_FILE_PATH' , ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
 define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
 define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
-
 class AdControl {
 
 	private $params = null;
@@ -84,11 +83,8 @@ class AdControl {
 		}
 
 		// bail on infinite scroll
-		if ( current_theme_supports( 'infinite-scroll' ) &&
-				class_exists( 'The_Neverending_Home_Page' ) &&
-				The_Neverending_Home_Page::got_infinity() ) {
+		if ( $this->is_infinite_scroll() )
 			return;
-		}
 
 		load_plugin_textdomain(
 			'adcontrol',
@@ -100,7 +96,20 @@ class AdControl {
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
+		$this->insert_adcode();
+	}
 
+	private function is_infinite_scroll() {
+		if ( current_theme_supports( 'infinite-scroll' ) &&
+				class_exists( 'The_Neverending_Home_Page' ) &&
+				The_Neverending_Home_Page::got_infinity() ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private function insert_adcode() {
 		// check reasons to bail
 		if ( 'signed' != $this->params->options['tos'] )
 			return; // only show ads for folks that have signed the TOS
@@ -110,10 +119,6 @@ class AdControl {
 			return; // don't show to logged in users (if that option is selected)
 		if ( $this->params->is_mobile() && is_ssl() )
 			return; // Not support mobile ads over SSL at the moment
-		$this->insert_adcode();
-	}
-
-	private function insert_adcode() {
 		// check for mobile, then insert ads
 		if ( $this->params->is_mobile() ) {
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_mobile_scripts' ) );
@@ -127,6 +132,7 @@ class AdControl {
 			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
 		}
 	}
+
 	/**
 	 * Register scripts and styles
 	 *
@@ -259,12 +265,13 @@ HTML;
 		$dfp_script = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");</script>';
 		$adsense = '';
 		if ( $this->params->options['adsense_set'] ) {
+			require_once( ADCONTROL_ROOT . '/php/adsense.php' );
 			$pub = $this->params->options['publisher_id'];
 			$tag = $this->params->options['tag_id'];
 			$unit = $this->params->options['tag_unit'];
 			$width = self::$ad_tag_ids[$unit]['width'];
 			$height = self::$ad_tag_ids[$unit]['height'];
-			$adsense = self::get_asynchronous_adsense( $pub, $tag, $width, $height );
+			$adsense = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
 		}
 
 		$ad = <<<HTML
@@ -316,40 +323,6 @@ HTML;
 		return $content . $mopub_under;
 	}
 
-	/**
-	 * Generate synchronous adsense code
-	 *
-	 * @since 0.1
-	 */
-	public static function get_synchronous_adsense( $pub, $tag, $width, $height ) {
-		return <<<HTML
-		<script type="text/javascript"><!--
-		google_ad_client = "ca-$pub";
-		google_ad_slot = "$tag";
-		google_ad_width = $width;
-		google_ad_height = $height;
-		//-->
-		</script>
-HTML;
-	}
-
-	/**
-	 * Generate asynchronous adsense code
-	 *
-	 * @since 0.1
-	 */
-	public static function get_asynchronous_adsense( $pub, $tag, $width, $height ) {
-		return <<<HTML
-		<ins class="adsbygoogle"
-			style="display:inline-block;width:{$width}px;height:{$height}px"
-			data-ad-client="ca-$pub"
-			data-ad-slot="$tag"></ins>
-		<script>
-		(adsbygoogle = window.adsbygoogle || []).push({});
-		jQuery('.adsbygoogle').hide();
-		</script>
-HTML;
-	}
 
 	/**
 	 * Enforce Jetpack activated. Otherwise, load special no-jetpack admin.
