@@ -280,17 +280,10 @@ class AdControl_Admin {
 	}
 
 	private function init_advanced_settings() {
-		$section = 'adcontrol_advanced_settings';
-		// Config section of the form
-		add_settings_section(
-			$section,
-			__( 'Advanced Configuration Options', 'adcontrol' ),
-			'__return_null',
-			$this->advanced_settings_key
-		);
+		$section = 'adcontrol_adsense_settings';
 		// AdSense section
 		add_settings_section(
-			'adcontrol_userdash_adsense_section',
+			$section,
 			__( 'AdSense Options', 'adcontrol' ),
 			'__return_null',
 			$this->advanced_settings_key
