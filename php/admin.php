@@ -8,11 +8,13 @@ class AdControl_Admin {
 		'publisher_id',
 		'tag_id',
 		'tag_unit',
+		'enable_advanced_settings',
 	);
 	private $active_tab = 'settings';
 	private $tabs = array(
 		'settings' => 'AdControl Settings',
 		'earnings' => 'Earnings',
+		'advanced' => 'Advanced Settings',
 	);
 	private $options = array();
 	private $revenue_states = array( 'active', 'paused',' withdrawn' );
@@ -69,8 +71,11 @@ class AdControl_Admin {
 	    echo '<h2 class="nav-tab-wrapper">';
 	    foreach ( $this->tabs as $tab_key => $tab_caption ) {
 	        $active = ( $tab_key == $this->active_tab ? ' nav-tab-active' : '' );
-	        if ( 'earnings' == $tab_key && $this->show_revenue || 'earnings' != $tab_key )
-		        echo '<a class="nav-tab ' . $active . '" href="?page=adcontrol&tab=' . $tab_key . '">' . $tab_caption . '</a>';
+	        if ( ( 'earnings' == $tab_key && ! $this->show_revenue ) )
+	        	continue;
+	        if ( 'advanced' == $tab_key && ! $this->options['enable_advanced_settings'] == 1 )
+				continue;
+			echo '<a class="nav-tab ' . $active . '" href="?page=adcontrol&tab=' . $tab_key . '">' . $tab_caption . '</a>';
 	    }
 	    echo '</h2>';
 	}
@@ -82,6 +87,8 @@ class AdControl_Admin {
 		$this->admin_tabs();
 		if ( 'earnings' == $this->active_tab )
 			$this->userdash_show_revenue();
+		else if ( 'advanced' == $this->active_tab )
+			$this->userdash_show_advanced();
 		else
 			$this->userdash_show_settings();
 	}
@@ -121,6 +128,14 @@ class AdControl_Admin {
 	/**
 	 * @since 0.1
 	 */
+	function userdash_show_advanced() {
+		$msg = 'TODO';// TODO
+		echo $msg;
+	}
+
+	/**
+	 * @since 0.1
+	 */
 	function validate( $settings ) {
 		$to_save = array();
 
@@ -136,6 +151,8 @@ class AdControl_Admin {
 		} else {
 			$to_save[ 'show_to_logged_in' ] = 'yes';
 		}
+
+		$to_save['enable_advanced_settings'] = ( $settings['enable_advanced_settings'] ) ? 1 : 0;
 
 		$to_save['fallback'] = absint( $settings['fallback'] );
 
@@ -207,6 +224,15 @@ class AdControl_Admin {
 			'adcontrol_userdash',
 			'adcontrol_userdash_config_section',
 			array( 'label_for' => 'radio_show_to_logged_in' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_enable_advanced_settings',
+			__( 'Enable Advanced Settings:', 'adcontrol' ),
+			array( &$this, 'setting_enable_advanced_settings' ),
+			'adcontrol_userdash',
+			'adcontrol_userdash_config_section',
+			array( 'label_for' => 'enable_advanced_settings' )
 		);
 
 		// AdSense section
@@ -296,6 +322,15 @@ class AdControl_Admin {
 	function setting_adsense_fallback() {
 		$checked = checked( $this->get_option( 'fallback' ), 1, false );
 		echo '<input id="adsense_fallback" type="checkbox" name="adcontrol_userdash_options[fallback]" value="1"' . $checked . ' />';
+	}
+
+
+	/**
+	 * @since 0.1
+	 */
+	function setting_enable_advanced_settings() {
+		$checked = checked( $this->get_option( 'enable_advanced_settings' ), 1, false );
+		echo '<input id="enable_advanced_settings" type="checkbox" name="adcontrol_userdash_options[enable_advanced_settings]" value="1"' . $checked . ' />';
 	}
 
 	/**
