@@ -6,7 +6,10 @@ class AdControl_Params {
 	 * @since 0.1
 	 */
 	public function __construct() {
-		$this->options = get_option( 'adcontrol_userdash_options', array() );
+		$this->options = array_merge(
+			get_option( 'adcontrol_settings',  array() ),
+			get_option( 'adcontrol_advanced_settings', array() )
+		);
 		$this->url = ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST']  . $_SERVER['REQUEST_URI'];
 		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) )
 			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
@@ -49,6 +52,7 @@ class AdControl_Params {
 	public function get_dfp_targetting() {
 		$fn = 'GA_googleAddAttr';
 		$tag_attrs = '';
+		$is_gpt = false; // TODO
 		foreach ( $this->targeting_tags as $k => $v ) {
 			if ( is_array( $v ) ) {
 				foreach ( $v as $tag )
