@@ -1,11 +1,11 @@
 (function($) {
 
-window.wa_adclk = {
+window.ac_adclk = {
 
 	hovering: false,
 	recorded: false,
-	slot: wa_adclk.slot,
-	network: ( typeof window.wa_adclk_network === "undefined" ) ? "" : window.wa_adclk_network,
+	slot: ac_adclk.slot,
+	network: ( typeof window.ac_adclk_network === "undefined" ) ? "" : window.ac_adclk_network,
 
 	click: function() {
 		if ( this.recorded ) { return true; } // no double counting
@@ -23,15 +23,15 @@ window.wa_adclk = {
 };
 
 $(document).ready( function() {
-	function hover_yes() { wa_adclk.hovering = true; }
-	function hover_no() { wa_adclk.hovering = false; }
+	function hover_yes() { ac_adclk.hovering = true; }
+	function hover_no() { ac_adclk.hovering = false; }
 
-	$(".wpa").click( wa_adclk.click );
+	$(".wpa").click( ac_adclk.click );
 	$(".wpa iframe").hover( hover_yes, hover_no );
 	$(".wpa object").hover( hover_yes, hover_no );
 
 	$(window).blur( function() {
-		if ( wa_adclk.hovering ) { wa_adclk.click(); }
+		if ( ac_adclk.hovering ) { ac_adclk.click(); }
 	});
 });
 
