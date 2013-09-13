@@ -31,6 +31,7 @@ define( 'ADCONTROL_FILE_PATH' , ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
 define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
 define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
+
 class AdControl {
 
 	private $params = null;
@@ -79,6 +80,7 @@ class AdControl {
 
 		if ( is_admin() ) {
 			require_once( ADCONTROL_ROOT . '/php/admin.php' );
+			require_once( ADCONTROL_ROOT . '/php/ajax.php' );
 			return;
 		}
 
@@ -141,7 +143,7 @@ class AdControl {
 	function enqueue_scripts() {
 		// JS
 		wp_enqueue_script(
-			'wa-adclk',
+			'ac-adclk',
 			ADCONTROL_URL . 'js/adclk.js',
 			array( 'jquery' ),
 			'2013-06-21',
@@ -151,7 +153,7 @@ class AdControl {
 		$data = array(
 			'slot'  => 'belowpost', // TODO add other slots?
 		);
-		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
+		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
 
 		add_action( 'wp_head', array( &$this, 'insert_head_wordads' ) );
 		add_action( 'wp_head', array( &$this, 'insert_head_gam' ) ); // TODO still GAM?
@@ -180,7 +182,7 @@ class AdControl {
 	function enqueue_mobile_scripts() {
 		// JS
 		wp_enqueue_script(
-			'wa-adclk',
+			'ac-adclk',
 			ADCONTROL_URL . 'js/adclk.js',
 			array( 'jquery' ),
 			'2013-06-21',
@@ -190,7 +192,7 @@ class AdControl {
 		$data = array(
 			'slot'  => 'belowpost', // TODO add other slots?
 		);
-		wp_localize_script( 'wa-adclk', 'wa_adclk', $data );
+		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
 
 		wp_enqueue_script(
 			'mopub',
@@ -216,6 +218,7 @@ HTML;
 	function insert_head_gam() {
 		$about = __( 'About these ads', 'adcontrol' );
 		$dfp_id = ADCONTROL_DFP_ID;
+
 		echo <<<HTML
 		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
 		<script type="text/javascript">
@@ -229,6 +232,7 @@ HTML;
 			{$this->get_googleaddslots()}
 		</script>
 		<script type="text/javascript">
+			GA_googleAddAdSensePageAttr("google_page_url", "{$this->params->url}");
 			GA_googleFetchAds();
 		</script>
 		<script type="text/javascript">
@@ -263,24 +267,12 @@ HTML;
 			return $content;
 
 		$dfp_script = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");</script>';
-		$adsense = '';
-		if ( $this->params->options['adsense_set'] ) {
-			require_once( ADCONTROL_ROOT . '/php/adsense.php' );
-			$pub = $this->params->options['publisher_id'];
-			$tag = $this->params->options['tag_id'];
-			$unit = $this->params->options['tag_unit'];
-			$width = self::$ad_tag_ids[$unit]['width'];
-			$height = self::$ad_tag_ids[$unit]['height'];
-			$adsense = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
-		}
-
 		$ad = <<<HTML
 		<div class="wpcnt">
 			<div class="wpa">
 				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
-				<div class="u">
+				<div class="u belowpost">
 					$dfp_script
-					$adsense
 				</div>
 			</div>
 		</div>
