@@ -5,7 +5,7 @@ Plugin Name: AdControl for WordPress
 Plugin URI: http://automattic.com
 Description: Harness the power of WordPress.com's advertising partners for your own blog.
 Author: Automattic
-Version: 0.1-alpha
+Version: 0.1-beta
 Author URI: http://automattic.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -25,7 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '0.1-alpha' );
+define( 'ADCONTROL_VERSION', '0.1-beta' );
 define( 'ADCONTROL_ROOT' , dirname( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH' , ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
@@ -36,27 +36,32 @@ class AdControl {
 
 	private $params = null;
 
+	/**
+	 * The different supported ad types.
+	 * v0.1 - mrec only for now
+	 * @var array
+	 */
 	public static $ad_tag_ids = array(
 		'mrec' => array(
 			'tag'       => '300x250_mediumrectangle',
 			'height'    => '250',
 			'width'     => '300',
 		),
-		'lrec' => array(
-			'tag'       => '336x280_largerectangle',
-			'height'    => '280',
-			'width'     => '336',
-		),
-		'leaderboard' => array(
-			'tag'       => '728x90_leaderboard',
-			'height'    => '90',
-			'width'     => '728',
-		),
-		'wideskyscraper' => array(
-			'tag'       => '160x600_wideskyscraper',
-			'height'    => '600',
-			'width'     => '160',
-		),
+		// 'lrec' => array(
+		// 	'tag'       => '336x280_largerectangle',
+		// 	'height'    => '280',
+		// 	'width'     => '336',
+		// ),
+		// 'leaderboard' => array(
+		// 	'tag'       => '728x90_leaderboard',
+		// 	'height'    => '90',
+		// 	'width'     => '728',
+		// ),
+		// 'wideskyscraper' => array(
+		// 	'tag'       => '160x600_wideskyscraper',
+		// 	'height'    => '600',
+		// 	'width'     => '160',
+		// ),
 	);
 
 	/**
@@ -74,7 +79,7 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function init() {
-		// TODO requires Jetpack for now
+		// requires Jetpack for now (probably always)
 		if ( ! self::check_jetpack() )
 			return;
 
@@ -101,6 +106,12 @@ class AdControl {
 		$this->insert_adcode();
 	}
 
+	/**
+	 * Check for Jetpack's The_Neverending_Home_Page and use got_infinity
+	 * @return boolean true if load came from infinite scroll
+	 *
+	 * @since 0.1
+	 */
 	private function is_infinite_scroll() {
 		if ( current_theme_supports( 'infinite-scroll' ) &&
 				class_exists( 'The_Neverending_Home_Page' ) &&
@@ -111,6 +122,11 @@ class AdControl {
 		}
 	}
 
+	/**
+	 * Add the actions/filters to insert the ads. Checks for mobile or desktop.
+	 *
+	 * @since 0.1
+	 */
 	private function insert_adcode() {
 		// check reasons to bail
 		if ( 'signed' != $this->params->options['tos'] )
@@ -136,7 +152,7 @@ class AdControl {
 	}
 
 	/**
-	 * Register scripts and styles
+	 * Register desktop scripts and styles
 	 *
 	 * @since 0.1
 	 */
@@ -155,7 +171,7 @@ class AdControl {
 		);
 		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
 
-		add_action( 'wp_head', array( &$this, 'insert_head_wordads' ) );
+		add_action( 'wp_head', array( &$this, 'insert_head_adcontrol' ) );
 		add_action( 'wp_head', array( &$this, 'insert_head_gam' ) ); // TODO still GAM?
 
 		// CSS
@@ -203,7 +219,12 @@ class AdControl {
 		);
 	}
 
-	function insert_head_wordads() {
+	/**
+	 * Insert any extra stuff that goes into the pages <head>
+	 *
+	 * @since 0.1
+	 */
+	function insert_head_adcontrol() {
 		$part = ( is_home() || is_archive() ) ? 'index' : 'permalink';
 		$domain = esc_js( $_SERVER['HTTP_HOST'] );
 		$current_page_url = esc_url( $this->params->url );
@@ -215,6 +236,11 @@ class AdControl {
 HTML;
 	}
 
+	/**
+	 * DFP/GAM scripts in the <head>
+	 *
+	 * @since 0.1
+	 */
 	function insert_head_gam() {
 		$about = __( 'About these ads', 'adcontrol' );
 		$dfp_id = ADCONTROL_DFP_ID;
@@ -243,6 +269,11 @@ HTML;
 HTML;
 	}
 
+	/**
+	 * Tell DFP about the slites we intend to use.
+	 *
+	 * @since 0.1
+	 */
 	function get_googleaddslots() {
 		$slots = '';
 		if ( isset( $this->params->dfp_slots['top.name'] ) )
