@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * This special set of admin pages are run if the user hasn't installed Jetpack.
+ */
 class AdControl_No_Jetpack {
 
 	/**

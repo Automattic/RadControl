@@ -5,6 +5,11 @@
  */
 class AdControl_Ajax {
 
+	/**
+	 * Grab whatever fallback we need
+	 *
+	 * @since 0.1
+	 */
 	static function load_fallback() {
 		$options = array_merge(
 			get_option( 'adcontrol_settings',  array() ),

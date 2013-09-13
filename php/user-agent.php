@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Borrowed from Jetpack back when we weren't sure if we were going to require it.
+ * This can/may be removed in future versions.
+ */
+
 global $agent_info;
 
 if ( function_exists( 'jetpack_is_mobile' ) ):

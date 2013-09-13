@@ -1,5 +1,7 @@
 <?php
+
 class AdControl_Params {
+
 	/**
 	 * Setup parameters for serving the ads
 	 *

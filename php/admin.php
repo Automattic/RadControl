@@ -1,6 +1,10 @@
 <?php
 
+/**
+ * The standard set of admin pages for the user if Jetpack is installed
+ */
 class AdControl_Admin {
+
 	private $valid_settings = array(
 		'show_to_logged_in',
 		'tos',
@@ -188,6 +192,7 @@ class AdControl_Admin {
             $to_save[ 'adsense_set' ] = 0;
         return $to_save;
     }
+
 	/**
 	 * @since 0.1
 	 */
@@ -232,6 +237,9 @@ class AdControl_Admin {
 		$this->init_advanced_settings();
 	}
 
+	/**
+	 * @since 0.1
+	 */
 	private function init_settings() {
 		$section_name = 'adcontrol_settings';
 		// Config section of the form
@@ -279,6 +287,9 @@ class AdControl_Admin {
 		);
 	}
 
+	/**
+	 * @since 0.1
+	 */
 	private function init_advanced_settings() {
 		$section = 'adcontrol_adsense_settings';
 		// AdSense section

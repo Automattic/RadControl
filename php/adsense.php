@@ -1,6 +1,7 @@
 <?php
 
 class AdControl_Adsense {
+
 	/**
 	 * Generate synchronous adsense code
 	 *
