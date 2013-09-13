@@ -168,7 +168,7 @@ class AdControl {
 
 		wp_enqueue_style(
 			'adcontrol',
-			ADCONTROL_URL . 'css/adcontrol.css',
+			ADCONTROL_URL . 'css/ac-style.css',
 			array( 'noticon-font' ),
 			'2013-06-24'
 		);
