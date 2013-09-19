@@ -35,12 +35,12 @@
 	display: block;
 	text-decoration: none !important;		/* !important necessary, since themes override this routinely */
 	color: #888;
-	margin-top: 1px;
+	margin-top: 0;
 	border-bottom: none !important;			/* some themes ad dotted underlines, that won't look nice */
 }
 
 .wpa-about:before {
-	font: 16px/7px "Noticons";
+	font: 16px/1 "Noticons";
 	content: '\f813';
 	-webkit-font-smoothing: antialiased;
 	display: inline-block;
