@@ -90,7 +90,7 @@ class AdControl {
 		}
 
 		// bail on infinite scroll
-		if ( $this->is_infinite_scroll() )
+		if ( self::is_infinite_scroll() )
 			return;
 
 		load_plugin_textdomain(
@@ -104,6 +104,7 @@ class AdControl {
 
 		$this->params = new AdControl_Params();
 		$this->insert_adcode();
+		$this->insert_extras();
 	}
 
 	/**
@@ -112,7 +113,7 @@ class AdControl {
 	 *
 	 * @since 0.1
 	 */
-	private function is_infinite_scroll() {
+	public static function is_infinite_scroll() {
 		if ( current_theme_supports( 'infinite-scroll' ) &&
 				class_exists( 'The_Neverending_Home_Page' ) &&
 				The_Neverending_Home_Page::got_infinity() ) {
@@ -149,6 +150,16 @@ class AdControl {
 			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
 		}
+	}
+
+	/**
+	 * Add the actions/filters to insert extra-network features (e.g. Taboola, Promoted Posts).
+	 *
+	 * @since 0.1
+	 */
+	private function insert_extras() {
+		require_once( ADCONTROL_ROOT . '/php/taboola.php' );
+		new AdControl_Taboola( $this->params );
 	}
 
 	/**
