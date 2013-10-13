@@ -320,7 +320,7 @@ HTML;
 		</div>
 HTML;
 
-	return $content . $ad;
+		return $content . $ad;
 	}
 
 	/**
@@ -370,7 +370,6 @@ HTML;
 		if ( ! is_plugin_active( 'jetpack/jetpack.php' ) || ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
 			if ( is_admin() )
 				require_once( ADCONTROL_ROOT . '/php/no-jetpack.php' );
-
 			return false;
 		}
 

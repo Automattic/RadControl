@@ -25,10 +25,8 @@ class AdControl_Admin {
 	private $basic_settings_key = 'adcontrol_settings';
 	private $advanced_settings_key = 'adcontrol_advanced_settings';
 	private $plugin_options_key = 'adcontrol';
-	private $revenue_states = array( 'active', 'paused', 'withdrawn' );
 	private $status;
 	private $show_revenue = true;
-	private $action;
 
 	/**
 	 * @since 0.1
@@ -86,8 +84,8 @@ class AdControl_Admin {
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $this->tabs as $tab_key => $tab_caption ) {
 			$active = ( $tab_key == $this->active_tab ? ' nav-tab-active' : '' );
-            if ( 'adcontrol_advanced_settings' == $tab_key && ! $this->options['enable_advanced_settings'] == 1 )
-                continue;
+			if ( 'adcontrol_advanced_settings' == $tab_key && ! $this->options['enable_advanced_settings'] == 1 )
+				continue;
 			if ( ( 'adcontrol_earnings' == $tab_key && ! $this->show_revenue ) )
 				continue;
 			echo '<a class="nav-tab ' . $active . '" href="?page=' . $this->plugin_options_key . '&tab=' . $tab_key . '">' . $tab_caption . '</a>';
@@ -162,36 +160,36 @@ class AdControl_Admin {
 		return $to_save;
 	}
 
-   /**
-     * @since 0.1
-     */
-    function validate_advanced_settings( $settings ) {
-        $to_save = array();
+	/**
+	 * @since 0.1
+	 */
+	function validate_advanced_settings( $settings ) {
+		$to_save = array();
 
-        $to_save['fallback'] = absint( $settings['fallback'] );
+		$to_save['fallback'] = absint( $settings['fallback'] );
 
-        if ( ! $settings['fallback'] )
-            return $to_save;
+		if ( ! $settings['fallback'] )
+			return $to_save;
 
-        $matches = array();
-        if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
-            $to_save[ 'publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
-        else
-            add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"' ) );
+		$matches = array();
+		if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
+			$to_save[ 'publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
+		else
+			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"' ) );
 
-        if ( is_numeric( $settings['tag_id'] ) )
-            $to_save[ 'tag_id' ] = esc_attr( $settings['tag_id'] );
-        else
-            add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"' ) );
+		if ( is_numeric( $settings['tag_id'] ) )
+			$to_save[ 'tag_id' ] = esc_attr( $settings['tag_id'] );
+		else
+			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"' ) );
 
-        $to_save[ 'tag_unit' ] = esc_attr( $settings['tag_unit'] );
+		$to_save[ 'tag_unit' ] = esc_attr( $settings['tag_unit'] );
 
-        if ( isset( $to_save['tag_id'] ) && isset( $to_save['publisher_id'] ) )
-            $to_save[ 'adsense_set' ] = 1;
-        else
-            $to_save[ 'adsense_set' ] = 0;
-        return $to_save;
-    }
+		if ( isset( $to_save['tag_id'] ) && isset( $to_save['publisher_id'] ) )
+			$to_save[ 'adsense_set' ] = 1;
+		else
+			$to_save[ 'adsense_set' ] = 0;
+		return $to_save;
+	}
 
 	/**
 	 * @since 0.1
@@ -341,19 +339,17 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function setting_show_to_logged_in() {
-		$readonly = ''; // TODO
-
 		$show_to_logged_in = $this->get_option( 'show_to_logged_in' );
 		if ( ! in_array( $show_to_logged_in, array( 'yes', 'no', 'pause' ) ) )
 			$show_to_logged_in = 'yes';
-?>
+		?>
 		<p><input type="radio" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[show_to_logged_in]" id="radio_show_to_logged_in" value="yes" <?php checked( $show_to_logged_in, 'yes' ); ?>/>
 		<label for="radio_show_to_logged_in"> <?php _e( 'Every visitor' ); ?></label></p>
 		<p><input type="radio" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[show_to_logged_in]" id="radio_hide_from_logged_in" value="no" <?php checked( $show_to_logged_in, 'no' ); ?>/>
 		<label for="radio_hide_from_logged_in"><?php _e( 'Every visitor, except logged-in users (fewer impressions)' ); ?></label></p>
 		<p><input type="radio" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[show_to_logged_in]" id="radio_hide_from_everyone" value="pause" <?php checked( $show_to_logged_in, 'pause' ); ?>/>
 		<label for="radio_hide_from_everyone"><?php _e( 'Do not show any ads' ); ?></label></p>
-<?php
+		<?php
 	}
 
 	/**
