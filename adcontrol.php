@@ -160,6 +160,9 @@ class AdControl {
 	private function insert_extras() {
 		require_once( ADCONTROL_ROOT . '/php/taboola.php' );
 		new AdControl_Taboola( $this->params );
+
+		require_once( ADCONTROL_ROOT . '/php/coull.php' );
+		new AdControl_Coull( $this->params );
 	}
 
 	/**
