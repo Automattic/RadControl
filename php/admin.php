@@ -84,6 +84,8 @@ class AdControl_Admin {
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $this->tabs as $tab_key => $tab_caption ) {
 			$active = ( $tab_key == $this->active_tab ? ' nav-tab-active' : '' );
+			if ( ! isset( $this->options['enable_advanced_settings'] ) )
+				continue;
 			if ( 'adcontrol_advanced_settings' == $tab_key && ! $this->options['enable_advanced_settings'] == 1 )
 				continue;
 			if ( ( 'adcontrol_earnings' == $tab_key && ! $this->show_revenue ) )
@@ -141,7 +143,7 @@ class AdControl_Admin {
 	function validate_settings( $settings ) {
 		$to_save = array();
 
-		if ( 'signed' == $settings[ 'tos' ] || 'signed' == $this->get_option( 'tos' ) )
+		if ( 'signed' == $this->get_option( 'tos' ) || 'signed' == $settings[ 'tos' ] )
 			$to_save[ 'tos' ] = 'signed';
 		else
 			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.' ) );
@@ -154,7 +156,8 @@ class AdControl_Admin {
 			$to_save[ 'show_to_logged_in' ] = 'yes';
 		}
 
-		$to_save['enable_advanced_settings'] = ( $settings['enable_advanced_settings'] ) ? 1 : 0;
+		// TODO replace when backfill situation is figured out
+		// $to_save['enable_advanced_settings'] = ( $settings['enable_advanced_settings'] ) ? 1 : 0;
 
 
 		return $to_save;
@@ -257,14 +260,15 @@ class AdControl_Admin {
 			array( 'label_for' => 'radio_show_to_logged_in' )
 		);
 
-		add_settings_field(
-			'adcontrol_userdash_enable_advanced_settings',
-			__( 'Enable Advanced Settings:', 'adcontrol' ),
-			array( &$this, 'setting_enable_advanced_settings' ),
-			$this->basic_settings_key,
-			$section_name,
-			array( 'label_for' => 'enable_advanced_settings' )
-		);
+		// TODO replace when backfill situation is fixed
+		// add_settings_field(
+		// 	'adcontrol_userdash_enable_advanced_settings',
+		// 	__( 'Enable Advanced Settings:', 'adcontrol' ),
+		// 	array( &$this, 'setting_enable_advanced_settings' ),
+		// 	$this->basic_settings_key,
+		// 	$section_name,
+		// 	array( 'label_for' => 'enable_advanced_settings' )
+		// );
 
 		// TOS section of the form
 		$section_name = 'adcontrol_section_general_tos';
