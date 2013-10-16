@@ -25,7 +25,7 @@ class AdControl_Params {
 			'Domain'     => esc_url( home_url() ),
 			'PageURL'    => esc_url( $this->url ),
 			'LangId'     => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
-			'AdSense'    => $this->options['adsense_set'] ? 1 : 0,
+			'AdSense'    => ( isset( $this->options['adsense_set'] ) && $this->options['adsense_set'] ) ? 1 : 0,
 		);
 		$this->dfp_slots = array();
 	}
