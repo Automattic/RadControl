@@ -105,7 +105,7 @@ class AdControl {
 
 		$this->params = new AdControl_Params();
 		$this->insert_adcode();
-		$this->insert_extras();
+		// $this->insert_extras();
 	}
 
 	/**
@@ -131,6 +131,8 @@ class AdControl {
 	 */
 	private function insert_adcode() {
 		// check reasons to bail
+		if ( ! isset( $this->params->options['tos'] ) || ! isset( $this->params->options['show_to_logged_in'] ) )
+			return;
 		if ( 'signed' != $this->params->options['tos'] )
 			return; // only show ads for folks that have signed the TOS
 		if ( 'pause' == $this->params->options['show_to_logged_in'] )
