@@ -30,6 +30,7 @@ define( 'ADCONTROL_ROOT' , dirname( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH' , ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL' , plugins_url( '/', __FILE__ ) );
 define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
+// TODO: Store MOPUB_ID with each ad unit. Each ad unit in MOPUB has its own ID.
 define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
 
 class AdControl {
