@@ -33,6 +33,8 @@ define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
 // TODO: Store MOPUB_ID with each ad unit. Each ad unit in MOPUB has its own ID.
 define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
 
+require_once( ADCONTROL_ROOT . '/php/widgets.php' );
+
 class AdControl {
 
 	private $params = null;
@@ -84,6 +86,12 @@ class AdControl {
 		if ( ! self::check_jetpack() )
 			return;
 
+		load_plugin_textdomain(
+			'adcontrol',
+			false,
+			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
+		);
+
 		if ( is_admin() ) {
 			require_once( ADCONTROL_ROOT . '/php/admin.php' );
 			require_once( ADCONTROL_ROOT . '/php/ajax.php' );
@@ -94,18 +102,12 @@ class AdControl {
 		if ( self::is_infinite_scroll() )
 			return;
 
-		load_plugin_textdomain(
-			'adcontrol',
-			false,
-			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
-		);
-
 		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
 		$this->insert_adcode();
-		// $this->insert_extras();
+		$this->insert_extras();
 	}
 
 	/**
