@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Loads Coull script in footer
+ *
+ * @since 0.1
+ */
 class AdControl_Coull {
 
 	/**

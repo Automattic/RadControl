@@ -2,6 +2,8 @@
 
 /**
  * Inserts the special Taboola code after the end of the content on a page.
+ *
+ * @since 0.1
  */
 class AdControl_Taboola {
 
