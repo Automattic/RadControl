@@ -178,6 +178,9 @@ class AdControl {
 
 		require_once( ADCONTROL_ROOT . '/php/coull.php' );
 		new AdControl_Coull( $this->params );
+
+		require_once( ADCONTROL_ROOT . '/php/skimlinks.php' );
+		new AdControl_Skimlinks( $this->params );
 	}
 
 	/**
