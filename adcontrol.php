@@ -68,6 +68,21 @@ class AdControl {
 	);
 
 	/**
+	 * Convenience function for grabbing options from params->options
+	 * @param  string $option the option to grab
+	 * @param  mixed  $default (optional)
+	 * @return option or $default if not set
+	 *
+	 * @since 0.1
+	 */
+	function option( $option, $default = false ) {
+		if ( ! isset( $this->params->options[$option] ) )
+			return $default;
+
+		return $this->params->options[$option];
+	}
+
+	/**
 	 * Instantiate the plugin
 	 *
 	 * @since 0.1
@@ -106,8 +121,18 @@ class AdControl {
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
+		// check reasons to bail
+		if ( 'signed' != $this->option( 'tos' ) )
+			return; // only show ads for folks that have signed the TOS
+		if ( 'pause' == $this->option( 'show_to_logged_in' ) )
+			return; // don't show if paused
+		if ( ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) && is_user_logged_in() )
+			return; // don't show to logged in users (if that option is selected)
+		if ( $this->params->is_mobile() && is_ssl() )
+			return; // Not support mobile ads over SSL at the moment
+
 		$this->insert_adcode();
-		$this->insert_extras();
+		$this->insert_extras(); // TODO configure extras to show always if desired
 	}
 
 	/**
@@ -117,13 +142,9 @@ class AdControl {
 	 * @since 0.1
 	 */
 	public static function is_infinite_scroll() {
-		if ( current_theme_supports( 'infinite-scroll' ) &&
+		return current_theme_supports( 'infinite-scroll' ) &&
 				class_exists( 'The_Neverending_Home_Page' ) &&
-				The_Neverending_Home_Page::got_infinity() ) {
-			return true;
-		} else {
-			return false;
-		}
+				The_Neverending_Home_Page::got_infinity();
 	}
 
 	/**
@@ -132,17 +153,6 @@ class AdControl {
 	 * @since 0.1
 	 */
 	private function insert_adcode() {
-		// check reasons to bail
-		if ( ! isset( $this->params->options['tos'] ) || ! isset( $this->params->options['show_to_logged_in'] ) )
-			return;
-		if ( 'signed' != $this->params->options['tos'] )
-			return; // only show ads for folks that have signed the TOS
-		if ( 'pause' == $this->params->options['show_to_logged_in'] )
-			return; // don't show if paused
-		if ( ! is_super_admin() && 'no' == $this->params->options['show_to_logged_in'] && is_user_logged_in() )
-			return; // don't show to logged in users (if that option is selected)
-		if ( $this->params->is_mobile() && is_ssl() )
-			return; // Not support mobile ads over SSL at the moment
 		// check for mobile, then insert ads
 		if ( $this->params->is_mobile() ) {
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_mobile_scripts' ) );
