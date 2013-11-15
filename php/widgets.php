@@ -16,7 +16,14 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		echo '<h1>Widget goes here</h1>';
+		global $adcontrol;
+
+		$sidebar = true; // TODO check for sidebar ad
+		if ( ! $sidebar )
+			return false;
+
+		// TODO real sidebar slot
+		echo $adcontrol->get_ad( 'side' );
 	}
 
 	public function form( $instance ) {

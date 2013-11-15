@@ -37,7 +37,7 @@ require_once( ADCONTROL_ROOT . '/php/widgets.php' );
 
 class AdControl {
 
-	private $params = null;
+	public $params = null;
 
 	/**
 	 * The different supported ad types.
@@ -159,11 +159,19 @@ class AdControl {
 			add_filter( 'the_content', array( &$this, 'insert_mobile_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_mobile_ad' ) );
 		} else {
-			$slot_name = 'Adcontrol_4_org_300'; // TODO check adsafe
-			$this->params->add_slot( 'belowpost', $slot_name, 400, 267, 3443918307802676 );
+			// TODO check adsafe
+			$this->params->add_slot( 'top', 'Wordads_MIS_Leaderboard_adsafe', 728, 90, 3443918307802676 );
+			$this->params->add_slot( 'belowpost', 'Adcontrol_4_org_300', 400, 267, 3443918307802676 );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
+
+			// TODO check header junk
+			add_action( 'wp_head', array( &$this, 'insert_header_ad' ), 100 );
+
+			// TODO check sidebar widget junk
+			if ( is_active_widget( false, false, 'adcontrol_sidebar_widget' ) )
+				$this->params->add_slot( 'side', 'Wordads_MIS_Mrec_Side_adsafe', 300, 250, 3443918307802676 );
 		}
 	}
 
@@ -329,19 +337,7 @@ HTML;
 		if ( ! $this->params->should_show() )
 			return $content;
 
-		$dfp_script = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots['belowpost.name'] . '");</script>';
-		$ad = <<<HTML
-		<div class="wpcnt">
-			<div class="wpa">
-				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
-				<div class="u belowpost">
-					$dfp_script
-				</div>
-			</div>
-		</div>
-HTML;
-
-		return $content . $ad;
+		return $content . $this->get_ad( 'belowpost');
 	}
 
 	/**
@@ -378,6 +374,36 @@ HTML;
 		return $content . $mopub_under;
 	}
 
+	/**
+	 * Inserts ad into header
+	 *
+	 * @since 0.1
+	 */
+	function insert_header_ad() {
+		// TODO prototype
+		echo $this->get_ad( 'top' );
+	}
+
+	/**
+	 * [get_ad description]
+	 * @param  string $spot top, side, or belowpost
+	 * @param  string $type dfp or adsense
+	 */
+	function get_ad( $spot, $type = 'dfp' ) {
+		if ( 'dfp' == $type )
+			$snippet = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots[$spot . '.name'] . '");</script>';
+
+		return <<<HTML
+		<div class="wpcnt">
+			<div class="wpa">
+				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
+				<div class="u $spot">
+					$snippet
+				</div>
+			</div>
+		</div>
+HTML;
+	}
 
 	/**
 	 * Enforce Jetpack activated. Otherwise, load special no-jetpack admin.
