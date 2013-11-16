@@ -50,21 +50,21 @@ class AdControl {
 			'height'    => '250',
 			'width'     => '300',
 		),
-		// 'lrec' => array(
-		// 	'tag'       => '336x280_largerectangle',
-		// 	'height'    => '280',
-		// 	'width'     => '336',
-		// ),
-		// 'leaderboard' => array(
-		// 	'tag'       => '728x90_leaderboard',
-		// 	'height'    => '90',
-		// 	'width'     => '728',
-		// ),
-		// 'wideskyscraper' => array(
-		// 	'tag'       => '160x600_wideskyscraper',
-		// 	'height'    => '600',
-		// 	'width'     => '160',
-		// ),
+		'lrec' => array(
+			'tag'       => '336x280_largerectangle',
+			'height'    => '280',
+			'width'     => '336',
+		),
+		'leaderboard' => array(
+			'tag'       => '728x90_leaderboard',
+			'height'    => '90',
+			'width'     => '728',
+		),
+		'wideskyscraper' => array(
+			'tag'       => '160x600_wideskyscraper',
+			'height'    => '600',
+			'width'     => '160',
+		),
 	);
 
 	/**
@@ -168,10 +168,6 @@ class AdControl {
 
 			// TODO check header junk
 			add_action( 'wp_head', array( &$this, 'insert_header_ad' ), 100 );
-
-			// TODO check sidebar widget junk
-			if ( is_active_widget( false, false, 'adcontrol_sidebar_widget' ) )
-				$this->params->add_slot( 'side', 'Wordads_MIS_Mrec_Side_adsafe', 300, 250, 3443918307802676 );
 		}
 	}
 
