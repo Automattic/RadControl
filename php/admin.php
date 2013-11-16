@@ -157,8 +157,8 @@ class AdControl_Admin {
 		}
 
 		// TODO replace when backfill situation is figured out
-		// $to_save['enable_advanced_settings'] = ( $settings['enable_advanced_settings'] ) ? 1 : 0;
-
+		$to_save['enable_advanced_settings'] =
+			isset( $settings['enable_advanced_settings'] ) && $settings['enable_advanced_settings']? 1 : 0;
 
 		return $to_save;
 	}
@@ -171,19 +171,19 @@ class AdControl_Admin {
 
 		$to_save['fallback'] = absint( $settings['fallback'] );
 
-		if ( ! $settings['fallback'] )
+		if ( ! $settings['fallback'] || ! isset( $settings['publisher_id'] ) )
 			return $to_save;
 
 		$matches = array();
 		if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
 			$to_save[ 'publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
 		else
-			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"' ) );
+			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' ) );
 
 		if ( is_numeric( $settings['tag_id'] ) )
 			$to_save[ 'tag_id' ] = esc_attr( $settings['tag_id'] );
 		else
-			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"' ) );
+			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
 
 		$to_save[ 'tag_unit' ] = esc_attr( $settings['tag_unit'] );
 
@@ -261,14 +261,14 @@ class AdControl_Admin {
 		);
 
 		// TODO replace when backfill situation is fixed
-		// add_settings_field(
-		// 	'adcontrol_userdash_enable_advanced_settings',
-		// 	__( 'Enable Advanced Settings:', 'adcontrol' ),
-		// 	array( &$this, 'setting_enable_advanced_settings' ),
-		// 	$this->basic_settings_key,
-		// 	$section_name,
-		// 	array( 'label_for' => 'enable_advanced_settings' )
-		// );
+		add_settings_field(
+			'adcontrol_userdash_enable_advanced_settings',
+			__( 'Enable Advanced Settings:', 'adcontrol' ),
+			array( &$this, 'setting_enable_advanced_settings' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'enable_advanced_settings' )
+		);
 
 		// TOS section of the form
 		$section_name = 'adcontrol_section_general_tos';
@@ -378,7 +378,7 @@ class AdControl_Admin {
 	 */
 	function setting_publisher_id() {
 		$pid = $this->get_option( 'publisher_id' );
-		$disabled = disabled( $this->get_option( 'fallback' ), 0, false );
+		$disabled = disabled( ! $this->get_option( 'fallback' ), true, false );
 		echo "<input class='adsense_opt' $disabled type='text' name='" . $this->advanced_settings_key . "[publisher_id]' value='$pid' /> ";
 		_e( 'e.g. pub-123456789', 'adsense' );
 	}
@@ -388,7 +388,7 @@ class AdControl_Admin {
 	 */
 	function setting_tag_id() {
 		$tid = $this->get_option( 'tag_id' );
-		$disabled = disabled( $this->get_option( 'fallback' ), 0, false );
+		$disabled = disabled( ! $this->get_option( 'fallback' ), true, false );
 		echo "<input class='adsense_opt' $disabled type='text' name='" . ( $this->advanced_settings_key ) . "[tag_id]' value='$tid' /> ";
 		_e( 'e.g. 123456789', 'adsense' );
 	}
@@ -400,9 +400,12 @@ class AdControl_Admin {
 	 */
 	function setting_tag_unit() {
 		$tag = $this->get_option( 'tag_unit' );
-		$disabled = disabled( $this->get_option( 'fallback' ), 0, false );
+		$disabled = disabled( ! $this->get_option( 'fallback' ), true, false );
 		echo '<select class="adsense_opt" ' . $disabled . ' id="tag_unit" name="' . $this->advanced_settings_key . '[tag_unit]">';
 		foreach ( AdControl::$ad_tag_ids as $unit => $properties ) {
+			if ( 'mrec' != $unit ) // TODO only want mrec for now
+				continue;
+
 			$selected = selected( $unit, $tag, false );
 			echo "<option value='$unit' $selected>{$properties['tag']}</option>";
 		}
