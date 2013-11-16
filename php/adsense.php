@@ -7,7 +7,7 @@ class AdControl_Adsense {
 	 *
 	 * @since 0.1
 	 */
-	public static function get_synchronous_adsense( $pub, $tag, $width, $height, $url = '' ) {
+	public static function get_synchronous_adsense( $pub, $tag, $width, $height, $url = false ) {
 		if ( $url )
 			$url = 'google_page_url = "' . $url . '";';
 
@@ -30,13 +30,14 @@ HTML;
 	 *
 	 * @since 0.1
 	 */
-	public static function get_asynchronous_adsense( $pub, $tag, $width, $height ) {
+	public static function get_asynchronous_adsense( $pub, $tag, $width, $height, $url = false ) {
+		// TODO URL
 		return <<<HTML
 		<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 		<ins class="adsbygoogle"
-			 style="display:inline-block;width:300px;height:250px"
-			 data-ad-client="ca-pub-2972973862093363"
-			 data-ad-slot="7520462734"></ins>
+			 style="display:inline-block;width:{$width}px;height:{$height}px"
+			 data-ad-client="ca-$pub"
+			 data-ad-slot="$tag"></ins>
 		<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 HTML;
 	}
