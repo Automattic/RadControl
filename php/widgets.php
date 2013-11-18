@@ -14,7 +14,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'adcontrol_sidebar_widget',
-			__( 'AdControl Sidebar Ad', 'adcontrol' ),
+			__( 'AdControl AdSense Sidebar Ad', 'adcontrol' ),
 			array( 'description' => __( 'Place an AdControl ad in your sidebar', 'adcontrol' ) )
 		);
 
