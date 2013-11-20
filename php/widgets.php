@@ -14,7 +14,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'adcontrol_sidebar_widget',
-			__( 'AdControl AdSense Sidebar Ad', 'adcontrol' ),
+			__( 'AdControl AdSense Sidebar', 'adcontrol' ),
 			array( 'description' => __( 'Place an AdControl ad in your sidebar', 'adcontrol' ) )
 		);
 
@@ -40,15 +40,11 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		$enabled = $this->option( 'fallback' );
-		if ( ! $enabled )
-			return false;
-
-		if ( empty( $instance['all_set'] ) )
+		if ( empty( $instance['all_set'] ) || ! $this->option( 'enable_advanced_settings' ) )
 			return false;
 
 		require_once( ADCONTROL_ROOT . '/php/adsense.php' );
-		$pub = $instance['publisher_id'];
+		$pub = $instance['adsense_publisher_id'];
 		$tag = $instance['tag_id'];
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
@@ -67,26 +63,18 @@ HTML;
 	}
 
 	public function form( $instance ) {
-		$disabled = ! $this->option( 'fallback' );
-		if ( $disabled ) {
+		if ( ! $this->option( 'enable_advanced_settings' ) ) {
 			$url = admin_url( 'options-general.php?page=adcontrol' );
-			if ( $this->option( 'enable_advanced_settings' ) )
-				$url .= '&tab=adcontrol_advanced_settings';
-
-			if ( $this->option( 'enable_advanced_settings' ) )
-				$msg = __( 'Enable AdSense fallback to activate.', 'adcontrol' );
-			else
-				$msg = __( 'Enable advanced settings to activate.', 'adcontrol' );
-
-			echo "<p><a href='$url'>$msg</a></p>";
+			$msg = __( 'Enable advanced settings to activate.', 'adcontrol' );
+			echo "<p><a href='$url' target='_blank'>$msg</a></p>";
 			return;
 		}
 
 		// publisher id
-		if ( isset( $instance['publisher_id'] ) )
-			$pid = $instance['publisher_id'];
+		if ( isset( $instance['adsense_publisher_id'] ) )
+			$pid = $instance['adsense_publisher_id'];
 		else
-			$pid = $this->option( 'publisher_id', '' );
+			$pid = $this->option( 'adsense_publisher_id', '' );
 
 		// tag id
 		if ( isset( $instance['tag_id'] ) )
@@ -101,12 +89,12 @@ HTML;
 			$unit = 'mrec';
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'publisher_id' ); ?>"><?php _e( 'Publisher ID:', 'adcontrol' ); ?></label>
+			<label for="<?php echo $this->get_field_id( 'adsense_publisher_id' ); ?>"><?php _e( 'Publisher ID:', 'adcontrol' ); ?></label>
 			<?php
 			if ( ! empty( $instance['error_pid'] ) )
 				echo "<br /><small style='color:red;'>{$instance['error_pid']}</small>";
 			?>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'publisher_id' ); ?>" name="<?php echo $this->get_field_name( 'publisher_id' ); ?>" type="text" value="<?php echo $pid; ?>" />
+			<input class="widefat" id="<?php echo $this->get_field_id( 'adsense_publisher_id' ); ?>" name="<?php echo $this->get_field_name( 'adsense_publisher_id' ); ?>" type="text" value="<?php echo $pid; ?>" />
 			<small>e.g. pub-123456789</small>
 		</p>
 		<p>
@@ -142,8 +130,8 @@ HTML;
 		$instance['all_set'] = false;
 
 		$matches = array();
-		if ( preg_match( '/^(pub-)?(\d+)$/', $new_instance['publisher_id'], $matches ) )
-			$instance['publisher_id'] = 'pub-' . esc_attr( $matches[2] );
+		if ( preg_match( '/^(pub-)?(\d+)$/', $new_instance['adsense_publisher_id'], $matches ) )
+			$instance['adsense_publisher_id'] = 'pub-' . esc_attr( $matches[2] );
 		else
 			$instance['error_pid'] = __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' );
 
@@ -157,7 +145,7 @@ HTML;
 		else
 			$instance['unit'] = 'mrec';
 
-		if ( ! ( empty( $instance['publisher_id'] ) || empty( $instance['tag_id'] ) ) )
+		if ( ! ( empty( $instance['adsense_publisher_id'] ) || empty( $instance['tag_id'] ) ) )
 			$instance['all_set'] = true;
 
 		return $instance;

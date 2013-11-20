@@ -160,14 +160,15 @@ class AdControl {
 			add_filter( 'the_excerpt', array( &$this, 'insert_mobile_ad' ) );
 		} else {
 			// TODO check adsafe
-			$this->params->add_slot( 'top', 'Wordads_MIS_Leaderboard_adsafe', 728, 90, 3443918307802676 );
 			$this->params->add_slot( 'belowpost', 'Adcontrol_4_org_300', 400, 267, 3443918307802676 );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
 
-			// TODO check header junk
-			add_action( 'wp_head', array( &$this, 'insert_header_ad' ), 100 );
+			if ( ! empty( $this->params->options['adsense_leader_set'] )
+					&& ! empty( $this->params->options['enable_advanced_settings'] ) ) {
+				add_action( 'wp_head', array( &$this, 'insert_header_ad' ), 100 );
+			}
 		}
 	}
 
@@ -376,8 +377,7 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_header_ad() {
-		// TODO prototype
-		echo $this->get_ad( 'top' );
+		echo $this->get_ad( 'top', 'adsense' );
 	}
 
 	/**
@@ -386,8 +386,19 @@ HTML;
 	 * @param  string $type dfp or adsense
 	 */
 	function get_ad( $spot, $type = 'dfp' ) {
-		if ( 'dfp' == $type )
+		if ( 'dfp' == $type ) {
 			$snippet = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots[$spot . '.name'] . '");</script>';
+		} elseif ( 'adsense' == $type ) {
+			require_once( ADCONTROL_ROOT . '/php/adsense.php' );
+			if ( 'top' == $spot )
+				$spot = 'leader';
+
+			$pub = $this->params->options['adsense_publisher_id'];
+			$tag = $this->params->options['adsense_' . $spot . '_tag_id'];
+			$width = AdControl::$ad_tag_ids[$this->params->options['adsense_' . $spot . '_tag_unit']]['width'];
+			$height = AdControl::$ad_tag_ids[$this->params->options['adsense_' . $spot . '_tag_unit']]['height'];
+			$snippet = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
+		}
 
 		return <<<HTML
 		<div class="wpcnt">

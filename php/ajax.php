@@ -16,11 +16,11 @@ class AdControl_Ajax {
 			get_option( 'adcontrol_advanced_settings', array() )
 		);
 
-		if ( $options['adsense_set'] ) {
+		if ( $options['adsense_fallback_set'] ) {
 			require_once( ADCONTROL_ROOT . '/php/adsense.php' );
-			$pub = $options['publisher_id'];
-			$tag = $options['tag_id'];
-			$unit = $options['tag_unit'];
+			$pub = $options['adsense_publisher_id'];
+			$tag = $options['adsense_fallback_tag_id'];
+			$unit = $options['adsense_fallback_tag_unit'];
 			$width = AdControl::$ad_tag_ids[$unit]['width'];
 			$height = AdControl::$ad_tag_ids[$unit]['height'];
 			$url = isset( $_GET['url'] ) ? esc_url( $_GET['url'] ) : home_url();

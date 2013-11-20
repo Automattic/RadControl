@@ -8,17 +8,20 @@ class AdControl_Admin {
 	private $valid_settings = array(
 		'show_to_logged_in',
 		'tos',
-		'fallback',
-		'publisher_id',
-		'tag_id',
-		'tag_unit',
+		'adsense_publisher_id',
+		'adsense_fallback',
+		'adsense_leader',
+		'adsense_fallback_tag_id',
+		'adsense_fallback_tag_unit',
+		'adsense_leader_tag_id',
+		'adsense_leader_tag_unit',
 		'enable_advanced_settings',
 	);
 	private $active_tab = 'adcontrol_settings';
 	private $tabs = array(
 		'adcontrol_settings' => 'AdControl Settings',
-		'adcontrol_earnings' => 'Earnings',
 		'adcontrol_advanced_settings' => 'Advanced Settings',
+		'adcontrol_earnings' => 'Earnings',
 	);
 	private $options = array();
 	private $options_advanced = array();
@@ -168,29 +171,45 @@ class AdControl_Admin {
 	 */
 	function validate_advanced_settings( $settings ) {
 		$to_save = array();
+		$to_save[ 'adsense_fallback_set' ] = 0;
+		$to_save[ 'adsense_leader_set' ] = 0;
 
-		$to_save['fallback'] = absint( $settings['fallback'] );
+		if ( ! empty( $settings['adsense_publisher_id'] ) ) {
+			$matches = array();
+			if ( preg_match( '/^(pub-)?(\d+)$/', $settings['adsense_publisher_id'], $matches ) )
+				$to_save[ 'adsense_publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
+			else
+				add_settings_error( 'adsense_publisher_id', 'adsense_publisher_id', __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' ) );
+		}
 
-		if ( ! $settings['fallback'] || ! isset( $settings['publisher_id'] ) )
-			return $to_save;
+		if ( ! empty( $settings['adsense_fallback'] ) ) {
+			$to_save['adsense_fallback'] = absint( $settings['adsense_fallback'] );
 
-		$matches = array();
-		if ( preg_match( '/^(pub-)?(\d+)$/', $settings['publisher_id'], $matches ) )
-			$to_save[ 'publisher_id' ] = 'pub-' . esc_attr( $matches[2] );
-		else
-			add_settings_error( 'publisher_id', 'publisher_id', __( 'Publisher ID must be of form "pub-123456789"', 'adcontrol' ) );
+			if ( ! empty( $settings['adsense_fallback_tag_id'] ) && is_numeric( $settings['adsense_fallback_tag_id'] ) )
+				$to_save[ 'adsense_fallback_tag_id' ] = esc_attr( $settings['adsense_fallback_tag_id'] );
+			else
+				add_settings_error( 'adsense_fallback_tag_id', 'adsense_fallback_tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
 
-		if ( is_numeric( $settings['tag_id'] ) )
-			$to_save[ 'tag_id' ] = esc_attr( $settings['tag_id'] );
-		else
-			add_settings_error( 'tag_id', 'tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
+			$to_save[ 'adsense_fallback_tag_unit' ] = esc_attr( $settings['adsense_fallback_tag_unit'] );
 
-		$to_save[ 'tag_unit' ] = esc_attr( $settings['tag_unit'] );
+			if ( isset( $to_save[ 'adsense_publisher_id' ] ) && isset( $to_save['adsense_fallback_tag_id'] ) )
+				$to_save[ 'adsense_fallback_set' ] = 1;
+		}
 
-		if ( isset( $to_save['tag_id'] ) && isset( $to_save['publisher_id'] ) )
-			$to_save[ 'adsense_set' ] = 1;
-		else
-			$to_save[ 'adsense_set' ] = 0;
+		if ( ! empty( $settings['adsense_leader'] ) ) {
+			$to_save['adsense_leader'] = absint( $settings['adsense_leader'] );
+
+			if ( ! empty( $settings['adsense_leader_tag_id'] ) && is_numeric( $settings['adsense_leader_tag_id'] ) )
+				$to_save[ 'adsense_leader_tag_id' ] = esc_attr( $settings['adsense_leader_tag_id'] );
+			else
+				add_settings_error( 'adsense_leader_tag_id', 'adsense_leader_tag_id', __( 'Tag ID must be of form "123456789"', 'adcontrol' ) );
+
+			$to_save[ 'adsense_leader_tag_unit' ] = esc_attr( $settings['adsense_leader_tag_unit'] );
+
+			if ( isset( $to_save[ 'adsense_publisher_id' ] ) && isset( $to_save['adsense_leader_tag_id'] ) )
+				$to_save[ 'adsense_leader_set' ] = 1;
+		}
+
 		return $to_save;
 	}
 
@@ -303,6 +322,15 @@ class AdControl_Admin {
 		);
 
 		add_settings_field(
+			'adcontrol_userdash_publisher_id',
+			__( 'Publisher ID:', 'adcontrol' ),
+			array( &$this, 'setting_publisher_id' ),
+			$this->advanced_settings_key,
+			$section,
+			array( 'label_for' => 'adsense_publisher_id' )
+		);
+
+		add_settings_field(
 			'adcontrol_userdash_adsense_fallback',
 			__( 'Include AdSense fallback?', 'adcontrol' ),
 			array( &$this, 'setting_adsense_fallback' ),
@@ -312,30 +340,48 @@ class AdControl_Admin {
 		);
 
 		add_settings_field(
-			'adcontrol_userdash_publisher_id',
-			__( 'Publisher ID:', 'adcontrol' ),
-			array( &$this, 'setting_publisher_id' ),
-			$this->advanced_settings_key,
-			$section,
-			array( 'label_for' => 'publisher_id' )
-		);
-
-		add_settings_field(
-			'adcontrol_userdash_tag_id',
+			'adcontrol_userdash_fallback_tag_id',
 			__( 'Tag ID:', 'adcontrol' ),
-			array( &$this, 'setting_tag_id' ),
+			array( &$this, 'setting_fallback_tag_id' ),
 			$this->advanced_settings_key,
 			$section,
-			array( 'label_for' => 'tag_id' )
+			array( 'label_for' => 'adsense_fallback_tag_id' )
 		);
 
 		add_settings_field(
-			'adcontrol_userdash_tag_unit',
+			'adcontrol_userdash_fallback_tag_unit',
 			__( 'Tag Dimensions:', 'adcontrol' ),
-			array( &$this, 'setting_tag_unit' ),
+			array( &$this, 'setting_fallback_tag_unit' ),
 			$this->advanced_settings_key,
 			$section,
-			array( 'label_for' => 'tag_unit' )
+			array( 'label_for' => 'adsense_fallback_tag_unit' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_adsense_leader',
+			__( 'Include AdSense leader?', 'adcontrol' ),
+			array( &$this, 'setting_adsense_leader' ),
+			$this->advanced_settings_key,
+			$section,
+			array( 'label_for' => 'adsense_leader' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_leader_tag_id',
+			__( 'Tag ID:', 'adcontrol' ),
+			array( &$this, 'setting_leader_tag_id' ),
+			$this->advanced_settings_key,
+			$section,
+			array( 'label_for' => 'adsense_leader_tag_id' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_leader_tag_unit',
+			__( 'Tag Dimensions:', 'adcontrol' ),
+			array( &$this, 'setting_leader_tag_unit' ),
+			$this->advanced_settings_key,
+			$section,
+			array( 'label_for' => 'adsense_leader_tag_unit' )
 		);
 	}
 
@@ -360,10 +406,27 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function setting_adsense_fallback() {
-		$checked = checked( $this->get_option( 'fallback' ), 1, false );
-		echo '<input id="adsense_fallback" type="checkbox" name="' . $this->advanced_settings_key . '[fallback]" value="1"' . $checked . ' />';
+		$checked = checked( $this->get_option( 'adsense_fallback' ), 1, false );
+		echo '<input id="adsense_fallback" type="checkbox" name="' . $this->advanced_settings_key . '[adsense_fallback]" value="1"' . $checked . ' />';
 	}
 
+	/**
+	 * @since 0.1
+	 */
+	function setting_adsense_leader() {
+		$checked = checked( $this->get_option( 'adsense_leader' ), 1, false );
+		echo '<input id="adsense_leader" type="checkbox" name="' . $this->advanced_settings_key . '[adsense_leader]" value="1"' . $checked . ' />';
+	}
+
+	/**
+	 * @since 0.1
+	 */
+	function setting_publisher_id() {
+		$pid = $this->get_option( 'adsense_publisher_id' );
+		echo "<input type='text' name='" . $this->advanced_settings_key . "[adsense_publisher_id]' value='$pid' /> ";
+		_e( 'e.g. pub-123456789', 'adsense' );
+		echo '<div class="aligncenter" style="width:290px;"><hr /></div>';
+	}
 
 	/**
 	 * @since 0.1
@@ -376,20 +439,20 @@ class AdControl_Admin {
 	/**
 	 * @since 0.1
 	 */
-	function setting_publisher_id() {
-		$pid = $this->get_option( 'publisher_id' );
-		$disabled = disabled( ! $this->get_option( 'fallback' ), true, false );
-		echo "<input class='adsense_opt' $disabled type='text' name='" . $this->advanced_settings_key . "[publisher_id]' value='$pid' /> ";
-		_e( 'e.g. pub-123456789', 'adsense' );
+	function setting_fallback_tag_id() {
+		$tid = $this->get_option( 'adsense_fallback_tag_id' );
+		$disabled = disabled( ! $this->get_option( 'adsense_fallback' ), true, false );
+		echo "<input class='adsense_fallback_opt' $disabled type='text' name='" . ( $this->advanced_settings_key ) . "[adsense_fallback_tag_id]' value='$tid' /> ";
+		_e( 'e.g. 123456789', 'adsense' );
 	}
 
 	/**
 	 * @since 0.1
 	 */
-	function setting_tag_id() {
-		$tid = $this->get_option( 'tag_id' );
-		$disabled = disabled( ! $this->get_option( 'fallback' ), true, false );
-		echo "<input class='adsense_opt' $disabled type='text' name='" . ( $this->advanced_settings_key ) . "[tag_id]' value='$tid' /> ";
+	function setting_leader_tag_id() {
+		$tid = $this->get_option( 'adsense_leader_tag_id' );
+		$disabled = disabled( ! $this->get_option( 'adsense_leader' ), true, false );
+		echo "<input class='adsense_leader_opt' $disabled type='text' name='" . ( $this->advanced_settings_key ) . "[adsense_leader_tag_id]' value='$tid' /> ";
 		_e( 'e.g. 123456789', 'adsense' );
 	}
 
@@ -398,12 +461,32 @@ class AdControl_Admin {
 	 *
 	 * @since 0.1
 	 */
-	function setting_tag_unit() {
-		$tag = $this->get_option( 'tag_unit' );
-		$disabled = disabled( ! $this->get_option( 'fallback' ), true, false );
-		echo '<select class="adsense_opt" ' . $disabled . ' id="tag_unit" name="' . $this->advanced_settings_key . '[tag_unit]">';
+	function setting_fallback_tag_unit() {
+		$tag = $this->get_option( 'adsense_fallback_tag_unit' );
+		$disabled = disabled( ! $this->get_option( 'adsense_fallback' ), true, false );
+		echo '<select class="adsense_fallback_opt" ' . $disabled . ' id="adsense_fallback_tag_unit" name="' . $this->advanced_settings_key . '[adsense_fallback_tag_unit]">';
 		foreach ( AdControl::$ad_tag_ids as $unit => $properties ) {
 			if ( 'mrec' != $unit ) // TODO only want mrec for now
+				continue;
+
+			$selected = selected( $unit, $tag, false );
+			echo "<option value='$unit' $selected>{$properties['tag']}</option>";
+		}
+		echo '</select>';
+		echo '<div class="aligncenter" style="width:290px;"><hr /></div>';
+	}
+
+	/**
+	 * Callback for units option
+	 *
+	 * @since 0.1
+	 */
+	function setting_leader_tag_unit() {
+		$tag = $this->get_option( 'adsense_leader_tag_unit' );
+		$disabled = disabled( ! $this->get_option( 'adsense_leader' ), true, false );
+		echo '<select class="adsense_leader_opt" ' . $disabled . ' id="adsense_leader_tag_unit" name="' . $this->advanced_settings_key . '[adsense_leader_tag_unit]">';
+		foreach ( AdControl::$ad_tag_ids as $unit => $properties ) {
+			if ( 'leaderboard' != $unit ) // TODO only want leader for now
 				continue;
 
 			$selected = selected( $unit, $tag, false );
