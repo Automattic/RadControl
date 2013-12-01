@@ -91,33 +91,33 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'adsense_publisher_id' ) ); ?>"><?php _e( 'Publisher ID:', 'adcontrol' ); ?></label>
-			<?php
+		<?php
 			if ( ! empty( $instance['error_pid'] ) )
-				echo "<br /><small style='color:red;'>{$instance['error_pid']}</small>";
-			?>
+				echo "<br /><small style='color:red;'>", esc_html( $instance['error_pid'] ) ,'</small>';
+		?>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'adsense_publisher_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'adsense_publisher_id' ) ); ?>" type="text" value="<?php echo esc_attr( $pid ); ?>" />
 			<small>e.g. pub-123456789</small>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'tag_id' ) ); ?>"><?php _e( 'Tag ID:', 'adcontrol' ); ?></label>
-			<?php
+		<?php
 			if ( ! empty( $instance['error_tid'] ) )
 				echo "<br /><small style='color:red;'>", esc_html( $instance['error_tid'] ), '</small>';
-			?>
+		?>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'tag_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'tag_id' ) ); ?>" type="text" value="<?php echo esc_attr( $tid ); ?>" />
 			<small>e.g. 123456789</small>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'unit' ) ); ?>"><?php _e( 'Tag Dimensions:', 'adcontrol' ); ?></label>
 			<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'unit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'unit' ) ); ?>">
-			<?php
-			foreach ( AdControl::$ad_tag_ids as $ad_unit => $properties ) {
+		<?php
+		foreach ( AdControl::$ad_tag_ids as $ad_unit => $properties ) {
 				if ( ! in_array( $ad_unit, self::$allowed_tags ) )
 					continue;
 				$selected = selected( $ad_unit, $unit, false );
 				echo "<option value='", esc_attr( $ad_unit ) ,"' ", esc_attr( $selected ) , '>', esc_html( $properties['tag'] ) , '</option>';
 			}
-			?>
+		?>
 			</select>
 		</p>
 		<?php
