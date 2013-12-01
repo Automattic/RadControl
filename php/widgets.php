@@ -45,16 +45,16 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 			return false;
 
 		require_once( ADCONTROL_ROOT . '/php/adsense.php' );
+		$about = __( 'About these ads', 'adcontrol' );
 		$pub = $instance['adsense_publisher_id'];
 		$tag = $instance['tag_id'];
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
 		$snippet = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
-		// TODO: translate About these ads
 		echo '
 		<div class="wpcnt">
 			<div class="wpa">
-				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
+				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">', esc_html( $about ) ,'</a>
 				<div class="u ' . esc_attr( $instance['unit'] ) . '">
 					',$snippet,'
 				</div>
