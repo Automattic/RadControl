@@ -22,14 +22,14 @@ class AdControl_Skimlinks {
 		$sitename = '58pfl9955.wordpress.com'; // default sitename
 		$tracking = $this->params->blog_id;
 
-		echo <<<HTML
+		echo '
 		<script type="text/javascript">
-			var skimlinks_pub_id = "$pub_id"
-			var skimlinks_sitename = "$sitename";
-			var skimlinks_tracking = "$tracking";
+			var skimlinks_pub_id = "' , esc_js( $pub_id ) ,'"
+			var skimlinks_sitename = "' , esc_js( $sitename ) ,'";
+			var skimlinks_tracking = "' , esc_js( $tracking ) ,'";
 		</script>
 		<script type="text/javascript" src="http://s.skimresources.com/js/725X1342.skimlinks.js"></script>
-HTML;
+';
 
 	}
 }
