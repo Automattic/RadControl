@@ -210,6 +210,9 @@ class AdControl_Admin {
 				$to_save[ 'adsense_leader_set' ] = 1;
 		}
 
+		if ( ! empty( $settings['amazon_match_buy'] ) ) {
+			$to_save['amazon_match_buy'] = absint( $settings['amazon_match_buy'] );
+
 		return $to_save;
 	}
 
@@ -383,6 +386,25 @@ class AdControl_Admin {
 			$section,
 			array( 'label_for' => 'adsense_leader_tag_unit' )
 		);
+
+		$section = 'adcontrol_amazon_match_buy_settings';
+		// AdSense section
+		add_settings_section(
+			$section,
+			__( 'Amazon Matchbuy', 'adcontrol' ),
+			'__return_null',
+			$this->advanced_settings_key
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_amazon_match_buy',
+			__( 'Include AdSense fallback?', 'adcontrol' ),
+			array( &$this, 'setting_amazon_match_buy' ),
+			$this->advanced_settings_key,
+			$section,
+			array( 'label_for' => 'amazon_match_buy' )
+		);
+
 	}
 
 	/**
@@ -416,6 +438,14 @@ class AdControl_Admin {
 	function setting_adsense_leader() {
 		$checked = checked( $this->get_option( 'adsense_leader' ), 1, false );
 		echo '<input id="adsense_leader" type="checkbox" name="' . $this->advanced_settings_key . '[adsense_leader]" value="1"' . $checked . ' />';
+	}
+
+	/**
+	 * @since 0.1
+	 */
+	function setting_amazon_match_buy() {
+		$checked = checked( $this->get_option( 'amazon_match_buy' ), 1, false );
+		echo '<input id="amazon_match_buy" type="checkbox" name="' . $this->advanced_settings_key . '[amazon_match_buy]" value="1"' . $checked . ' />';
 	}
 
 	/**

@@ -282,28 +282,44 @@ HTML;
 		$about = __( 'About these ads', 'adcontrol' );
 		$dfp_id = ADCONTROL_DFP_ID;
 
-		echo <<<HTML
+		echo '
 		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
 		<script type="text/javascript">
-			GS_googleAddAdSenseService("ca-pub-$dfp_id");
+			GS_googleAddAdSenseService("ca-pub-', esc_js( $dfp_id ) ,'");
 			GS_googleEnableAllServices();
+		</script>';
+		if ( ! empty( $this->params->options['amazon_match_buy'] ) ) {
+			echo '
+			<script type="text/javascript" src="http://c.amazon-adsystem.com/aax2/amzn_ads.js"></script>
+			<script type="text/javascript">
+					try {
+							amznads.getAds("3033");
+					} catch(e) { /* ignore */ }
+			</script>
+			<script type="text/javascript">
+			var amznKeys = amznads.getKeys();
+			if (typeof amznKeys != "undefined" && amznKeys != "") { for (var i =0; i < amznKeys.length; i++) { var key = amznKeys[i]; GA_googleAddAttr("amzn", key);} }
+			document.close();
+			</script>
+';
+		}
+		echo '
+		<script type="text/javascript">
+			',$this->params->get_dfp_targetting(),'
 		</script>
 		<script type="text/javascript">
-			{$this->params->get_dfp_targetting()}
+			',$this->get_googleaddslots(),'
 		</script>
 		<script type="text/javascript">
-			{$this->get_googleaddslots()}
-		</script>
-		<script type="text/javascript">
-			GA_googleAddAdSensePageAttr("google_page_url", "{$this->params->url}");
+			GA_googleAddAdSensePageAttr("google_page_url", "', esc_js( $this->params->url ) ,'");
 			GA_googleFetchAds();
 		</script>
 		<script type="text/javascript">
 		jQuery( window ).load( function() {
-			jQuery( "a.wpadvert-about" ).text( "$about" );
+			jQuery( "a.wpadvert-about" ).text( "', esc_js( $about ) ,'" );
 		} );
 		</script>
-HTML;
+';
 	}
 
 	/**
