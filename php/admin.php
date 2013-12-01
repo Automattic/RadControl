@@ -399,7 +399,7 @@ class AdControl_Admin {
 
 		add_settings_field(
 			'adcontrol_userdash_amazon_match_buy',
-			__( 'Include AdSense fallback?', 'adcontrol' ),
+			__( 'Include Amazon Matchbuy?', 'adcontrol' ),
 			array( &$this, 'setting_amazon_match_buy' ),
 			$this->advanced_settings_key,
 			$section,
