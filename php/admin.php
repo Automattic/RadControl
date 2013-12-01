@@ -212,6 +212,7 @@ class AdControl_Admin {
 
 		if ( ! empty( $settings['amazon_match_buy'] ) ) {
 			$to_save['amazon_match_buy'] = absint( $settings['amazon_match_buy'] );
+		}
 
 		return $to_save;
 	}
