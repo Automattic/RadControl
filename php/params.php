@@ -40,11 +40,11 @@ class AdControl_Params {
 	 *
 	 * @since 0.1
 	 */
-	public function add_slot( $slotname, $name, $width, $height, $id ) {
+	public function add_slot( $slotname, $name, $width, $height, $slot_id ) {
 		$this->dfp_slots[$slotname . '.name'] = $name;
 		$this->dfp_slots[$slotname . '.width'] = $width;
 		$this->dfp_slots[$slotname . '.height'] = $height;
-		$this->dfp_slots[$slotname . '.id'] = $id;
+		$this->dfp_slots[$slotname . '.id'] = $slot_id;
 	}
 
 	/**
