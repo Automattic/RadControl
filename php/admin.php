@@ -442,7 +442,7 @@ class AdControl_Admin {
 	function setting_fallback_tag_id() {
 		$tid = $this->get_option( 'adsense_fallback_tag_id' );
 		$disabled = disabled( ! $this->get_option( 'adsense_fallback' ), true, false );
-		echo "<input class='adsense_fallback_opt' $disabled type='text' name='" . ( $this->advanced_settings_key ) . "[adsense_fallback_tag_id]' value='$tid' /> ";
+		echo "<input class='adsense_fallback_opt' ", esc_attr( $disabled ) ,"type='text' name='" , esc_attr( $this->advanced_settings_key ) , "[adsense_fallback_tag_id]' value='" , esc_attr( $tid ), "' /> ";
 		_e( 'e.g. 123456789', 'adsense' );
 	}
 
@@ -452,7 +452,7 @@ class AdControl_Admin {
 	function setting_leader_tag_id() {
 		$tid = $this->get_option( 'adsense_leader_tag_id' );
 		$disabled = disabled( ! $this->get_option( 'adsense_leader' ), true, false );
-		echo "<input class='adsense_leader_opt' $disabled type='text' name='" . ( $this->advanced_settings_key ) . "[adsense_leader_tag_id]' value='$tid' /> ";
+		echo "<input class='adsense_leader_opt' ", esc_attr( $disabled ), " type='text' name='" , esc_attr( $this->advanced_settings_key ) , "[adsense_leader_tag_id]' value='" , esc_attr( $tid ), "' /> ";
 		_e( 'e.g. 123456789', 'adsense' );
 	}
 
@@ -470,7 +470,7 @@ class AdControl_Admin {
 				continue;
 
 			$selected = selected( $unit, $tag, false );
-			echo "<option value='$unit' $selected>{$properties['tag']}</option>";
+			echo "<option value='", esc_attr( $unit ) , "' ", esc_attr( $selected ) , '>', esc_html( $properties['tag'] ) , '</option>';
 		}
 		echo '</select>';
 		echo '<div class="aligncenter" style="width:290px;"><hr /></div>';
@@ -490,7 +490,7 @@ class AdControl_Admin {
 				continue;
 
 			$selected = selected( $unit, $tag, false );
-			echo "<option value='$unit' $selected>{$properties['tag']}</option>";
+			echo "<option value='", esc_attr( $unit ) , "' ", esc_attr( $selected ) , '>', esc_html( $properties['tag'] ) , '</option>';
 		}
 		echo '</select>';
 	}
