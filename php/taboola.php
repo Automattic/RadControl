@@ -61,7 +61,7 @@ class AdControl_Taboola {
 		if ( AdControl::is_infinite_scroll() )
 			return;
 
-		echo self::get_taboola_insert();
+		self::get_taboola_insert();
 	}
 
 	/**
@@ -82,12 +82,12 @@ class AdControl_Taboola {
 	 */
 	public static function get_taboola_insert() {
 		$page_type = is_single() ? 'article' : 'home';
-		return '
+		echo '
 		<div id="taboola-div"></div>
 		<script type="text/javascript">
 		//<![CDATA[
 			window._taboola = window._taboola || [];
-			_taboola.push({' . $page_type . ':"auto"});
+			_taboola.push({', esc_js( $page_type ) , ':"auto"});
 			_taboola.push({mode:"grid-3x2", container:"taboola-div"});
 		//]]>
 		</script>
