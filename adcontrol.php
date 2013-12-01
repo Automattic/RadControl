@@ -7,6 +7,7 @@ Description: Harness the power of WordPress.com's advertising partners for your 
 Author: Automattic
 Version: 0.1-beta
 Author URI: http://automattic.com
+Text Domain: adcontrol
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
 
