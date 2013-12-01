@@ -15,6 +15,7 @@ class AdControl_Admin {
 		'adsense_fallback_tag_unit',
 		'adsense_leader_tag_id',
 		'adsense_leader_tag_unit',
+		'amazon_match_buy',
 		'enable_advanced_settings',
 	);
 	private $active_tab = 'adcontrol_settings';
@@ -389,7 +390,7 @@ class AdControl_Admin {
 		);
 
 		$section = 'adcontrol_amazon_match_buy_settings';
-		// AdSense section
+		// Amazon section
 		add_settings_section(
 			$section,
 			__( 'Amazon Matchbuy', 'adcontrol' ),
