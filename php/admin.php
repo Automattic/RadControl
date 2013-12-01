@@ -400,7 +400,7 @@ class AdControl_Admin {
 
 		add_settings_field(
 			'adcontrol_userdash_amazon_match_buy',
-			__( 'Include Amazon Matchbuy?', 'adcontrol' ),
+			__( 'Enable Amazon Matchbuy?', 'adcontrol' ),
 			array( &$this, 'setting_amazon_match_buy' ),
 			$this->advanced_settings_key,
 			$section,
@@ -448,6 +448,7 @@ class AdControl_Admin {
 	function setting_amazon_match_buy() {
 		$checked = checked( $this->get_option( 'amazon_match_buy' ), 1, false );
 		echo '<input id="amazon_match_buy" type="checkbox" name="' . $this->advanced_settings_key . '[amazon_match_buy]" value="1"' . $checked . ' />';
+		_e( 'Site needs to be approved by Amazon', 'adcontrol' );
 	}
 
 	/**
