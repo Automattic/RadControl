@@ -9,20 +9,20 @@ class AdControl_Adsense {
 	 */
 	public static function get_synchronous_adsense( $pub, $tag, $width, $height, $url = '' ) {
 		if ( ! empty( $url ) )
-			$url = 'google_page_url = "' . esc_js( $url ) . '";';
+			$url = 'google_page_url = "' . esc_url( $url ) . '";';
 
-		return <<<HTML
+		$output = '
 		<script type="text/javascript">
 		<!--
-		google_ad_client = "ca-$pub";
-		google_ad_slot = "$tag";
-		google_ad_width = $width;
-		google_ad_height = $height;
+		google_ad_client = "ca-' . esc_attr( $pub ) . '";
+		google_ad_slot = "' . esc_attr( $tag ) . '";
+		google_ad_width = ' . absint( $width ) . ';
+		google_ad_height = ' . absint( $height ) . ';
 		$url
 		//-->
 		</script>
-		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-HTML;
+		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
+		return $output;
 	}
 
 	/**
