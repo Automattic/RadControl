@@ -40,10 +40,10 @@ class AdControl_Admin {
 		$this->options = get_option( $this->basic_settings_key, array() );
 		$this->options_advanced = get_option( $this->advanced_settings_key, array() );
 		$this->status = 'active'; // TODO
-		add_action( 'admin_menu', array( &$this, 'admin_menu' ), 11 );
-		add_action( 'admin_init', array( &$this, 'register_settings' ) );
-		add_action( 'admin_init', array( &$this, 'register_advanced_settings' ) );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_scripts' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ), 11 );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_init', array( $this, 'register_advanced_settings' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 	}
 
 	/**
@@ -227,7 +227,7 @@ class AdControl_Admin {
 			'AdControl',
 			'manage_options',
 			$this->plugin_options_key,
-			array( &$this, 'userdash_show_page' )
+			array( $this, 'userdash_show_page' )
 		);
 
 		$tab = ( isset( $_GET['page'] ) && array_key_exists( $_GET['page'], $this->tabs ) ? $_GET['page'] : '' );
@@ -242,7 +242,7 @@ class AdControl_Admin {
 		register_setting(
 			$this->basic_settings_key,
 			$this->basic_settings_key,
-			array( &$this, 'validate_settings' )
+			array( $this, 'validate_settings' )
 		);
 
 		$this->init_settings();
@@ -256,7 +256,7 @@ class AdControl_Admin {
 		register_setting(
 			$this->advanced_settings_key,
 			$this->advanced_settings_key,
-			array( &$this, 'validate_advanced_settings' )
+			array( $this, 'validate_advanced_settings' )
 		);
 
 		$this->init_advanced_settings();
@@ -278,7 +278,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_show_to_logged_in_id',
 			__( 'Show ads to:', 'adcontrol' ),
-			array( &$this, 'setting_show_to_logged_in' ),
+			array( $this, 'setting_show_to_logged_in' ),
 			$this->basic_settings_key,
 			$section_name,
 			array( 'label_for' => 'radio_show_to_logged_in' )
@@ -288,7 +288,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_enable_advanced_settings',
 			__( 'Enable Advanced Settings:', 'adcontrol' ),
-			array( &$this, 'setting_enable_advanced_settings' ),
+			array( $this, 'setting_enable_advanced_settings' ),
 			$this->basic_settings_key,
 			$section_name,
 			array( 'label_for' => 'enable_advanced_settings' )
@@ -306,7 +306,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_tos_id',
 			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service', 'adcontrol' ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">' ) . '</a>',
-			array( &$this, 'setting_tos' ),
+			array( $this, 'setting_tos' ),
 			$this->basic_settings_key,
 			$section_name,
 			array( 'label_for' => 'chk_agreement' )
@@ -329,7 +329,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_publisher_id',
 			__( 'Publisher ID:', 'adcontrol' ),
-			array( &$this, 'setting_publisher_id' ),
+			array( $this, 'setting_publisher_id' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_publisher_id' )
@@ -338,7 +338,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_adsense_fallback',
 			__( 'Include AdSense fallback?', 'adcontrol' ),
-			array( &$this, 'setting_adsense_fallback' ),
+			array( $this, 'setting_adsense_fallback' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_fallback' )
@@ -347,7 +347,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_fallback_tag_id',
 			__( 'Tag ID:', 'adcontrol' ),
-			array( &$this, 'setting_fallback_tag_id' ),
+			array( $this, 'setting_fallback_tag_id' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_fallback_tag_id' )
@@ -356,7 +356,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_fallback_tag_unit',
 			__( 'Tag Dimensions:', 'adcontrol' ),
-			array( &$this, 'setting_fallback_tag_unit' ),
+			array( $this, 'setting_fallback_tag_unit' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_fallback_tag_unit' )
@@ -365,7 +365,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_adsense_leader',
 			__( 'Include AdSense leader?', 'adcontrol' ),
-			array( &$this, 'setting_adsense_leader' ),
+			array( $this, 'setting_adsense_leader' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_leader' )
@@ -374,7 +374,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_leader_tag_id',
 			__( 'Tag ID:', 'adcontrol' ),
-			array( &$this, 'setting_leader_tag_id' ),
+			array( $this, 'setting_leader_tag_id' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_leader_tag_id' )
@@ -383,7 +383,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_leader_tag_unit',
 			__( 'Tag Dimensions:', 'adcontrol' ),
-			array( &$this, 'setting_leader_tag_unit' ),
+			array( $this, 'setting_leader_tag_unit' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'adsense_leader_tag_unit' )
@@ -401,7 +401,7 @@ class AdControl_Admin {
 		add_settings_field(
 			'adcontrol_userdash_amazon_match_buy',
 			__( 'Enable Amazon Matchbuy?', 'adcontrol' ),
-			array( &$this, 'setting_amazon_match_buy' ),
+			array( $this, 'setting_amazon_match_buy' ),
 			$this->advanced_settings_key,
 			$section,
 			array( 'label_for' => 'amazon_match_buy' )

@@ -89,7 +89,7 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function __construct() {
-		add_action( 'init', array( &$this, 'init' ) );
+		add_action( 'init', array( $this, 'init' ) );
 	}
 
 	/**
@@ -156,19 +156,19 @@ class AdControl {
 	private function insert_adcode() {
 		// check for mobile, then insert ads
 		if ( $this->params->is_mobile() ) {
-			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_mobile_scripts' ) );
-			add_filter( 'the_content', array( &$this, 'insert_mobile_ad' ) );
-			add_filter( 'the_excerpt', array( &$this, 'insert_mobile_ad' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
+			add_filter( 'the_content', array( $this, 'insert_mobile_ad' ) );
+			add_filter( 'the_excerpt', array( $this, 'insert_mobile_ad' ) );
 		} else {
 			// TODO check adsafe
 			$this->params->add_slot( 'belowpost', 'Adcontrol_4_org_300', 400, 267, 3443918307802676 );
-			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
-			add_filter( 'the_content', array( &$this, 'insert_ad' ) );
-			add_filter( 'the_excerpt', array( &$this, 'insert_ad' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_filter( 'the_content', array( $this, 'insert_ad' ) );
+			add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
 			if ( ! empty( $this->params->options['adsense_leader_set'] )
 					&& ! empty( $this->params->options['enable_advanced_settings'] ) ) {
-				add_action( 'wp_head', array( &$this, 'insert_header_ad' ), 100 );
+				add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
 			}
 		}
 	}
@@ -209,8 +209,8 @@ class AdControl {
 		);
 		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
 
-		add_action( 'wp_head', array( &$this, 'insert_head_adcontrol' ) );
-		add_action( 'wp_head', array( &$this, 'insert_head_gam' ) ); // TODO still GAM?
+		add_action( 'wp_head', array( $this, 'insert_head_adcontrol' ) );
+		add_action( 'wp_head', array( $this, 'insert_head_gam' ) ); // TODO still GAM?
 
 		// CSS
 		wp_enqueue_style(

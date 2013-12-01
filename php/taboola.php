@@ -33,10 +33,10 @@ class AdControl_Taboola {
 	public function init() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		if ( 'belowpost' == $this->location ) {
-			add_filter( 'the_content', array( &$this, 'insert_taboola_belowpost' ) );
-			add_filter( 'the_excerpt', array( &$this, 'insert_taboola_belowpost' ) );
+			add_filter( 'the_content', array( $this, 'insert_taboola_belowpost' ) );
+			add_filter( 'the_excerpt', array( $this, 'insert_taboola_belowpost' ) );
 		} else {
-			add_action( 'loop_end', array( &$this, 'insert_taboola_footer' ) );
+			add_action( 'loop_end', array( $this, 'insert_taboola_footer' ) );
 		}
 	}
 

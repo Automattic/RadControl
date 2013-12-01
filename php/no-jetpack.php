@@ -11,7 +11,7 @@ class AdControl_No_Jetpack {
 	 * @since 0.1
 	 */
 	function __construct() {
-		add_action( 'admin_menu', array( &$this, 'add_options_page' ) );
+		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
 	}
 
 	/**
@@ -25,7 +25,7 @@ class AdControl_No_Jetpack {
 			'AdControl',
 			'manage_options',
 			'adcontrol',
-			array( &$this, 'options_page' )
+			array( $this, 'options_page' )
 		);
 	}
 

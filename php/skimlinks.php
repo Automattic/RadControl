@@ -14,7 +14,7 @@ class AdControl_Skimlinks {
 
 	public function __construct( $params ) {
 		$this->params = $params;
-		add_action( 'wp_footer', array( &$this, 'skimlinks_footer_js' ) );
+		add_action( 'wp_footer', array( $this, 'skimlinks_footer_js' ) );
 	}
 
 	function skimlinks_footer_js() {
