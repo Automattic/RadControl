@@ -4,6 +4,7 @@
  * Widget for inserting an ad into your sidebar
  *
  * @since 0.1
+ * TODO: sanitize all the output
  */
 class AdControl_Sidebar_Widget extends WP_Widget {
 
@@ -49,24 +50,24 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
 		$snippet = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
-
-		echo <<<HTML
+		// TODO: translate About these ads
+		echo '
 		<div class="wpcnt">
 			<div class="wpa">
 				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
-				<div class="u {$instance['unit']}">
-					$snippet
+				<div class="u ' . esc_attr( $instance['unit'] ) . '">
+					',$snippet,'
 				</div>
 			</div>
 		</div>
-HTML;
+';
 	}
 
 	public function form( $instance ) {
 		if ( ! $this->option( 'enable_advanced_settings' ) ) {
 			$url = admin_url( 'options-general.php?page=adcontrol' );
 			$msg = __( 'Enable advanced settings to activate.', 'adcontrol' );
-			echo "<p><a href='$url' target='_blank'>$msg</a></p>";
+			echo "<p><a href='" , esc_url( $url ) ,"' target='_blank'>" . esc_html( $msg ) . '</a></p>';
 			return;
 		}
 
