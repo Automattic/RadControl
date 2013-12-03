@@ -133,7 +133,7 @@ class AdControl {
 			return; // Not support mobile ads over SSL at the moment
 
 		$this->insert_adcode();
-		$this->insert_extras(); // TODO configure extras to show always if desired
+		// $this->insert_extras(); // TODO configure extras to show always if desired
 	}
 
 	/**
