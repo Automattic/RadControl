@@ -23,7 +23,7 @@ class AdControl_Ajax {
 			$unit = $options['adsense_fallback_tag_unit'];
 			$width = AdControl::$ad_tag_ids[$unit]['width'];
 			$height = AdControl::$ad_tag_ids[$unit]['height'];
-			$url = isset( $_GET['url'] ) ? esc_url( $_GET['url'] ) : home_url();
+			$url = isset( $_GET['url'] ) ? $_GET['url'] : home_url();
 			echo AdControl_Adsense::get_synchronous_adsense(
 				$pub,
 				$tag,

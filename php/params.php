@@ -71,7 +71,7 @@ class AdControl_Params {
 				$tag_attrs .= $fn . "( 'Tag', " . json_encode( $tags_and_cats ) . " );\n";
 			} else {
 				foreach ( $tags_and_cats as $cat ) {
-					$tag_attrs .= $fn . "( 'Tag', '" . strtolower( $cat ) . "' )\n";
+					$tag_attrs .= $fn . "( 'Tag', '" . esc_js( strtolower( $cat ) ) . "' )\n";
 				}
 			}
 		}
