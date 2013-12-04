@@ -269,7 +269,7 @@ class AdControl {
 
 		echo <<<HTML
 		<script type="text/javascript">
-		var wpcom_ads = { bid: {$this->params->blog_id}, pt: '$part', ac: 1, domain: '$domain', url: '$current_page_url', };
+		var wpcom_ads = { bid: '{$this->params->blog_id}', pt: '$part', ac: 1, domain: '$domain', url: '$current_page_url', };
 		</script>
 HTML;
 	}
