@@ -161,7 +161,7 @@ class AdControl {
 			add_filter( 'the_excerpt', array( $this, 'insert_mobile_ad' ) );
 		} else {
 			// TODO check adsafe
-			$this->params->add_slot( 'belowpost', 'Adcontrol_4_org_300', 400, 267, 3443918307802676 );
+			$this->params->add_slot( 'belowpost', 'Adcontrol_4_org_300', 400, 267, '3443918307802676' );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( $this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
@@ -281,12 +281,10 @@ HTML;
 	 */
 	function insert_head_gam() {
 		$about = __( 'About these ads', 'adcontrol' );
-		$dfp_id = ADCONTROL_DFP_ID;
-
 		echo '
 		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
 		<script type="text/javascript">
-			GS_googleAddAdSenseService("ca-pub-', esc_js( $dfp_id ) ,'");
+			GS_googleAddAdSenseService("ca-pub-', ADCONTROL_DFP_ID ,'");
 			GS_googleEnableAllServices();
 		</script>';
 		if ( ! empty( $this->params->options['amazon_match_buy'] ) ) {
