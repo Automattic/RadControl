@@ -44,7 +44,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 		if ( empty( $instance['all_set'] ) || ! $this->option( 'enable_advanced_settings' ) )
 			return false;
 
-		require_once( ADCONTROL_ROOT . '/php/adsense.php' );
+		require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
 		$about = __( 'About these ads', 'adcontrol' );
 		$pub = $instance['adsense_publisher_id'];
 		$tag = $instance['tag_id'];

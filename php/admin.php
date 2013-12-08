@@ -7,6 +7,8 @@ class AdControl_Admin {
 
 	private $valid_settings = array(
 		'show_to_logged_in',
+		'show_on_frontpage',
+		'show_on_ssl',
 		'tos',
 		'adsense_publisher_id',
 		'adsense_fallback',

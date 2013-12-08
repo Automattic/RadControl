@@ -179,13 +179,13 @@ class AdControl {
 	 * @since 0.1
 	 */
 	private function insert_extras() {
-		require_once( ADCONTROL_ROOT . '/php/taboola.php' );
+		require_once( ADCONTROL_ROOT . '/php/networks/taboola.php' );
 		new AdControl_Taboola( $this->params );
 
-		require_once( ADCONTROL_ROOT . '/php/coull.php' );
+		require_once( ADCONTROL_ROOT . '/php/networks/coull.php' );
 		new AdControl_Coull( $this->params );
 
-		require_once( ADCONTROL_ROOT . '/php/skimlinks.php' );
+		require_once( ADCONTROL_ROOT . '/php/networks/skimlinks.php' );
 		new AdControl_Skimlinks( $this->params );
 	}
 
@@ -250,7 +250,7 @@ class AdControl {
 
 		wp_enqueue_script(
 			'mopub',
-			'http://ads.mopub.com/js/client/mopub.js',
+			'//ads.mopub.com/js/client/mopub.js',
 			array(),
 			false,
 			true
@@ -288,19 +288,7 @@ HTML;
 			GS_googleEnableAllServices();
 		</script>';
 		if ( ! empty( $this->params->options['amazon_match_buy'] ) ) {
-			echo '
-		<script type="text/javascript" src="http://c.amazon-adsystem.com/aax2/amzn_ads.js"></script>
-		<script type="text/javascript">
-		try {
-				amznads.getAds("3033");
-		} catch(e) { /* ignore */ }
-		</script>
-		<script type="text/javascript">
-		var amznKeys = amznads.getKeys();
-		if (typeof amznKeys != "undefined" && amznKeys != "") { for (var i =0; i < amznKeys.length; i++) { var key = amznKeys[i]; GA_googleAddAttr("amzn", key);} }
-		document.close();
-		</script>
-';
+			require_once( ADCONTROL_ROOT . '/php/networks/amazon.php' );
 		}
 		echo '
 		<script type="text/javascript">
