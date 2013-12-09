@@ -392,7 +392,7 @@ HTML;
 		if ( 'dfp' == $type ) {
 			$snippet = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots[$spot . '.name'] . '");</script>';
 		} elseif ( 'adsense' == $type ) {
-			require_once( ADCONTROL_ROOT . '/php/adsense.php' );
+			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
 			if ( 'top' == $spot )
 				$spot = 'leader';
 

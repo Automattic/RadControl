@@ -17,7 +17,7 @@ class AdControl_Ajax {
 		);
 
 		if ( $options['adsense_fallback_set'] ) {
-			require_once( ADCONTROL_ROOT . '/php/adsense.php' );
+			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
 			$pub = $options['adsense_publisher_id'];
 			$tag = $options['adsense_fallback_tag_id'];
 			$unit = $options['adsense_fallback_tag_unit'];
