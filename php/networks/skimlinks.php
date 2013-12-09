@@ -28,7 +28,7 @@ class AdControl_Skimlinks {
 			var skimlinks_sitename = "' , esc_js( $sitename ) ,'";
 			var skimlinks_tracking = "' , esc_js( $tracking ) ,'";
 		</script>
-		<script type="text/javascript" src="http://s.skimresources.com/js/725X1342.skimlinks.js"></script>
+		<script type="text/javascript" src="//s.skimresources.com/js/725X1342.skimlinks.js"></script>
 ';
 
 	}
