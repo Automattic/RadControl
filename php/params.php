@@ -136,7 +136,7 @@ class AdControl_Params {
 		if ( ! empty( $this->mobile_device ) )
 			return $this->mobile_device;
 
-		if ( $agent_info::is_ipad() )
+		if ( $agent_info->is_ipad() )
 			return 'ipad';
 
 		return 'desktop';
