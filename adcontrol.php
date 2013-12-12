@@ -337,7 +337,7 @@ HTML;
 		if ( ! $this->params->should_show() )
 			return $content;
 
-		return $content . $this->get_ad( 'belowpost');
+		return $content . $this->get_ad( 'belowpost' );
 	}
 
 	/**
