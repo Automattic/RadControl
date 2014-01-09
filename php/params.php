@@ -80,6 +80,24 @@ class AdControl_Params {
 	}
 
 	/**
+	 * Returns the targeting tags in a .js array
+	 *
+	 * @since 0.1
+	 */
+	public function get_ad_targeting_details() {
+		$details = '';
+		foreach ( $this->targeting_tags as $k => $v ) {
+			$details .= "$k: '$v', ";
+		}
+
+		return <<<HTML
+		<script type="text/javascript">
+		var adcontrol_params = {{$details}};
+		</script>
+HTML;
+	}
+
+	/**
 	 * Convenience function to collect tags and categories of current page
 	 *
 	 * @since 0.1
