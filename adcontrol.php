@@ -155,6 +155,7 @@ class AdControl {
 	 */
 	private function insert_adcode() {
 		// check for mobile, then insert ads
+		add_action( 'wp_head', array( $this, 'insert_targeting_details' ) );
 		if ( $this->params->is_mobile() ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
 			add_filter( 'the_content', array( $this, 'insert_mobile_ad' ) );
@@ -187,6 +188,13 @@ class AdControl {
 
 		require_once( ADCONTROL_ROOT . '/php/networks/skimlinks.php' );
 		new AdControl_Skimlinks( $this->params );
+	}
+
+	/**
+	 * Inserts ad targeting details for use by external scripts
+	 */
+	function insert_targeting_details() {
+		echo $this->params->get_ad_targeting_details();
 	}
 
 	/**
@@ -247,14 +255,6 @@ class AdControl {
 			'slot'  => 'belowpost', // TODO add other slots?
 		);
 		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
-
-		wp_enqueue_script(
-			'mopub',
-			'//ads.mopub.com/js/client/mopub.js',
-			array(),
-			false,
-			true
-		);
 	}
 
 	/**
@@ -422,7 +422,7 @@ HTML;
 	 *
 	 * @since 0.1
 	 */
-	private static function check_jetpack() {
+	public static function check_jetpack() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if ( ! is_plugin_active( 'jetpack/jetpack.php' ) || ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
 			if ( is_admin() )
