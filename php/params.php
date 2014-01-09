@@ -27,6 +27,12 @@ class AdControl_Params {
 			'LangId'     => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
 			'AdSense'    => empty( $this->options['adsense_fallback_set'] ) ? 0 : 1,
 		);
+
+		if ( isset( $_COOKIE['grvinsights'] ) && 32 == strlen( $_COOKIE['grvinsights'] ) ) {
+			$gid = preg_replace( '/[^a-z0-9]/i', '', $_COOKIE['grvinsights'] );
+			$this->targeting_tags['GravityId'] = $gid;
+		}
+
 		$this->dfp_slots = array();
 	}
 
