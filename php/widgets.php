@@ -41,6 +41,9 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 	}
 
 	public function widget( $args, $instance ) {
+		if ( ! AdControl::check_jetpack() || ac_is_mobile() )
+			return false;
+
 		if ( empty( $instance['all_set'] ) || ! $this->option( 'enable_advanced_settings' ) )
 			return false;
 
