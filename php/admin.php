@@ -234,8 +234,6 @@ class AdControl_Admin {
 		);
 
 		$tab = ( isset( $_GET['page'] ) && array_key_exists( $_GET['page'], $this->tabs ) ? $_GET['page'] : '' );
-		if ( ! empty ( $tab ) )
-			$submenu_file = 'adcontrol';
 	}
 
 	/**
