@@ -182,9 +182,6 @@ class AdControl {
 		require_once( ADCONTROL_ROOT . '/php/networks/taboola.php' );
 		new AdControl_Taboola( $this->params );
 
-		require_once( ADCONTROL_ROOT . '/php/networks/coull.php' );
-		new AdControl_Coull( $this->params );
-
 		require_once( ADCONTROL_ROOT . '/php/networks/skimlinks.php' );
 		new AdControl_Skimlinks( $this->params );
 	}
