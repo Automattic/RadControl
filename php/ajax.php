@@ -25,11 +25,7 @@ class AdControl_Ajax {
 			$height = AdControl::$ad_tag_ids[$unit]['height'];
 			$url = isset( $_GET['url'] ) ? $_GET['url'] : home_url();
 			echo AdControl_Adsense::get_synchronous_adsense(
-				$pub,
-				$tag,
-				$width,
-				$height,
-				$url
+				$pub, $tag, $width, $height, $url
 			);
 		} else {
 			echo ' ';
