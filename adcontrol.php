@@ -2,8 +2,8 @@
 
 /*
 Plugin Name: AdControl for WordPress
-Plugin URI: http://automattic.com
-Description: Harness the power of WordPress.com's advertising partners for your own blog.
+Plugin URI: http://wordads.co/contact/
+Description: Simply harness the power of WordPress.com's advertising partners for your own blog.
 Author: Automattic
 Version: 0.1.1-beta
 Author URI: http://automattic.com

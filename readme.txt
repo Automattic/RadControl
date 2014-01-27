@@ -5,7 +5,7 @@ Requires at least: 3.4
 Tested up to: 3.8
 Stable tag: 0.1.1-beta
 
-Harness the power of WordPress.com's advertising partners for your own blog.
+Simply harness the power of WordPress.com's advertising partners for your own blog.
 
 == Description ==
 
