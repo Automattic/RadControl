@@ -31,7 +31,10 @@ class AdControl_Ajax {
 			echo ' ';
 		}
 
-		die();
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+			wp_die();
+		else
+			die;
 	}
 }
 
