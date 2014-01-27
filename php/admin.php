@@ -47,6 +47,18 @@ class AdControl_Admin {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'register_advanced_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		add_filter( 'plugin_action_links_' . ADCONTROL_BASENAME, array( $this, 'settings_link' ) );
+	}
+
+	/**
+	 * Add settings link on plugin page
+	 *
+	 * @since 0.1
+	 */
+	function settings_link( $links ) {
+		$settings_link = '<a href="options-general.php?page=adcontrol">Settings</a>';
+		array_unshift( $links, $settings_link );
+		return $links;
 	}
 
 	/**
