@@ -1,7 +1,7 @@
 <?php
-
-if( ! defined('ABSPATH') || ! defined( 'WP_UNINSTALL_PLUGIN' ) )
+if ( ! defined( 'ABSPATH' ) || ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit();
+}
 
 if ( ! is_multisite() ) {
 	delete_option( 'adcontrol_settings' );
@@ -20,4 +20,3 @@ if ( ! is_multisite() ) {
 }
 
 // drops mic
-?>
