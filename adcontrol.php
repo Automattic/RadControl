@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 define( 'ADCONTROL_VERSION', '0.1-beta' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
-define( 'ADCONTROL_BASENAME', plugin_basename(__FILE__) );
+define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL', plugins_url( '/', __FILE__ ) );
 define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
