@@ -38,7 +38,7 @@ class AdControl_No_Jetpack {
 		$settings = __( 'AdControl Settings', 'adcontrol' );
 		$notice = sprintf(
 			__( 'AdControl requires %sJetpack%s to be installed and activated at this time.', 'adcontrol' ),
-			'<a href="http://jetpack.me/" target="_blank">',
+			'<a href="http://jetpack.me/support/getting-started-with-jetpack/" target="_blank">',
 			'</a>'
 		);
 		echo <<<HTML
