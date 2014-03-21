@@ -34,95 +34,11 @@ class AdControl_Params {
 	/**
 	 * Add a DFP slot
 	 * @param string $slotname
-	 * @param string $name
-	 * @param int $width
-	 * @param int $height
-	 * @param int $id
 	 *
 	 * @since 0.1
 	 */
-	public function add_slot( $slotname, $name, $width, $height, $slot_id ) {
-		$this->dfp_slots[$slotname . '.name'] = $name;
-		$this->dfp_slots[$slotname . '.width'] = $width;
-		$this->dfp_slots[$slotname . '.height'] = $height;
-		$this->dfp_slots[$slotname . '.id'] = $slot_id;
-	}
-
-	/**
-	 * Returns the network appropriate targeting tags
-	 *
-	 * @since 0.1
-	 */
-	public function get_dfp_targetting() {
-		$fn = 'GA_googleAddAttr';
-		$tag_attrs = '';
-		$is_gpt = false; // TODO
-		foreach ( $this->targeting_tags as $k => $v ) {
-			if ( is_array( $v ) ) {
-				foreach ( $v as $tag )
-					$tag_attrs .= $fn . "( '$k', '$tag' );\n";
-			} else {
-				$tag_attrs .= $fn . "( '$k', '$v' );\n";
-			}
-		}
-
-		$tags_and_cats = self::get_tags_and_categories();
-		if ( ! empty( $tags_and_cats ) ) {
-			if ( $is_gpt ) {
-				$tag_attrs .= $fn . "( 'Tag', " . json_encode( $tags_and_cats ) . " );\n";
-			} else {
-				foreach ( $tags_and_cats as $cat ) {
-					$tag_attrs .= $fn . "( 'Tag', '" . esc_js( strtolower( $cat ) ) . "' )\n";
-				}
-			}
-		}
-
-		return $tag_attrs;
-	}
-
-	/**
-	 * Returns the targeting tags in a .js array
-	 *
-	 * @since 0.1
-	 */
-	public function get_ad_targeting_details() {
-		$details = '';
-		foreach ( $this->targeting_tags as $k => $v ) {
-			$details .= "$k: '$v', ";
-		}
-
-		return <<<HTML
-		<script type="text/javascript">
-		var adcontrol_params = {{$details}};
-		</script>
-HTML;
-	}
-
-	/**
-	 * Convenience function to collect tags and categories of current page
-	 *
-	 * @since 0.1
-	 */
-	static function get_tags_and_categories() {
-		global $tags_and_cats;
-
-		// If we've already looked up tags and categories during this page,
-		// we'll have an array (may be empty if post has no tags or cat, or if not a post page),
-		if ( ! is_array( $tags_and_cats ) ) {
-			$tags_and_cats = array();
-			foreach ( get_the_category() as $cat ) {
-				if ( 1 != $cat->cat_ID ) { // don't add 'Uncategorized'
-					$tags_and_cats[] = strtolower( $cat->category_nicename );
-				}
-			}
-
-			foreach ( (array) get_the_tags() as $tag ) {
-				if ( ! empty($tag) ) {
-					$tags_and_cats[] = strtolower( $tag->slug );
-				}
-			}
-		}
-		return $tags_and_cats;
+	public function add_slot( $slotname ) {
+		$this->dfp_slots[] = $slotname;
 	}
 
 	/**
