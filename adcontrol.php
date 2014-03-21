@@ -103,6 +103,10 @@ class AdControl {
 		if ( ! self::check_jetpack() )
 			return;
 
+		// bail on infinite scroll
+		if ( self::is_infinite_scroll() )
+			return;
+
 		load_plugin_textdomain(
 			'adcontrol',
 			false,
@@ -115,23 +119,12 @@ class AdControl {
 			return;
 		}
 
-		// bail on infinite scroll
-		if ( self::is_infinite_scroll() )
-			return;
-
 		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 
 		$this->params = new AdControl_Params();
-		// check reasons to bail
-		if ( 'signed' != $this->option( 'tos' ) )
-			return; // only show ads for folks that have signed the TOS
-		if ( 'pause' == $this->option( 'show_to_logged_in' ) )
-			return; // don't show if paused
-		if ( ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) && is_user_logged_in() )
-			return; // don't show to logged in users (if that option is selected)
-		if ( $this->params->is_mobile() && is_ssl() )
-			return; // Not support mobile ads over SSL at the moment
+		if ( $this->should_bail() )
+			return;
 
 		$this->insert_adcode();
 		// $this->insert_extras(); // TODO configure extras to show always if desired
@@ -162,7 +155,7 @@ class AdControl {
 			add_filter( 'the_excerpt', array( $this, 'insert_mobile_ad' ) );
 		} else {
 			// TODO check adsafe
-			$this->params->add_slot( 'belowpost', 'Adcontrol_4_org_300', 400, 267, '3443918307802676' );
+			$this->params->add_slot( 'belowpost' );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'the_content', array( $this, 'insert_ad' ) );
 			add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
@@ -207,8 +200,7 @@ class AdControl {
 		);
 		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
 
-		add_action( 'wp_head', array( $this, 'insert_head_adcontrol' ) );
-		add_action( 'wp_head', array( $this, 'insert_head_gam' ) ); // TODO still GAM?
+		add_action( 'wp_head', array( $this, 'insert_head_gpt' ) );
 
 		// CSS
 		wp_enqueue_style(
@@ -248,74 +240,26 @@ class AdControl {
 	}
 
 	/**
-	 * Insert any extra stuff that goes into the pages <head>
+	 * DFP/GPT scripts in the <head>
 	 *
 	 * @since 0.1
 	 */
-	function insert_head_adcontrol() {
-		$part = ( is_home() || is_archive() ) ? 'index' : 'permalink';
-		$domain = esc_js( $_SERVER['HTTP_HOST'] );
-		$current_page_url = esc_url( $this->params->url );
-
+	function insert_head_gpt() {
 		echo <<<HTML
-		<script type="text/javascript">
-		var wpcom_ads = { bid: '{$this->params->blog_id}', pt: '$part', ac: 1, domain: '$domain', url: '$current_page_url', };
+		<script type='text/javascript'>
+		var googletag = googletag || {};
+		googletag.cmd = googletag.cmd || [];
+		(function() {
+			var useSSL = 'https:' == document.location.protocol;
+			var gads = document.createElement('script');
+			gads.async = true;
+			gads.type = 'text/javascript';
+			gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+			var node = document.getElementsByTagName('script')[0];
+			node.parentNode.insertBefore(gads, node);
+		})();
 		</script>
 HTML;
-	}
-
-	/**
-	 * DFP/GAM scripts in the <head>
-	 *
-	 * @since 0.1
-	 */
-	function insert_head_gam() {
-		$about = __( 'About these ads', 'adcontrol' );
-		echo '
-		<script type="text/javascript" src="http://partner.googleadservices.com/gampad/google_service.js"></script>
-		<script type="text/javascript">
-			GS_googleAddAdSenseService("ca-pub-', ADCONTROL_DFP_ID ,'");
-			GS_googleEnableAllServices();
-		</script>';
-		if ( ! empty( $this->params->options['amazon_match_buy'] ) ) {
-			require_once( ADCONTROL_ROOT . '/php/networks/amazon.php' );
-		}
-		echo '
-		<script type="text/javascript">
-			',$this->params->get_dfp_targetting(),'
-		</script>
-		<script type="text/javascript">
-			',$this->get_googleaddslots(),'
-		</script>
-		<script type="text/javascript">
-			GA_googleAddAdSensePageAttr("google_page_url", "', esc_js( $this->params->url ) ,'");
-			GA_googleFetchAds();
-		</script>
-		<script type="text/javascript">
-		jQuery( window ).load( function() {
-			jQuery( "a.wpadvert-about" ).text( "', esc_js( $about ) ,'" );
-		} );
-		</script>
-';
-	}
-
-	/**
-	 * Tell DFP about the slites we intend to use.
-	 *
-	 * @since 0.1
-	 */
-	function get_googleaddslots() {
-		$slots = '';
-		if ( isset( $this->params->dfp_slots['top.name'] ) )
-			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['top.id']}', '{$this->params->dfp_slots['top.name']}');\n";
-		if ( isset( $this->params->dfp_slots['side.name'] ) )
-			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['side.id']}', '{$this->params->dfp_slots['side.name']}');\n";
-		if ( isset( $this->params->dfp_slots['inpost.name'] ) )
-			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['inpost.id']}', '{$this->params->dfp_slots['inpost.name']}');\n";
-		if ( isset( $this->params->dfp_slots['belowpost.name'] ) )
-			$slots .= "GA_googleAddSlot('ca-pub-{$this->params->dfp_slots['belowpost.id']}', '{$this->params->dfp_slots['belowpost.name']}');\n";
-
-		return $slots;
 	}
 
 	/**
@@ -341,9 +285,10 @@ HTML;
 
 		// TODO check adsafe
 		$mopub_id = ADCONTROL_MOPUB_ID;
+		$about = __( 'About these ads', 'adcontrol' );
 		$mopub_under = <<<HTML
 		<div class="mpb" style="text-align: center; margin: 0px auto; width: 100%">
-			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a></div>
+			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a></div>
 			<script type="text/javascript">
 			var mopub_ad_unit="$mopub_id";
 			var mopub_ad_width=300;
@@ -379,9 +324,8 @@ HTML;
 	 * @param  string $type dfp or adsense
 	 */
 	function get_ad( $spot, $type = 'dfp' ) {
-		if ( 'dfp' == $type ) {
-			$snippet = '<script type="text/javascript">GA_googleFillSlot("' . $this->params->dfp_slots[$spot . '.name'] . '");</script>';
-		} elseif ( 'adsense' == $type ) {
+		$snippet = '';
+		if ( 'adsense' == $type ) {
 			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
 			if ( 'top' == $spot )
 				$spot = 'leader';
@@ -393,11 +337,12 @@ HTML;
 			$snippet = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
 		}
 
+		$about = __( 'About these ads', 'adcontrol' );
 		return <<<HTML
 		<div class="wpcnt">
 			<div class="wpa">
-				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">About these ads</a>
-				<div class="u $spot">
+				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
+				<div id="ac-$spot" class="u $spot">
 					$snippet
 				</div>
 			</div>
@@ -421,6 +366,28 @@ HTML;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check the reasons to bail before we attempt to insert ads.
+	 * @return true if we should bail (don't insert ads)
+	 *
+	 * @since 0.1
+	 */
+	public function should_bail() {
+		if ( 'signed' != $this->option( 'tos' ) )
+			return true; // only show ads for folks that have signed the TOS
+
+		if ( 'pause' == $this->option( 'show_to_logged_in' ) )
+			return true; // don't show if paused
+
+		if ( ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) && is_user_logged_in() )
+			return true; // don't show to logged in users (if that option is selected)
+
+		if ( $this->params->is_mobile() && is_ssl() )
+			return true; // Not support mobile ads over SSL at the moment
+
+		return false;
 	}
 }
 
