@@ -97,19 +97,23 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function admin_tabs() {
-		$this->active_tab = isset( $_GET['tab'] ) ? esc_attr( $_GET['tab'] ) : 'adcontrol_settings';
+		if ( isset( $_GET['tab'] ) ) {
+			$this->active_tab = esc_attr( $_GET['tab'] );
+		} else {
+			$this->active_tab = 'adcontrol_settings';
+		}
 		screen_icon();
 
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $this->tabs as $tab_key => $tab_caption ) {
-			$active = ( $tab_key == $this->active_tab ? ' nav-tab-active' : '' );
 			if ( ! isset( $this->options['enable_advanced_settings'] ) )
 				continue;
 			if ( 'adcontrol_advanced_settings' == $tab_key && ! $this->options['enable_advanced_settings'] == 1 )
 				continue;
-			if ( ( 'adcontrol_earnings' == $tab_key && ! $this->show_revenue ) )
+			if ( 'adcontrol_earnings' == $tab_key && ! $this->show_revenue )
 				continue;
-			echo '<a class="nav-tab ' . $active . '" href="?page=' . $this->plugin_options_key . '&tab=' . $tab_key . '">' . $tab_caption . '</a>';
+			$active = ( $tab_key == $this->active_tab ) ? ' nav-tab-active' : '';
+			echo "<a class=\"nav-tab{$active}\" href=\"?page={$this->plugin_options_key}&tab={$tab_key}\">$tab_caption</a>";
 		}
 		echo '</h2>';
 	}
