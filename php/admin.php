@@ -248,8 +248,6 @@ class AdControl_Admin {
 			$this->plugin_options_key,
 			array( $this, 'userdash_show_page' )
 		);
-
-		$tab = ( isset( $_GET['page'] ) && array_key_exists( $_GET['page'], $this->tabs ) ? $_GET['page'] : '' );
 	}
 
 	/**
