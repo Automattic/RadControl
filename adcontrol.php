@@ -259,6 +259,13 @@ class AdControl {
 			node.parentNode.insertBefore(gads, node);
 		})();
 		</script>
+		<script type='text/javascript'>
+		googletag.cmd.push(function() {
+			googletag.defineSlot('/9240792/Adcontrol_4_org_300', [300, 250], 'div-gpt-ad-1395352210281-0').addService(googletag.pubads());
+			googletag.pubads().enableSingleRequest();
+			googletag.enableServices();
+		});
+		</script>
 HTML;
 	}
 
@@ -325,7 +332,13 @@ HTML;
 	 */
 	function get_ad( $spot, $type = 'dfp' ) {
 		$snippet = '';
-		if ( 'adsense' == $type ) {
+		if ( 'dfp' == $type ) {
+			$snippet = <<<HTML
+			<div id='div-gpt-ad-1395352210281-0'>
+				<script type='text/javascript'>googletag.cmd.push(function() { googletag.display('div-gpt-ad-1395352210281-0'); });</script>
+			</div>
+HTML;
+		} elseif ( 'adsense' == $type ) {
 			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
 			if ( 'top' == $spot )
 				$spot = 'leader';
