@@ -9,7 +9,10 @@ class AdControl_Admin {
 		'show_to_logged_in',
 		'show_on_frontpage',
 		'show_on_ssl',
+		'country',
+		'paypal',
 		'tos',
+		'application_submitted',
 		'adsense_publisher_id',
 		'adsense_fallback',
 		'adsense_leader',
@@ -145,7 +148,6 @@ class AdControl_Admin {
 			?>
 		</form>
 		<?php
-		echo '</div>';
 	}
 
 	/**
@@ -165,11 +167,17 @@ class AdControl_Admin {
 	 */
 	function validate_settings( $settings ) {
 		$to_save = array();
-
-		if ( 'signed' == $this->get_option( 'tos' ) || 'signed' == $settings[ 'tos' ] )
+		if ( 'signed' == $this->get_option( 'tos' ) || ( isset( $settings[ 'tos' ] ) && 'signed' == $settings[ 'tos' ] ) )
 			$to_save[ 'tos' ] = 'signed';
 		else
 			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', $this->plugin_options_key ) );
+
+		if ( isset( $settings['country'] ) && 2 == strlen( $settings['country'] ) )
+			$to_save[ 'country' ] = $settings[ 'country' ];
+		else
+			add_settings_error( 'country', 'country', __( 'Please select a country.', $this->plugin_options_key ) );
+
+		$to_save[ 'paypal' ] = $settings[ 'paypal' ];
 
 		if ( 'no' == $settings[ 'show_to_logged_in' ] ) {
 			$to_save[ 'show_to_logged_in' ] = 'no';
@@ -179,9 +187,51 @@ class AdControl_Admin {
 			$to_save[ 'show_to_logged_in' ] = 'yes';
 		}
 
-		// TODO replace when backfill situation is figured out
 		$to_save['enable_advanced_settings'] =
-			isset( $settings['enable_advanced_settings'] ) && $settings['enable_advanced_settings']? 1 : 0;
+			isset( $settings['enable_advanced_settings'] ) && $settings['enable_advanced_settings'] ? 1 : 0;
+
+		if ( ! $this->get_option( 'application_submitted' ) && isset( $to_save[ 'tos' ] ) && isset( $to_save[ 'country' ] ) /* && 0 != Jetpack::get_option( 'id', 0 ) */ ) {
+			$response = wp_remote_post(
+				ADCONTROL_APPLICATION_URL,
+				array(
+					'body' => array(
+						'wordads-form' => '1',
+						'adcontrol'    => '1',
+						'jetpack_id'   => Jetpack::get_option( 'id', 0 ),
+						'country'      => $to_save[ 'country' ],
+						'paypal'       => $to_save[ 'paypal' ]
+					)
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				$to_save[ 'tos' ] = '';
+				add_settings_error(
+					'tos',
+					'tos',
+					sprintf(
+						__( 'Error submitting AdControl application: %s', $this->plugin_options_key ),
+						$response->get_error_message()
+					)
+				);
+				return $to_save;
+			}
+
+			$response_body = json_decode( $response['body'] );
+			if ( empty( $response_body->success ) ) {
+				$to_save[ 'tos' ] = '';
+				add_settings_error(
+					'tos',
+					'tos',
+					sprintf(
+						__( 'Error submitting AdControl application: %s', $this->plugin_options_key ),
+						$response_body->reason
+					)
+				);
+			} else {
+				$to_save[ 'application_submitted' ] = 1;
+			}
+		}
 
 		return $to_save;
 	}
@@ -299,7 +349,6 @@ class AdControl_Admin {
 			array( 'label_for' => 'radio_show_to_logged_in' )
 		);
 
-		// TODO replace when backfill situation is fixed
 		add_settings_field(
 			'adcontrol_userdash_enable_advanced_settings',
 			__( 'Enable Advanced Settings:', $this->plugin_options_key ),
@@ -316,6 +365,22 @@ class AdControl_Admin {
 			__( 'WordAds Terms of Service', $this->plugin_options_key ),
 			'__return_null',
 			$this->basic_settings_key
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_country',
+			__( 'Country of residence:' ),
+			array( $this, 'setting_country' ),
+			$this->basic_settings_key,
+			$section_name
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_paypal',
+			__( 'PayPal account email address (optional):' ),
+			array( $this, 'setting_paypal' ),
+			$this->basic_settings_key,
+			$section_name
 		);
 
 		add_settings_field(
@@ -541,6 +606,33 @@ class AdControl_Admin {
 			echo "<option value='", esc_attr( $unit ) , "' ", esc_attr( $selected ) , '>', esc_html( $properties['tag'] ) , '</option>';
 		}
 		echo '</select>';
+	}
+
+	/**
+	 * @since 0.1
+	 */
+	function setting_country() {
+		?>
+		<select id="select-country" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[country]">
+			<option value=""><?php _e( 'Please select your country' ); ?></option>
+			<option value="US" <?php selected( $this->get_option( 'country' ), 'US' ); ?>><?php _e( 'United States' ); ?></option>
+			<?php
+			require_once( ADCONTROL_ROOT . '/php/iso-3166.php' );
+			$iso_3166 = ISO_3166_1::alpha_2();
+			foreach ( $iso_3166 as $k => $v ) {
+				$selected = selected( $this->get_option( 'country' ), $k, false );
+				echo '<option value="' . esc_attr( $k ) . '" ' . $selected . '>' . __( esc_html( $v ) ) . "</option>\n";
+			}
+			?>
+		</select>
+		<?php
+	}
+
+	/**
+	 * @since 0.1
+	 */
+	function setting_paypal() {
+		echo '<input type="text" name="' . $this->basic_settings_key . '[paypal]" id="txt-paypal" maxlength="255" size="35" />';
 	}
 
 	/**
