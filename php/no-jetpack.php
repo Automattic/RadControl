@@ -12,6 +12,18 @@ class AdControl_No_Jetpack {
 	 */
 	function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
+		add_filter( 'plugin_action_links_' . ADCONTROL_BASENAME, array( $this, 'settings_link' ) );
+	}
+
+	/**
+	 * Add settings link on plugin page
+	 *
+	 * @since 0.1
+	 */
+	function settings_link( $links ) {
+		$settings_link = '<a href="options-general.php?page=adcontrol">Settings</a>';
+		array_unshift( $links, $settings_link );
+		return $links;
 	}
 
 	/**
