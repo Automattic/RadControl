@@ -619,8 +619,9 @@ class AdControl_Admin {
 			<?php
 			require_once( ADCONTROL_ROOT . '/php/iso-3166.php' );
 			$iso_3166 = ISO_3166_1::alpha_2();
+			$country = $this->get_option( 'country' );
 			foreach ( $iso_3166 as $k => $v ) {
-				$selected = selected( $this->get_option( 'country' ), $k, false );
+				$selected = selected( $country, $k, false );
 				echo '<option value="' . esc_attr( $k ) . '" ' . $selected . '>' . __( esc_html( $v ) ) . "</option>\n";
 			}
 			?>
@@ -632,7 +633,12 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function setting_paypal() {
-		echo '<input type="text" name="' . $this->basic_settings_key . '[paypal]" id="txt-paypal" maxlength="255" size="35" />';
+		$paypal = $this->get_option( 'paypal' );
+		if ( $paypal )
+			$paypal = 'value="' . $paypal . '"';
+		else
+			$paypal = '';
+		echo '<input type="text" name="' . $this->basic_settings_key . '[paypal]" id="txt-paypal" ' . $paypal . ' maxlength="255" size="35" />';
 	}
 
 	/**
