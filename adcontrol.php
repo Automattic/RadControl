@@ -338,6 +338,11 @@ HTML;
 			<div id='div-gpt-ad-1395352210281-0'>
 				<script type='text/javascript'>googletag.cmd.push(function() { googletag.display('div-gpt-ad-1395352210281-0'); });</script>
 			</div>
+			<script type='text/javascript'>
+			jQuery(window).load(function() {
+				jQuery('#ac-belowpost iframe:first-child').css({"width":"400px","height":"267px"});
+			});
+			</script>
 HTML;
 		} elseif ( 'adsense' == $type ) {
 			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
