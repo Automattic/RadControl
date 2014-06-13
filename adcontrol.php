@@ -35,6 +35,7 @@ define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
 // TODO: Store MOPUB_ID with each ad unit. Each ad unit in MOPUB has its own ID.
 define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
 define( 'ADCONTROL_APPLICATION_URL', 'http://wordads.co/signup/' );
+define( 'ADCONTROL_API_TEST_ID', '35148050' );
 
 require_once( ADCONTROL_ROOT . '/php/widgets.php' );
 
@@ -260,13 +261,6 @@ class AdControl {
 			node.parentNode.insertBefore(gads, node);
 		})();
 		</script>
-		<script type='text/javascript'>
-		googletag.cmd.push(function() {
-			googletag.defineSlot('/9240792/Adcontrol_4_org_300', [300, 250], 'div-gpt-ad-1395352210281-0').addService(googletag.pubads());
-			googletag.pubads().enableSingleRequest();
-			googletag.enableServices();
-		});
-		</script>
 HTML;
 	}
 
@@ -334,14 +328,18 @@ HTML;
 	function get_ad( $spot, $type = 'dfp' ) {
 		$snippet = '';
 		if ( 'dfp' == $type ) {
+			$blog_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id;
 			$snippet = <<<HTML
-			<div id='div-gpt-ad-1395352210281-0'>
-				<script type='text/javascript'>googletag.cmd.push(function() { googletag.display('div-gpt-ad-1395352210281-0'); });</script>
-			</div>
 			<script type='text/javascript'>
-			jQuery(window).load(function() {
-				jQuery('#ac-belowpost iframe:first-child').css({"width":"400px","height":"267px"});
-			});
+			(function($) {
+				$(document).ready(function() {
+					$.getJSON('https://public-api.wordpress.com/rest/v1/sites/{$blog_id}/adcontrol/snippet/', function(data) {
+						if(data.snippet) {
+							$('#ac-belowpost').append(data.snippet);
+						}
+					});
+				});
+			})(jQuery);
 			</script>
 HTML;
 		} elseif ( 'adsense' == $type ) {
