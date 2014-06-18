@@ -267,7 +267,7 @@ HTML;
 		if ( typeof googletag != 'undefined' ) {
 			googletag.cmd.push( function() {
 				<?php echo $this->params->get_dfp_targetting( $this->params );  ?>
-			}
+			});
 		}
 		</script>
 		<?php
