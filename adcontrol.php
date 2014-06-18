@@ -262,6 +262,15 @@ class AdControl {
 		})();
 		</script>
 HTML;
+		?>
+		<script type="text/javascript">
+		if ( typeof googletag != 'undefined' ) {
+			googletag.cmd.push( function() {
+				<?php echo self::get_dfp_targetting( $this->params );  ?>
+			}
+		}
+		</script>
+		<?php
 	}
 
 	/**

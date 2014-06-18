@@ -42,6 +42,57 @@ class AdControl_Params {
 	}
 
 	/**
+	 * Returns the network appropriate targeting tags
+	 *
+	 * @since 0.1
+	 */
+	public function get_dfp_targetting() {
+		$fn = 'googletag.pubads().setTargeting';
+		$tag_attrs = '';
+		foreach ( $this->targeting_tags as $k => $v ) {
+			if ( is_array( $v ) && ! empty( $v ) ) {
+				foreach ( $v as $tag )
+					$tag_attrs .= $fn . "( '$k', " . json_encode( $v ) . " );\n";
+			} else {
+				$tag_attrs .= $fn . "( '$k', '$v' );\n";
+			}
+		}
+
+		$tags_and_cats = self::get_tags_and_categories();
+		if ( ! empty( $tags_and_cats ) ) {
+			$tag_attrs .= $fn . "( 'Tag', " . json_encode( $tags_and_cats ) . " );\n";
+		}
+
+		return $tag_attrs;
+	}
+
+	/**
+	 * Convenience function to collect tags and categories of current page
+	 *
+	 * @since 0.1
+	 */
+	static function get_tags_and_categories() {
+		global $tags_and_cats;
+
+		// If we've already looked up tags and categories during this page,
+		// we'll have an array (may be empty if post has no tags or cat, or if not a post page),
+		if ( ! is_array( $tags_and_cats ) ) {
+			$tags_and_cats = array();
+			foreach ( get_the_category() as $cat ) {
+				if ( 1 != $cat->cat_ID ) { // don't add 'Uncategorized'
+					$tags_and_cats[] = strtolower( $cat->category_nicename );
+				}
+			}
+
+			foreach ( (array) get_the_tags() as $tag ) {
+				if ( ! empty($tag) ) {
+					$tags_and_cats[] = strtolower( $tag->slug );
+				}
+			}
+		}
+		return $tags_and_cats;
+	}
+	/**
 	 * @return boolean true if the user is browsing on a mobile device (iPad not included)
 	 *
 	 * @since 0.1
