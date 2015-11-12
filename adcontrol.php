@@ -31,11 +31,8 @@ define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL', plugins_url( '/', __FILE__ ) );
-define( 'ADCONTROL_DFP_ID',  '3443918307802676' );
-// TODO: Store MOPUB_ID with each ad unit. Each ad unit in MOPUB has its own ID.
-define( 'ADCONTROL_MOPUB_ID', '9ba30f9603ef4828aa35dd8199a961f5' );
 define( 'ADCONTROL_APPLICATION_URL', 'http://wordads.co/signup/' );
-define( 'ADCONTROL_API_TEST_ID', '35148050' );
+define( 'ADCONTROL_API_TEST_ID', '26942' );
 
 require_once( ADCONTROL_ROOT . '/php/widgets.php' );
 
@@ -70,6 +67,9 @@ class AdControl {
 			'width'     => '160',
 		),
 	);
+
+	private $inpost_ad_inserted = false;
+	private $top_ad_inserted = false;
 
 	/**
 	 * Convenience function for grabbing options from params->options
@@ -121,15 +121,13 @@ class AdControl {
 			return;
 		}
 
-		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
-
 		$this->params = new AdControl_Params();
 		if ( $this->should_bail() )
 			return;
 
 		$this->insert_adcode();
-		// $this->insert_extras(); // TODO configure extras to show always if desired
+		$this->insert_extras();
 	}
 
 	/**
@@ -150,36 +148,26 @@ class AdControl {
 	 * @since 0.1
 	 */
 	private function insert_adcode() {
-		// check for mobile, then insert ads
-		if ( $this->params->is_mobile() ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_mobile_scripts' ) );
-			add_filter( 'the_content', array( $this, 'insert_mobile_ad' ) );
-			add_filter( 'the_excerpt', array( $this, 'insert_mobile_ad' ) );
-		} else {
-			// TODO check adsafe
-			$this->params->add_slot( 'belowpost' );
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			add_filter( 'the_content', array( $this, 'insert_ad' ) );
-			add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
+		$this->params->add_slot( 'belowpost' );
+		add_action( 'wp_head', array( $this, 'insert_head_meta' ), 20 );
+		add_action( 'wp_head', array( $this, 'insert_head_iponweb' ), 30 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_filter( 'the_content', array( $this, 'insert_ad' ) );
+		add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
-			if ( ! empty( $this->params->options['adsense_leader_set'] )
-					&& ! empty( $this->params->options['enable_advanced_settings'] ) ) {
-				add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
-			}
+		if ( ! empty( $this->params->options['adsense_leader_set'] )
+				&& ! empty( $this->params->options['enable_advanced_settings'] ) ) {
+			add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
 		}
 	}
 
 	/**
-	 * Add the actions/filters to insert extra-network features (e.g. Taboola, Promoted Posts).
+	 * Add the actions/filters to insert extra-network features.
 	 *
 	 * @since 0.1
 	 */
 	private function insert_extras() {
-		require_once( ADCONTROL_ROOT . '/php/networks/taboola.php' );
-		new AdControl_Taboola( $this->params );
-
-		require_once( ADCONTROL_ROOT . '/php/networks/skimlinks.php' );
-		new AdControl_Skimlinks( $this->params );
+		require_once( ADCONTROL_ROOT . '/php/networks/amazon.php' );
 	}
 
 	/**
@@ -188,22 +176,6 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function enqueue_scripts() {
-		// JS
-		wp_enqueue_script(
-			'ac-adclk',
-			ADCONTROL_URL . 'js/adclk.js',
-			array( 'jquery' ),
-			'2013-06-21',
-			true
-		);
-
-		$data = array(
-			'slot'  => 'belowpost', // TODO add other slots?
-		);
-		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
-
-		add_action( 'wp_head', array( $this, 'insert_head_gpt' ) );
-
 		// CSS
 		wp_enqueue_style(
 			'noticon-font',
@@ -221,56 +193,69 @@ class AdControl {
 	}
 
 	/**
-	 * Register mobile scripts and styles
-	 *
-	 * @since 0.1
+	 * IPONWEB metadata used by the various scripts
+	 * @return [type] [description]
 	 */
-	function enqueue_mobile_scripts() {
-		// JS
-		wp_enqueue_script(
-			'ac-adclk',
-			ADCONTROL_URL . 'js/adclk.js',
-			array( 'jquery' ),
-			'2013-06-21',
-			true
-		);
-
-		$data = array(
-			'slot'  => 'belowpost', // TODO add other slots?
-		);
-		wp_localize_script( 'ac-adclk', 'ac_adclk', $data );
+	function insert_head_meta() {
+		$domain = $this->params->targeting_tags['Domain'];
+		$pageURL = $this->params->targeting_tags['PageURL'];
+		$adsafe = $this->params->targeting_tags['AdSafe'];
+		echo <<<HTML
+		<script type="text/javascript">
+			var _ipw_custom = {
+				wordAds: '1',
+				domain:  '$domain',
+				pageURL: '$pageURL',
+				adSafe:  '$adsafe'
+			};
+		</script>
+HTML;
 	}
 
 	/**
-	 * DFP/GPT scripts in the <head>
+	 * IPONWEB scripts in <head>
 	 *
-	 * @since 0.1
+	 * @since 0.2
 	 */
-	function insert_head_gpt() {
+	function insert_head_iponweb() {
+		$about = __( 'About these ads' );
+
 		echo <<<HTML
-		<script type='text/javascript'>
-		var googletag = googletag || {};
-		googletag.cmd = googletag.cmd || [];
-		(function() {
-			var useSSL = 'https:' == document.location.protocol;
-			var gads = document.createElement('script');
-			gads.async = true;
-			gads.type = 'text/javascript';
-			gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
-			var node = document.getElementsByTagName('script')[0];
-			node.parentNode.insertBefore(gads, node);
-		})();
+		<!-- IPONWEB header script -->
+		<script type="text/javascript">
+			window.__ATA = {
+				scriptSrc: '//s.pubmine.com/showad.js',
+				slotPrefix: 'automattic-id-',
+				customParams: _ipw_custom,
+				initAd: function(o) {
+					var o = o || {},
+						g = window,
+						d = g.document,
+						wr = d.write,
+						id = g.__ATA.id();
+					wr.call(d, '<div id="' + id + '" data-section="' + (o.sectionId || 0) + '"' + (o.type ? ('data-type="' + o.type + '"') : '') + ' ' + (o.forcedUrl ? ('data-forcedurl="' + o.forcedUrl + '"') : '') + ' style="width:' + (o.width || 0) + 'px; height:' + (o.height || 0) + 'px;">');
+					g.__ATA.displayAd(id);
+					wr.call(d, '</div>');
+				},
+				displayAd: function(id) {
+					window.__ATA.ids = window.__ATA.ids || {};
+					window.__ATA.ids[id] = 1;
+				},
+				id: function() {
+					return window.__ATA.slotPrefix + (parseInt(Math.random() * 10000, 10) + 1 + (new Date()).getMilliseconds());
+				}
+			};
+			(function(d, ata) {
+				var pr = "https:" === d.location.protocol ? "https:" : "http:",
+					src = pr + ata.scriptSrc,
+					st = "text/javascript";
+				d.write('<scr' + 'ipt type="' + st + '" src="' + src + '"><\/scr' + 'ipt>');
+			})(window.document, window.__ATA);
+			jQuery(window).ready(function () {
+				jQuery("a.wpa-about").text("$about");
+			});
 		</script>
 HTML;
-		?>
-		<script type="text/javascript">
-		if ( typeof googletag != 'undefined' ) {
-			googletag.cmd.push( function() {
-				<?php echo $this->params->get_dfp_targetting( $this->params );  ?>
-			});
-		}
-		</script>
-		<?php
 	}
 
 	/**
@@ -286,41 +271,6 @@ HTML;
 	}
 
 	/**
-	 * Insert mopub onto the page
-	 *
-	 * @since 0.1
-	 */
-	function insert_mobile_ad( $content ) {
-		if ( ! $this->params->should_show_mobile() )
-			return $content;
-
-		// TODO check adsafe
-		$mopub_id = ADCONTROL_MOPUB_ID;
-		$about = __( 'About these ads', 'adcontrol' );
-		$mopub_under = <<<HTML
-		<div class="mpb" style="text-align: center; margin: 0px auto; width: 100%">
-			<div><a class="wpadvert-about" style="padding: 0 1px; display: block; font: 9px/1 sans-serif; text-decoration: underline;" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a></div>
-			<script type="text/javascript">
-			var mopub_ad_unit="$mopub_id";
-			var mopub_ad_width=300;
-			var mopub_ad_height=250;
-			var mopub_keywords="adsafe"; // TODO
-			jQuery( window ).load( function() {
-				if ( jQuery(".mpb script[src*='shareth.ru']").length > 0 || jQuery(".mpb iframe[src*='viewablemedia.net']").length > 0 ) {
-					jQuery( '.mpb iframe' ).css( {'width':'400px','height':'267px'} );
-				} else if ( jQuery(".mpb script[src*='googlesyndication.com']").length > 0 ) {
-					jQuery( '.mpb iframe' ).css( {'width':'350px','height':'250px'} );
-				}
-			});
-			</script>
-			<script src="http://ads.mopub.com/js/client/mopub.js"></script>
-		</div>
-HTML;
-
-		return $content . $mopub_under;
-	}
-
-	/**
 	 * Inserts ad into header
 	 *
 	 * @since 0.1
@@ -330,32 +280,35 @@ HTML;
 	}
 
 	/**
-	 * [get_ad description]
+	 * Get the ad for the spot and type.
 	 * @param  string $spot top, side, or belowpost
 	 * @param  string $type dfp or adsense
 	 */
-	function get_ad( $spot, $type = 'dfp' ) {
+	function get_ad( $spot, $type = 'iponweb' ) {
 		$snippet = '';
-		if ( 'dfp' == $type ) {
-			$blog_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id;
+		if ( 'iponweb' == $type ) {
+			if ( $this->inpost_ad_inserted ) {
+				return '';
+			}
+
+			$this->inpost_ad_inserted = true;
+			$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '1';
 			$snippet = <<<HTML
 			<script type='text/javascript'>
-			(function($) {
-				$(document).ready(function() {
-					$.getJSON('https://public-api.wordpress.com/rest/v1/sites/{$blog_id}/adcontrol/snippet/', function(data) {
-						if(data.snippet) {
-							$('#ac-belowpost').append(data.snippet);
-						}
-					});
-				});
-			})(jQuery);
+				(function(g){g.__ATA.initAd({sectionId:$section_id, width:300, height:250});})(window);
 			</script>
 HTML;
 		} elseif ( 'adsense' == $type ) {
-			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
-			if ( 'top' == $spot )
-				$spot = 'leader';
+			if ( $this->top_ad_inserted ) {
+				return '';
+			}
 
+			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
+			if ( 'top' == $spot ) {
+				$spot = 'leader';
+			}
+
+			$this->top_ad_inserted = true;
 			$pub = $this->params->options['adsense_publisher_id'];
 			$tag = $this->params->options['adsense_' . $spot . '_tag_id'];
 			$width = AdControl::$ad_tag_ids[$this->params->options['adsense_' . $spot . '_tag_unit']]['width'];
@@ -401,17 +354,22 @@ HTML;
 	 * @since 0.1
 	 */
 	public function should_bail() {
-		if ( 'signed' != $this->option( 'tos' ) )
+		if ( 'signed' != $this->option( 'tos' ) ) {
 			return true; // only show ads for folks that have signed the TOS
+		}
 
-		if ( 'pause' == $this->option( 'show_to_logged_in' ) )
+		if ( 'pause' == $this->option( 'show_to_logged_in' ) ) {
 			return true; // don't show if paused
+		}
 
-		if ( ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) && is_user_logged_in() )
+		if ( ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) && is_user_logged_in() ) {
 			return true; // don't show to logged in users (if that option is selected)
+		}
 
-		if ( $this->params->is_mobile() && is_ssl() )
+		// TODO verify
+		if ( $this->params->is_mobile() && is_ssl() ) {
 			return true; // Not support mobile ads over SSL at the moment
+		}
 
 		return false;
 	}

@@ -42,7 +42,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 
 	public function widget( $args, $instance ) {
 		require_once( ADCONTROL_ROOT . '/php/user-agent.php' );
-		if ( ! AdControl::check_jetpack() || ac_is_mobile() )
+		if ( ! AdControl::check_jetpack() || jetpack_is_mobile() )
 			return false;
 
 		if ( empty( $instance['all_set'] ) || ! $this->option( 'enable_advanced_settings' ) )

@@ -17,15 +17,16 @@ class AdControl_Params {
 			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
 
 		$this->blog_id = Jetpack::get_option( 'id', 0 );
-		$this->mobile_device = ac_is_mobile( 'any', true );
+		$this->mobile_device = jetpack_is_mobile( 'any', true );
 		$this->theme = wp_get_theme()->Name;
 		$this->targeting_tags = array(
-			'AdControl'  => 1,
-			'BlogId'     => Jetpack::is_development_mode() ? 0 : Jetpack::get_option( 'id' ),
-			'Domain'     => esc_url( home_url() ),
-			'PageURL'    => esc_url( $this->url ),
-			'LangId'     => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
-			'AdSense'    => empty( $this->options['adsense_fallback_set'] ) ? 0 : 1,
+			'AdControl' => 1,
+			'BlogId'    => Jetpack::is_development_mode() ? 0 : Jetpack::get_option( 'id' ),
+			'Domain'    => esc_url( home_url() ),
+			'PageURL'   => esc_url( $this->url ),
+			'LangId'    => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
+			'AdSense'   => empty( $this->options['adsense_fallback_set'] ) ? 0 : 1,
+			'AdSafe'    => 1, // TODO
 		);
 
 		$this->dfp_slots = array();
