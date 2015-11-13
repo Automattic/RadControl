@@ -156,7 +156,7 @@ class AdControl_Admin {
 	function userdash_show_revenue() {
 		$msg = sprintf(
 			__( 'Please login to our %ssecure servers on WordPress.com%s to see your earnings details.', $this->plugin_options_key ),
-			'<a href="https://wordpress.com/settings/earnings/">',
+			'<a href="https://wordpress.com/ads/earnings/' . $this->blog_id . '">',
 			'</a>'
 		);
 		echo $msg;

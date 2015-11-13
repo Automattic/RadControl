@@ -35,6 +35,7 @@ define( 'ADCONTROL_APPLICATION_URL', 'http://wordads.co/signup/' );
 define( 'ADCONTROL_API_TEST_ID', '26942' );
 
 require_once( ADCONTROL_ROOT . '/php/widgets.php' );
+require_once( ADCONTROL_ROOT . '/php/api.php' );
 
 class AdControl {
 
@@ -102,12 +103,14 @@ class AdControl {
 	 */
 	function init() {
 		// requires Jetpack for now (probably always)
-		if ( ! self::check_jetpack() )
+		if ( ! self::check_jetpack() ) {
 			return;
+		}
 
 		// bail on infinite scroll
-		if ( self::is_infinite_scroll() )
+		if ( self::is_infinite_scroll() ) {
 			return;
+		}
 
 		load_plugin_textdomain(
 			'adcontrol',
@@ -117,7 +120,6 @@ class AdControl {
 
 		if ( is_admin() ) {
 			require_once( ADCONTROL_ROOT . '/php/admin.php' );
-			require_once( ADCONTROL_ROOT . '/php/ajax.php' );
 			return;
 		}
 
@@ -338,9 +340,14 @@ HTML;
 	 */
 	public static function check_jetpack() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		if ( ! is_plugin_active( 'jetpack/jetpack.php' ) || ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
-			if ( is_admin() )
+		if ( ! is_plugin_active( 'jetpack/jetpack.php' )
+				|| ! method_exists( 'Jetpack_Client', 'wpcom_json_api_request_as_blog' )
+				|| ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
+
+			if ( is_admin() ) {
 				require_once( ADCONTROL_ROOT . '/php/no-jetpack.php' );
+			}
+
 			return false;
 		}
 
