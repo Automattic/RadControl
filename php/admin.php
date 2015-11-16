@@ -368,22 +368,6 @@ class AdControl_Admin {
 		);
 
 		add_settings_field(
-			'adcontrol_userdash_country',
-			__( 'Country of residence:' ),
-			array( $this, 'setting_country' ),
-			$this->basic_settings_key,
-			$section_name
-		);
-
-		add_settings_field(
-			'adcontrol_userdash_paypal',
-			__( 'PayPal account email address (optional):' ),
-			array( $this, 'setting_paypal' ),
-			$this->basic_settings_key,
-			$section_name
-		);
-
-		add_settings_field(
 			'adcontrol_userdash_tos_id',
 			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service%s', $this->plugin_options_key ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">', '</a>' ),
 			array( $this, 'setting_tos' ),
@@ -415,32 +399,33 @@ class AdControl_Admin {
 			array( 'label_for' => 'adsense_publisher_id' )
 		);
 
-		add_settings_field(
-			'adcontrol_userdash_adsense_fallback',
-			__( 'Include AdSense fallback?', $this->plugin_options_key ),
-			array( $this, 'setting_adsense_fallback' ),
-			$this->advanced_settings_key,
-			$section,
-			array( 'label_for' => 'adsense_fallback' )
-		);
+		// TODO future release
+		// add_settings_field(
+		// 	'adcontrol_userdash_adsense_fallback',
+		// 	__( 'Include AdSense fallback?', $this->plugin_options_key ),
+		// 	array( $this, 'setting_adsense_fallback' ),
+		// 	$this->advanced_settings_key,
+		// 	$section,
+		// 	array( 'label_for' => 'adsense_fallback' )
+		// );
 
-		add_settings_field(
-			'adcontrol_userdash_fallback_tag_id',
-			__( 'Tag ID:', $this->plugin_options_key ),
-			array( $this, 'setting_fallback_tag_id' ),
-			$this->advanced_settings_key,
-			$section,
-			array( 'label_for' => 'adsense_fallback_tag_id' )
-		);
+		// add_settings_field(
+		// 	'adcontrol_userdash_fallback_tag_id',
+		// 	__( 'Tag ID:', $this->plugin_options_key ),
+		// 	array( $this, 'setting_fallback_tag_id' ),
+		// 	$this->advanced_settings_key,
+		// 	$section,
+		// 	array( 'label_for' => 'adsense_fallback_tag_id' )
+		// );
 
-		add_settings_field(
-			'adcontrol_userdash_fallback_tag_unit',
-			__( 'Tag Dimensions:', $this->plugin_options_key ),
-			array( $this, 'setting_fallback_tag_unit' ),
-			$this->advanced_settings_key,
-			$section,
-			array( 'label_for' => 'adsense_fallback_tag_unit' )
-		);
+		// add_settings_field(
+		// 	'adcontrol_userdash_fallback_tag_unit',
+		// 	__( 'Tag Dimensions:', $this->plugin_options_key ),
+		// 	array( $this, 'setting_fallback_tag_unit' ),
+		// 	$this->advanced_settings_key,
+		// 	$section,
+		// 	array( 'label_for' => 'adsense_fallback_tag_unit' )
+		// );
 
 		add_settings_field(
 			'adcontrol_userdash_adsense_leader',
@@ -469,23 +454,24 @@ class AdControl_Admin {
 			array( 'label_for' => 'adsense_leader_tag_unit' )
 		);
 
-		$section = 'adcontrol_amazon_match_buy_settings';
-		// Amazon section
-		add_settings_section(
-			$section,
-			__( 'Amazon Matchbuy', $this->plugin_options_key ),
-			'__return_null',
-			$this->advanced_settings_key
-		);
+		// TODO still include?
+		// $section = 'adcontrol_amazon_match_buy_settings';
+		// // Amazon section
+		// add_settings_section(
+		// 	$section,
+		// 	__( 'Amazon Matchbuy', $this->plugin_options_key ),
+		// 	'__return_null',
+		// 	$this->advanced_settings_key
+		// );
 
-		add_settings_field(
-			'adcontrol_userdash_amazon_match_buy',
-			__( 'Enable Amazon Matchbuy?', $this->plugin_options_key ),
-			array( $this, 'setting_amazon_match_buy' ),
-			$this->advanced_settings_key,
-			$section,
-			array( 'label_for' => 'amazon_match_buy' )
-		);
+		// add_settings_field(
+		// 	'adcontrol_userdash_amazon_match_buy',
+		// 	__( 'Enable Amazon Matchbuy?', $this->plugin_options_key ),
+		// 	array( $this, 'setting_amazon_match_buy' ),
+		// 	$this->advanced_settings_key,
+		// 	$section,
+		// 	array( 'label_for' => 'amazon_match_buy' )
+		// );
 
 	}
 
@@ -606,39 +592,6 @@ class AdControl_Admin {
 			echo "<option value='", esc_attr( $unit ) , "' ", esc_attr( $selected ) , '>', esc_html( $properties['tag'] ) , '</option>';
 		}
 		echo '</select>';
-	}
-
-	/**
-	 * @since 0.1
-	 */
-	function setting_country() {
-		?>
-		<select id="select-country" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[country]">
-			<option value=""><?php _e( 'Please select your country' ); ?></option>
-			<option value="US" <?php selected( $this->get_option( 'country' ), 'US' ); ?>><?php _e( 'United States' ); ?></option>
-			<?php
-			require_once( ADCONTROL_ROOT . '/php/iso-3166.php' );
-			$iso_3166 = ISO_3166_1::alpha_2();
-			$country = $this->get_option( 'country' );
-			foreach ( $iso_3166 as $k => $v ) {
-				$selected = selected( $country, $k, false );
-				echo '<option value="' . esc_attr( $k ) . '" ' . $selected . '>' . __( esc_html( $v ) ) . "</option>\n";
-			}
-			?>
-		</select>
-		<?php
-	}
-
-	/**
-	 * @since 0.1
-	 */
-	function setting_paypal() {
-		$paypal = $this->get_option( 'paypal' );
-		if ( $paypal )
-			$paypal = 'value="' . $paypal . '"';
-		else
-			$paypal = '';
-		echo '<input type="text" name="' . $this->basic_settings_key . '[paypal]" id="txt-paypal" ' . $paypal . ' maxlength="255" size="35" />';
 	}
 
 	/**
