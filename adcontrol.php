@@ -220,7 +220,7 @@ HTML;
 	 * @since 0.2
 	 */
 	function insert_head_iponweb() {
-		$about = __( 'About these ads' );
+		$about = __( 'About these ads', 'adcontrol' );
 
 		echo <<<HTML
 		<!-- IPONWEB header script -->
