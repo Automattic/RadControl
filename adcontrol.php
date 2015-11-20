@@ -36,6 +36,7 @@ define( 'ADCONTROL_API_TEST_ID', '26942' );
 
 require_once( ADCONTROL_ROOT . '/php/widgets.php' );
 require_once( ADCONTROL_ROOT . '/php/api.php' );
+require_once( ADCONTROL_ROOT . '/php/cron.php' );
 
 class AdControl {
 
@@ -361,6 +362,10 @@ HTML;
 	 * @since 0.1
 	 */
 	public function should_bail() {
+		if ( ! $this->option( 'wordads_approved' ) ) {
+			return true; // user isn't approved for AdControl
+		}
+
 		if ( 'signed' != $this->option( 'tos' ) ) {
 			return true; // only show ads for folks that have signed the TOS
 		}
@@ -373,14 +378,12 @@ HTML;
 			return true; // don't show to logged in users (if that option is selected)
 		}
 
-		// TODO verify
-		if ( $this->params->is_mobile() && is_ssl() ) {
-			return true; // Not support mobile ads over SSL at the moment
-		}
-
 		return false;
 	}
 }
+
+register_activation_hook( __FILE__, array( 'AdControl_Cron', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'AdControl_Cron', 'deactivate' ) );
 
 global $adcontrol;
 $adcontrol = new AdControl();
