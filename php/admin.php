@@ -22,6 +22,8 @@ class AdControl_Admin {
 		'adsense_leader_tag_unit',
 		'amazon_match_buy',
 		'enable_advanced_settings',
+		'wordads_approved',
+		'wordads_active',
 	);
 	private $active_tab = 'adcontrol_settings';
 	private $options = array();
@@ -29,7 +31,6 @@ class AdControl_Admin {
 	private $basic_settings_key = 'adcontrol_settings';
 	private $advanced_settings_key = 'adcontrol_advanced_settings';
 	private $plugin_options_key = 'adcontrol';
-	private $status;
 	private $show_revenue = true;
 	private $tabs = array();
 
@@ -42,14 +43,25 @@ class AdControl_Admin {
 			'adcontrol_advanced_settings' => __( 'Advanced Settings', $this->plugin_options_key ),
 			'adcontrol_earnings'          => __( 'Earnings', $this->plugin_options_key ),
 		);
+
+		// check status on first admin load
+		if ( ! isset( $_GET['tab'] ) ) {
+			AdControl_Cron::update_wordads_status_from_api();
+		}
+
 		$this->blog_id = Jetpack::get_option( 'id', 0 );
 		$this->options = get_option( $this->basic_settings_key, array() );
 		$this->options_advanced = get_option( $this->advanced_settings_key, array() );
-		$this->status = 'active'; // TODO
-		add_action( 'admin_menu', array( $this, 'admin_menu' ), 11 );
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'admin_init', array( $this, 'register_advanced_settings' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+
+		if ( $this->get_option( 'wordads_approved' ) ) {
+			add_action( 'admin_menu', array( $this, 'admin_menu' ), 11 );
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
+			add_action( 'admin_init', array( $this, 'register_advanced_settings' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		} else {
+			add_action( 'admin_menu', array( $this, 'not_approved_menu' ) );
+		}
+
 		add_filter( 'plugin_action_links_' . ADCONTROL_BASENAME, array( $this, 'settings_link' ) );
 	}
 
@@ -126,10 +138,30 @@ class AdControl_Admin {
 	 */
 	function userdash_show_page() {
 		$this->admin_tabs();
-		if ( 'adcontrol_earnings' == $this->active_tab )
+		if ( 'adcontrol_earnings' == $this->active_tab ) {
 			$this->userdash_show_revenue();
-		else
+		} else {
 			$this->userdash_show_settings();
+		}
+	}
+
+	/**
+	 * @since 0.2
+	 */
+	function userdash_not_approved() {
+		$settings = __( 'AdControl Settings', 'adcontrol' );
+		$notice = sprintf(
+			__( 'We are still waiting for your application to be approved. In the mean time, feel free to %scontact us%s with any questions.', 'adcontrol' ),
+			'<a href="https://wordads.co/contact/" target="_blank">',
+			'</a>'
+		);
+		echo <<<HTML
+		<div class="wrap">
+			<div id="icon-options-general" class="icon32"><br></div>
+			<h2>$settings</h2>
+			<p>$notice</p>
+		</div>
+HTML;
 	}
 
 	/**
@@ -167,15 +199,17 @@ class AdControl_Admin {
 	 */
 	function validate_settings( $settings ) {
 		$to_save = array();
-		if ( 'signed' == $this->get_option( 'tos' ) || ( isset( $settings[ 'tos' ] ) && 'signed' == $settings[ 'tos' ] ) )
+		if ( 'signed' == $this->get_option( 'tos' ) || ( isset( $settings[ 'tos' ] ) && 'signed' == $settings[ 'tos' ] ) ) {
 			$to_save[ 'tos' ] = 'signed';
-		else
+		} else {
 			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', $this->plugin_options_key ) );
+		}
 
-		if ( isset( $settings['country'] ) && 2 == strlen( $settings['country'] ) )
+		if ( isset( $settings['country'] ) && 2 == strlen( $settings['country'] ) ) {
 			$to_save[ 'country' ] = $settings[ 'country' ];
-		else
+		} else {
 			add_settings_error( 'country', 'country', __( 'Please select a country.', $this->plugin_options_key ) );
+		}
 
 		$to_save[ 'paypal' ] = $settings[ 'paypal' ];
 
@@ -297,6 +331,21 @@ class AdControl_Admin {
 			'manage_options',
 			$this->plugin_options_key,
 			array( $this, 'userdash_show_page' )
+		);
+	}
+
+	/**
+	 * Add notice the user is awaiting on approval
+	 *
+	 * @since 0.2
+	 */
+	function not_approved_menu() {
+		add_options_page(
+			'AdControl',
+			'AdControl',
+			'manage_options',
+			'adcontrol',
+			array( $this, 'userdash_not_approved' )
 		);
 	}
 
