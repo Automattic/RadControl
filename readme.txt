@@ -2,10 +2,10 @@
 Contributors: Automattic, derekspringer, egill
 Tags: advertising, ad codes, ads, adsense
 Requires at least: 3.4
-Tested up to: 3.8
-Stable tag: 0.1.1-beta
+Tested up to: 4.3.1
+Stable tag: 0.2-beta
 
-Simply harness the power of WordPress.com's advertising partners for your own blog.
+Harness the power of WordPress.com's advertising partners for your own blog.
 
 == Description ==
 
@@ -32,3 +32,7 @@ Since the plugin is in its early stages, there are a couple additional configura
 = 0.1 =
 
 First cut of the plugin which includes belowpost ad as well as optional AdSense fallback.
+
+= 0.2 =
+
+Updated plugin to use IPONWEB and WP.com REST API

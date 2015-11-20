@@ -3,9 +3,9 @@
 /*
 Plugin Name: AdControl for WordPress
 Plugin URI: http://wordads.co/contact/
-Description: Simply harness the power of WordPress.com's advertising partners for your own blog.
+Description: Harness the power of WordPress.com's advertising partners for your own blog.
 Author: Automattic
-Version: 0.1.1-beta
+Version: 0.2-beta
 Author URI: http://automattic.com
 Text Domain: adcontrol
 
@@ -26,7 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '0.1-beta' );
+define( 'ADCONTROL_VERSION', '0.2-beta' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
