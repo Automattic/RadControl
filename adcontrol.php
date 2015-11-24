@@ -126,8 +126,9 @@ class AdControl {
 
 		require_once( ADCONTROL_ROOT . '/php/params.php' );
 		$this->params = new AdControl_Params();
-		if ( $this->should_bail() )
+		if ( $this->should_bail() ) {
 			return;
+		}
 
 		$this->insert_adcode();
 		$this->insert_extras();
@@ -366,7 +367,7 @@ HTML;
 			return true; // user isn't approved for AdControl
 		}
 
-		if ( 'signed' != $this->option( 'tos' ) ) {
+		if ( true !== $this->option( 'tos' ) ) {
 			return true; // only show ads for folks that have signed the TOS
 		}
 
