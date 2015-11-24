@@ -44,20 +44,22 @@ class AdControl_Admin {
 			'adcontrol_earnings'          => __( 'Earnings', $this->plugin_options_key ),
 		);
 
-		// check status on first admin load
-		if ( ! isset( $_GET['tab'] ) ) {
-			AdControl_Cron::update_wordads_status_from_api();
+		if ( ! isset( $_GET['tab'] ) || 'adcontrol_settings' == $_GET['tab'] ) {
+			AdControl_API::update_wordads_status_from_api();
+			AdControl_API::update_tos_status_from_api();
 		}
 
 		$this->blog_id = Jetpack::get_option( 'id', 0 );
 		$this->options = get_option( $this->basic_settings_key, array() );
 		$this->options_advanced = get_option( $this->advanced_settings_key, array() );
 
-		if ( $this->get_option( 'wordads_approved' ) ) {
+		if ( $this->get_option( 'wordads_approved' ) && $this->get_option( 'tos' ) ) {
 			add_action( 'admin_menu', array( $this, 'admin_menu' ), 11 );
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 			add_action( 'admin_init', array( $this, 'register_advanced_settings' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+		} else if ( $this->get_option( 'wordads_approved' ) ) {
+			add_action( 'admin_menu', array( $this, 'tos_menu' ) );
 		} else {
 			add_action( 'admin_menu', array( $this, 'not_approved_menu' ) );
 		}
@@ -81,8 +83,10 @@ class AdControl_Admin {
 	 */
 	function get_option( $key ) {
 		// Options are limited to those specified in $this->valid_settings
-		if ( ! in_array( $key, $this->valid_settings ) )
+		if ( ! in_array( $key, $this->valid_settings ) ) {
 			return;
+		}
+
 		$option = null;
 		if ( isset( $this->options[ $key ] ) ) {
 			$option = $this->options[ $key ];
@@ -96,8 +100,9 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function admin_scripts( $hook ) {
-		if ( 'settings_page_adcontrol' != $hook )
+		if ( 'settings_page_adcontrol' != $hook ) {
 			return;
+		}
 
 		wp_enqueue_script(
 			'adcontrol-admin',
@@ -143,6 +148,25 @@ class AdControl_Admin {
 		} else {
 			$this->userdash_show_settings();
 		}
+	}
+
+	/**
+	 * @since 0.2
+	 */
+	function userdash_tos() {
+		$settings = __( 'AdControl Settings', 'adcontrol' );
+		$notice = sprintf(
+			__( 'Please accept the %sWordAds Terms of Service%s in your %sSettings%s.', 'adcontrol' ),
+			'<a href="https://wordpress.com/tos-wordads/" target="_blank">', '</a>',
+			'<a href="https://wordpress.com/ads/settings/' . $this->blog_id . '" target="_blank">', '</a>'
+		);
+		echo <<<HTML
+		<div class="wrap">
+			<div id="icon-options-general" class="icon32"><br></div>
+			<h2>$settings</h2>
+			<p>$notice</p>
+		</div>
+HTML;
 	}
 
 	/**
@@ -199,23 +223,9 @@ HTML;
 	 */
 	function validate_settings( $settings ) {
 		$to_save = array();
-		if ( 'signed' == $this->get_option( 'tos' ) || ( isset( $settings[ 'tos' ] ) && 'signed' == $settings[ 'tos' ] ) ) {
-			$to_save[ 'tos' ] = 'signed';
-		} else {
-			add_settings_error( 'tos', 'tos', __( 'You must agree to the Terms of Service.', $this->plugin_options_key ) );
-		}
-
-		if ( isset( $settings['country'] ) && 2 == strlen( $settings['country'] ) ) {
-			$to_save[ 'country' ] = $settings[ 'country' ];
-		} else {
-			add_settings_error( 'country', 'country', __( 'Please select a country.', $this->plugin_options_key ) );
-		}
-
-		$to_save[ 'paypal' ] = $settings[ 'paypal' ];
-
 		if ( 'no' == $settings[ 'show_to_logged_in' ] ) {
 			$to_save[ 'show_to_logged_in' ] = 'no';
-		} elseif ( 'pause' == $settings[ 'show_to_logged_in' ] ) {
+		} else if ( 'pause' == $settings[ 'show_to_logged_in' ] ) {
 			$to_save[ 'show_to_logged_in' ] = 'pause';
 		} else {
 			$to_save[ 'show_to_logged_in' ] = 'yes';
@@ -223,49 +233,6 @@ HTML;
 
 		$to_save['enable_advanced_settings'] =
 			isset( $settings['enable_advanced_settings'] ) && $settings['enable_advanced_settings'] ? 1 : 0;
-
-		if ( ! $this->get_option( 'application_submitted' ) && isset( $to_save[ 'tos' ] ) && isset( $to_save[ 'country' ] ) /* && 0 != Jetpack::get_option( 'id', 0 ) */ ) {
-			$response = wp_remote_post(
-				ADCONTROL_APPLICATION_URL,
-				array(
-					'body' => array(
-						'wordads-form' => '1',
-						'adcontrol'    => '1',
-						'jetpack_id'   => Jetpack::get_option( 'id', 0 ),
-						'country'      => $to_save[ 'country' ],
-						'paypal'       => $to_save[ 'paypal' ]
-					)
-				)
-			);
-
-			if ( is_wp_error( $response ) ) {
-				$to_save[ 'tos' ] = '';
-				add_settings_error(
-					'tos',
-					'tos',
-					sprintf(
-						__( 'Error submitting AdControl application: %s', $this->plugin_options_key ),
-						$response->get_error_message()
-					)
-				);
-				return $to_save;
-			}
-
-			$response_body = json_decode( $response['body'] );
-			if ( empty( $response_body->success ) ) {
-				$to_save[ 'tos' ] = '';
-				add_settings_error(
-					'tos',
-					'tos',
-					sprintf(
-						__( 'Error submitting AdControl application: %s', $this->plugin_options_key ),
-						$response_body->reason
-					)
-				);
-			} else {
-				$to_save[ 'application_submitted' ] = 1;
-			}
-		}
 
 		return $to_save;
 	}
@@ -331,6 +298,21 @@ HTML;
 			'manage_options',
 			$this->plugin_options_key,
 			array( $this, 'userdash_show_page' )
+		);
+	}
+
+	/**
+	 * Add notice the user is awaiting on approval
+	 *
+	 * @since 0.2
+	 */
+	function tos_menu() {
+		add_options_page(
+			'AdControl',
+			'AdControl',
+			'manage_options',
+			'adcontrol',
+			array( $this, 'userdash_tos' )
 		);
 	}
 
