@@ -44,9 +44,12 @@ class AdControl_API {
 	 * @since 0.2
 	 */
 	static function update_tos_status_from_api() {
-		$options = get_option( 'adcontrol_settings', array() );
-		$options['tos'] = self::get_tos_status();
-		update_option( 'adcontrol_settings', $options );
+		$status = self::get_tos_status();
+		if ( ! is_wp_error( $status ) ) {
+			$options = get_option( 'adcontrol_settings', array() );
+			$options['tos'] = $status;
+			update_option( 'adcontrol_settings', $options );
+		}
 	}
 
 	/**
@@ -112,11 +115,12 @@ class AdControl_API {
 	 * @since 0.2
 	 */
 	static function update_wordads_status_from_api() {
-		$options = get_option( 'adcontrol_settings', array() );
-		$approved = self::is_wordads_approved();
-		$active = self::is_wordads_active();
-		$options['wordads_approved'] = $approved;
-		$options['wordads_active'] = $active;
-		update_option( 'adcontrol_settings', $options );
+		$status = self::get_wordads_status();
+		if ( ! is_wp_error( $status ) ) {
+			$options = get_option( 'adcontrol_settings', array() );
+			$options['wordads_approved'] = self::is_wordads_approved();
+			$options['wordads_active'] = self::is_wordads_active();
+			update_option( 'adcontrol_settings', $options );
+		}
 	}
 }
