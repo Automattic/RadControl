@@ -7,10 +7,11 @@
  */
 class AdControl_API {
 
-	private static $status = null;
+	private static $tos_signed = null;
+	private static $wordads_status = null;
 
 	/**
-	 * Returns status of WordAds Terms of Service
+	 * Returns status of WordAds Terms of Service (and store it in options)
 	 * @return boolean true if TOS has been signed
 	 *
 	 * @since 0.2
@@ -20,6 +21,11 @@ class AdControl_API {
 			return true;
 		}
 
+		// only need to check once
+		if ( ! is_null( self::$tos_signed ) ) {
+			return self::$tos_signed;
+		}
+
 		$endpoint = sprintf( '/sites/%d/wordads/tos', Jetpack::get_option( 'id' ) );
 		$response = Jetpack_Client::wpcom_json_api_request_as_blog( $endpoint );
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -27,7 +33,20 @@ class AdControl_API {
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ) );
-		return isset( $body->tos ) && 'signed' == $body->tos;
+		self::$tos_signed = isset( $body->tos ) && 'signed' == $body->tos;
+
+		return self::$tos_signed;
+	}
+
+	/**
+	 * Grab WordAds Terms of Service status from WP.com API and store as option
+	 *
+	 * @since 0.2
+	 */
+	static function update_tos_status_from_api() {
+		$options = get_option( 'adcontrol_settings', array() );
+		$options['tos'] = self::get_tos_status();
+		update_option( 'adcontrol_settings', $options );
 	}
 
 	/**
@@ -51,12 +70,12 @@ class AdControl_API {
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ) );
-		self::$status = array(
+		self::$wordads_status = array(
 			'approved' => $body->approved,
 			'active'   => $body->active
 		);
 
-		return self::$status;
+		return self::$wordads_status;
 	}
 
 	/**
@@ -66,11 +85,11 @@ class AdControl_API {
 	 * @since 0.2
 	 */
 	public static function is_wordads_approved() {
-		if ( is_null( self::$status ) ) {
+		if ( is_null( self::$wordads_status ) ) {
 			self::get_wordads_status();
 		}
 
-		return self::$status['approved'];
+		return self::$wordads_status['approved'];
 	}
 
 	/**
@@ -80,10 +99,24 @@ class AdControl_API {
 	 * @since 0.2
 	 */
 	public static function is_wordads_active() {
-		if ( is_null( self::$status ) ) {
+		if ( is_null( self::$wordads_status ) ) {
 			self::get_wordads_status();
 		}
 
-		return self::$status['active'];
+		return self::$wordads_status['active'];
+	}
+
+	/**
+	 * Grab WordAds status from WP.com API and store as option
+	 *
+	 * @since 0.2
+	 */
+	static function update_wordads_status_from_api() {
+		$options = get_option( 'adcontrol_settings', array() );
+		$approved = self::is_wordads_approved();
+		$active = self::is_wordads_active();
+		$options['wordads_approved'] = $approved;
+		$options['wordads_active'] = $active;
+		update_option( 'adcontrol_settings', $options );
 	}
 }

@@ -13,7 +13,7 @@ class AdControl_Cron {
 	 * @since 0.2
 	 */
 	function __construct() {
-		add_action( 'adcontrol_cron_status', array( $this, 'update_wordads_status_from_api' ) );
+		add_action( 'adcontrol_cron_status', array( $this, 'update_wordads_status' ) );
 	}
 
 	/**
@@ -36,15 +36,11 @@ class AdControl_Cron {
 
 	/**
 	 * Grab WordAds status from WP.com API
-	 * @return [type] [description]
+	 *
+	 * @since 0.2
 	 */
-	static function update_wordads_status_from_api() {
-		$options = get_option( 'adcontrol_settings', array() );
-		$approved = AdControl_API::is_wordads_approved();
-		$active = AdControl_API::is_wordads_active();
-		$options['wordads_approved'] = $approved;
-		$options['wordads_active'] = $active;
-		update_option( 'adcontrol_settings', $options );
+	static function update_wordads_status() {
+		AdControl_API::update_wordads_status_from_api();
 	}
 }
 
