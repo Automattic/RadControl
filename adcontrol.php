@@ -381,8 +381,19 @@ HTML;
 
 		return false;
 	}
+
+	/**
+	 * Activation hook actions
+	 *
+	 * @since 0.2
+	 */
+	public static function activate() {
+		// Grab status from API on activation
+		AdControl_API::update_tos_status_from_api();
+	}
 }
 
+register_activation_hook( __FILE__, array( 'AdControl', 'activate' ) );
 register_activation_hook( __FILE__, array( 'AdControl_Cron', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'AdControl_Cron', 'deactivate' ) );
 
