@@ -33,12 +33,12 @@ class AdControl_Adsense {
 	public static function get_asynchronous_adsense( $pub, $tag, $width, $height, $url = '' ) {
 		// TODO URL
 		return <<<HTML
-		<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<script type="text/javascript" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 		<ins class="adsbygoogle"
 			 style="display:inline-block;width:{$width}px;height:{$height}px"
 			 data-ad-client="ca-$pub"
 			 data-ad-slot="$tag"></ins>
-		<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+		<script type="text/javascript">(adsbygoogle = window.adsbygoogle || []).push({});</script>
 HTML;
 	}
 }
