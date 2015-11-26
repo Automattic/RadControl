@@ -60,10 +60,12 @@ class AdControl_API {
 	 */
 	public static function get_wordads_status() {
 		if ( Jetpack::is_development_mode() ) {
-			return array(
+			self::$wordads_status = array(
 				'approved' => true,
 				'active'   => true
 			);
+
+			return self::$wordads_status;
 		}
 
 		$endpoint = sprintf( '/sites/%d/wordads/status', Jetpack::get_option( 'id' ) );
