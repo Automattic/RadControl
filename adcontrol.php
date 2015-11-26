@@ -367,7 +367,7 @@ HTML;
 			return true; // user isn't approved for AdControl
 		}
 
-		if ( true !== $this->option( 'tos' ) ) {
+		if ( ! $this->option( 'tos' ) ) {
 			return true; // only show ads for folks that have signed the TOS
 		}
 
@@ -375,7 +375,7 @@ HTML;
 			return true; // don't show if paused
 		}
 
-		if ( ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) && is_user_logged_in() ) {
+		if ( is_user_logged_in() && ! current_user_can( 'manage_options' ) && 'no' == $this->option( 'show_to_logged_in' ) ) {
 			return true; // don't show to logged in users (if that option is selected)
 		}
 
