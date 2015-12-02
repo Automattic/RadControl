@@ -5,7 +5,7 @@ Requires at least: 3.4
 Tested up to: 4.4
 Stable tag: 0.2-beta
 
-Harness the power of WordPress.com's advertising partners for your own blog.
+Harness the power of WordPress.com's advertising partners for your own website.
 
 == Description ==
 
@@ -29,10 +29,10 @@ Since the plugin is in its early stages, there are a couple additional configura
 
 == Changelog ==
 
+= 0.2 =
+
+Updated plugin to use IPONWEB and WP.com REST API.
+
 = 0.1 =
 
 First cut of the plugin which includes belowpost ad as well as optional AdSense fallback.
-
-= 0.2 =
-
-Updated plugin to use IPONWEB and WP.com REST API

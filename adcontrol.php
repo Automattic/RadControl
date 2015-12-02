@@ -2,8 +2,8 @@
 
 /*
 Plugin Name: AdControl for WordPress
-Plugin URI: http://wordads.co/contact/
-Description: Harness the power of WordPress.com's advertising partners for your own blog.
+Plugin URI: http://wordads.co/
+Description: Harness the power of WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
 Version: 0.2-beta
 Author URI: http://automattic.com
@@ -388,8 +388,10 @@ HTML;
 	 * @since 0.2
 	 */
 	public static function activate() {
-		// Grab status from API on activation
-		AdControl_API::update_tos_status_from_api();
+		if ( self::check_jetpack() ) {
+			// Grab status from API on activation if JP is active
+			AdControl_API::update_tos_status_from_api();
+		}
 	}
 }
 
