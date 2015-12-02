@@ -38,13 +38,14 @@ class AdControl_Admin {
 	 * @since 0.1
 	 */
 	function __construct() {
+		global $pagenow;
 		$this->tabs = array(
 			'adcontrol_settings'          => __( 'AdControl Settings', $this->plugin_options_key ),
 			'adcontrol_advanced_settings' => __( 'Advanced Settings', $this->plugin_options_key ),
 			'adcontrol_earnings'          => __( 'Earnings', $this->plugin_options_key ),
 		);
 
-		if ( ! isset( $_GET['tab'] ) || 'adcontrol_settings' == $_GET['tab'] ) {
+		if ( isset( $_GET['page'] ) && 'adcontrol' == $_GET['page'] && ( ! isset( $_GET['tab'] ) || 'adcontrol_settings' == $_GET['tab'] ) ) {
 			AdControl_API::update_wordads_status_from_api();
 			AdControl_API::update_tos_status_from_api();
 		}
@@ -65,6 +66,49 @@ class AdControl_Admin {
 		}
 
 		add_filter( 'plugin_action_links_' . ADCONTROL_BASENAME, array( $this, 'settings_link' ) );
+
+		// Alert admins of missing steps on appropriate plugin pages
+		if ( current_user_can( 'manage_options' ) && 'plugins.php' == $pagenow &&
+				( ! $this->get_option( 'tos' ) || ! $this->get_option( 'wordads_approved' ) ) ) {
+			add_action( 'admin_notices', array( $this, 'alert_setup_steps' ) );
+		}
+	}
+
+	/**
+	 * Alert admin of required steps to finish setup
+	 * @since 0.2
+	 */
+	function alert_setup_steps() {
+		$requires = __( 'AdControl still requires the following actions to activate:', 'adcontrol' );
+		$missing = '';
+		if ( ! $this->get_option( 'wordads_approved' ) ) {
+			$notice = sprintf(
+				__( 'We are still waiting for your application to be approved. In the mean time, feel free to %scontact us%s with any questions.', 'adcontrol' ),
+				'<a href="https://wordads.co/contact/" target="_blank">',
+				'</a>'
+			);
+
+			$missing .= "<li>$notice</li>";
+		}
+
+		if ( ! $this->get_option( 'tos' ) ) {
+			$notice = sprintf(
+				__( 'Please accept the %sWordAds Terms of Service%s in your %sSettings%s.', 'adcontrol' ),
+					'<a href="https://wordpress.com/tos-wordads/" target="_blank">', '</a>',
+					'<a href="https://wordpress.com/ads/settings/' . $this->blog_id . '" target="_blank">', '</a>'
+			);
+
+			$missing .= "<li>$notice</li>";
+		}
+
+        echo <<<HTML
+        <div class="notice error is-dismissible">
+        	<p>$requires</p>
+        	<ul style="list-style:inherit;padding-left:40px;">
+        		$missing
+        	</ul>
+        </div>
+HTML;
 	}
 
 	/**
