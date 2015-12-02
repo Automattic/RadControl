@@ -391,6 +391,7 @@ HTML;
 		if ( self::check_jetpack() ) {
 			// Grab status from API on activation if JP is active
 			AdControl_API::update_tos_status_from_api();
+			AdControl_API::update_wordads_status_from_api();
 		}
 	}
 }
