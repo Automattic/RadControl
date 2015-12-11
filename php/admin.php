@@ -83,9 +83,9 @@ class AdControl_Admin {
 		$missing = '';
 		if ( ! $this->get_option( 'wordads_approved' ) ) {
 			$notice = sprintf(
-				__( 'We are still waiting for your application to be approved. In the mean time, feel free to %scontact us%s with any questions.', 'adcontrol' ),
-				'<a href="https://wordads.co/contact/" target="_blank">',
-				'</a>'
+				__( 'We are still waiting for your %sapplication%s to be approved. In the mean time, feel free to %scontact us%s with any questions.', 'adcontrol' ),
+				'<a href="https://wordads.co/signup/" target="_blank">', '</a>',
+				'<a href="https://wordads.co/contact/" target="_blank">', '</a>'
 			);
 
 			$missing .= "<li>$notice</li>";
@@ -219,9 +219,9 @@ HTML;
 	function userdash_not_approved() {
 		$settings = __( 'AdControl Settings', 'adcontrol' );
 		$notice = sprintf(
-			__( 'We are still waiting for your application to be approved. In the mean time, feel free to %scontact us%s with any questions.', 'adcontrol' ),
-			'<a href="https://wordads.co/contact/" target="_blank">',
-			'</a>'
+			__( 'We are still waiting for your %sapplication%s to be approved. In the mean time, feel free to %scontact us%s with any questions.', 'adcontrol' ),
+			'<a href="https://wordads.co/signup/" target="_blank">', '</a>',
+			'<a href="https://wordads.co/contact/" target="_blank">', '</a>'
 		);
 		echo <<<HTML
 		<div class="wrap">
