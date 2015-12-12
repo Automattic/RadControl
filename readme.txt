@@ -3,7 +3,7 @@ Contributors: Automattic, derekspringer, egill
 Tags: advertising, ad codes, ads, adsense
 Requires at least: 3.4
 Tested up to: 4.4
-Stable tag: 0.2-beta
+Stable tag: 1.0
 
 Harness the power of WordPress.com's advertising partners for your own website.
 
@@ -28,6 +28,10 @@ Since the plugin is in its early stages, there are a couple additional configura
 2. Ads display on your site below the post
 
 == Changelog ==
+
+= 1.0 =
+
+Plugin streamlining and cleanup before release.
 
 = 0.2 =
 

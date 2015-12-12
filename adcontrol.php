@@ -5,7 +5,7 @@ Plugin Name: AdControl for WordPress
 Plugin URI: http://wordads.co/
 Description: Harness the power of WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 0.2-beta
+Version: 1.0
 Author URI: http://automattic.com
 Text Domain: adcontrol
 
@@ -26,12 +26,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '0.2-beta' );
+define( 'ADCONTROL_VERSION', '1.0' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL', plugins_url( '/', __FILE__ ) );
-define( 'ADCONTROL_APPLICATION_URL', 'http://wordads.co/signup/' );
 define( 'ADCONTROL_API_TEST_ID', '26942' );
 
 require_once( ADCONTROL_ROOT . '/php/widgets.php' );
