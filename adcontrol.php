@@ -158,8 +158,7 @@ class AdControl {
 		add_filter( 'the_content', array( $this, 'insert_ad' ) );
 		add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
-		if ( ! empty( $this->params->options['adsense_leader_set'] )
-				&& ! empty( $this->params->options['enable_advanced_settings'] ) ) {
+		if ( ! empty( $this->params->options['leaderboard'] ) ) {
 			add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
 		}
 	}
@@ -279,7 +278,7 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_header_ad() {
-		echo $this->get_ad( 'top', 'adsense' );
+		echo $this->get_ad( 'top' );
 	}
 
 	/**
@@ -290,33 +289,35 @@ HTML;
 	function get_ad( $spot, $type = 'iponweb' ) {
 		$snippet = '';
 		if ( 'iponweb' == $type ) {
-			if ( $this->inpost_ad_inserted ) {
-				return '';
+			$section_id = ADCONTROL_API_TEST_ID;
+			$width = 300;
+			$height = 250;
+			if ( 'top' == $spot ) {
+				if ( $this->top_ad_inserted || 0 === $this->params->blog_id ) {
+					return '';
+				}
+
+				$section_id = $this->params->blog_id . '2';
+				// mrec for mobile, leaderboard for desktop
+				$width = $this->params->mobile_device ? 300 : 728;
+				$height = $this->params->mobile_device ? 250 : 90;
+				$this->top_ad_inserted = true;
+			} else if ( 'belowpost' ) {
+				if ( $this->inpost_ad_inserted ) {
+					return '';
+				}
+
+				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '1';
+				$width = 300;
+				$height = 250;
+				$this->inpost_ad_inserted = true;
 			}
 
-			$this->inpost_ad_inserted = true;
-			$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '1';
 			$snippet = <<<HTML
 			<script type='text/javascript'>
-				(function(g){g.__ATA.initAd({sectionId:$section_id, width:300, height:250});})(window);
+				(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
 			</script>
 HTML;
-		} elseif ( 'adsense' == $type ) {
-			if ( $this->top_ad_inserted ) {
-				return '';
-			}
-
-			require_once( ADCONTROL_ROOT . '/php/networks/adsense.php' );
-			if ( 'top' == $spot ) {
-				$spot = 'leader';
-			}
-
-			$this->top_ad_inserted = true;
-			$pub = $this->params->options['adsense_publisher_id'];
-			$tag = $this->params->options['adsense_' . $spot . '_tag_id'];
-			$width = AdControl::$ad_tag_ids[$this->params->options['adsense_' . $spot . '_tag_unit']]['width'];
-			$height = AdControl::$ad_tag_ids[$this->params->options['adsense_' . $spot . '_tag_unit']]['height'];
-			$snippet = AdControl_Adsense::get_asynchronous_adsense( $pub, $tag, $width, $height );
 		}
 
 		$about = __( 'About these ads', 'adcontrol' );
