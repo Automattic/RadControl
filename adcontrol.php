@@ -293,12 +293,12 @@ HTML;
 			$width = 300;
 			$height = 250;
 			if ( 'top' == $spot ) {
-				if ( $this->top_ad_inserted || 0 === $this->params->blog_id ) {
+				if ( $this->top_ad_inserted ) {
 					return '';
 				}
 
-				$section_id = $this->params->blog_id . '2';
 				// mrec for mobile, leaderboard for desktop
+				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '2';
 				$width = $this->params->mobile_device ? 300 : 728;
 				$height = $this->params->mobile_device ? 250 : 90;
 				$this->top_ad_inserted = true;
