@@ -187,8 +187,11 @@ HTML;
 	 */
 	function userdash_show_settings() {
 		$href = 'https://wordpress.com/ads/earnings/' . $this->blog_id;
-		if ( $this->is_paused() )
+		if ( $this->is_paused() ) {
 			echo '<div class="updated"><p><strong>' . __( 'WordAds is paused. Please choose which visitors should see ads.', $this->plugin_options_key ) . '</strong></p></div>';
+		}
+
+		if ( 0 !== $this->blog_id ):
 		?>
 		<p>
 			<em><?php _e( 'Please login to our secure servers on WordPress.com to see your earnings details.', $this->plugin_options_key ); ?></em>
@@ -196,6 +199,7 @@ HTML;
 				<?php _e( 'Show Me', $this->plugin_options_key ); ?>
 			</a>
 		</p>
+		<?php endif ?>
 		<form action="options.php" method="post" id="<?php echo esc_attr( $this->active_tab ); ?>">
 			<?php
 			wp_nonce_field( 'update-options' );

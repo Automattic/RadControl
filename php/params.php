@@ -178,12 +178,14 @@ class AdControl_Params {
 	 */
 	public static function should_show() {
 		global $wp_query;
-		if ( is_single() || ( is_page() && ! is_home() ) )
+		if ( is_single() || ( is_page() && ! is_home() ) ) {
 			return true;
+		}
 
 		// TODO this would be a good place for allowing the user to specify
-		if ( ( is_home() || is_archive() || is_search() ) && 0 == $wp_query->current_post )
+		if ( ( is_home() || is_archive() || is_search() ) && 0 == $wp_query->current_post ) {
 			return true;
+		}
 
 		return false;
 	}

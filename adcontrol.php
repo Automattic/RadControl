@@ -69,9 +69,6 @@ class AdControl {
 		),
 	);
 
-	private $inpost_ad_inserted = false;
-	private $top_ad_inserted = false;
-
 	/**
 	 * Convenience function for grabbing options from params->options
 	 * @param  string $option the option to grab
@@ -266,8 +263,9 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_ad( $content ) {
-		if ( ! $this->params->should_show() )
+		if ( ! $this->params->should_show() ) {
 			return $content;
+		}
 
 		return $content . $this->get_ad( 'belowpost' );
 	}
@@ -293,24 +291,14 @@ HTML;
 			$width = 300;
 			$height = 250;
 			if ( 'top' == $spot ) {
-				if ( $this->top_ad_inserted ) {
-					return '';
-				}
-
 				// mrec for mobile, leaderboard for desktop
 				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '2';
 				$width = $this->params->mobile_device ? 300 : 728;
 				$height = $this->params->mobile_device ? 250 : 90;
-				$this->top_ad_inserted = true;
 			} else if ( 'belowpost' ) {
-				if ( $this->inpost_ad_inserted ) {
-					return '';
-				}
-
 				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '1';
 				$width = 300;
 				$height = 250;
-				$this->inpost_ad_inserted = true;
 			}
 
 			$snippet = <<<HTML
