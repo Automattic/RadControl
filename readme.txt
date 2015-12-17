@@ -24,8 +24,9 @@ Since the plugin is in its early stages, there are a couple additional configura
 
 == Screenshots ==
 
-1. Set your AdControl settings in the Dashboard -> Settings -> AdControl page
-2. Ads display on your site below the post
+1. Ads display on your site below the post
+2. Set your AdControl settings in the Dashboard -> Settings -> AdControl page
+3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
 
