@@ -41,6 +41,7 @@
 	text-decoration: none !important;
 	opacity: 0.85;
 	border-bottom: none !important;			/* some themes ad dotted underlines, that won't look nice */
+	box-shadow: none !important;
 }
 
 .wpa-about:hover, .wa_infobox a:hover {
