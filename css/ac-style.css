@@ -29,25 +29,19 @@
 
 /* about these ads */
 .wpa-about {
-	text-align: left;
 	position: absolute;
-	font: 9px/1 sans-serif !important;		/* !important unfortunatey necessary to ensure consistency */
+	top: 5px;
+	left: 0;
+	right: 0;
 	display: block;
-	text-decoration: none !important;		/* !important necessary, since themes override this routinely */
-	color: #888;
 	margin-top: 0;
+	color: #888;
+	font: 10px/1 "Open Sans", Arial, sans-serif !important;
+	text-align: left !important;
+	text-decoration: none !important;
+	opacity: 0.85;
 	border-bottom: none !important;			/* some themes ad dotted underlines, that won't look nice */
-}
-
-.wpa-about:before {
-	font: 16px/1 "Noticons";
-	content: '\f813';
-	-webkit-font-smoothing: antialiased;
-	display: inline-block;
-	width: 16px;
-	margin-left: -3px;
-	position: relative;
-	top: 4px;
+	box-shadow: none !important;
 }
 
 .wpa-about:hover, .wa_infobox a:hover {
@@ -56,10 +50,14 @@
 }
 
 /* ad unit wrapper */
-.wpa .u>div {
+.wpa .u>div {	/* @todo: deprecate wpdvert */
 	display: block;
-	margin-top: 17px;			/* this makes "about these ads" visible */
+	margin-top: 5px;			/* this makes "about these ads" visible */
 	margin-bottom: 1em;			/* every ad should have a little space below it */
+}
+
+div.wpa>div {
+	margin-top: 20px;
 }
 
 .wpa .u .adsbygoogle {
