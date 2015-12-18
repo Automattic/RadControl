@@ -175,19 +175,11 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function enqueue_scripts() {
-		// CSS
-		wp_enqueue_style(
-			'noticon-font',
-			'//s0.wordpress.com/i/noticons/noticons.css',
-			false,
-			'2013-08-28'
-		);
-
 		wp_enqueue_style(
 			'adcontrol',
 			ADCONTROL_URL . 'css/ac-style.css',
-			array( 'noticon-font' ),
-			'2013-06-24'
+			array(),
+			'2015-12-18'
 		);
 	}
 
