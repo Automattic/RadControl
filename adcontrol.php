@@ -148,7 +148,6 @@ class AdControl {
 	 * @since 0.1
 	 */
 	private function insert_adcode() {
-		$this->params->add_slot( 'belowpost' );
 		add_action( 'wp_head', array( $this, 'insert_head_meta' ), 20 );
 		add_action( 'wp_head', array( $this, 'insert_head_iponweb' ), 30 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -274,7 +273,7 @@ HTML;
 	/**
 	 * Get the ad for the spot and type.
 	 * @param  string $spot top, side, or belowpost
-	 * @param  string $type dfp or adsense
+	 * @param  string $type iponweb or adsense
 	 */
 	function get_ad( $spot, $type = 'iponweb' ) {
 		$snippet = '';

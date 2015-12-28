@@ -29,43 +29,6 @@ class AdControl_Params {
 			'AdSense'   => empty( $this->options['adsense_fallback_set'] ) ? 0 : 1,
 			'AdSafe'    => 1, // TODO
 		);
-
-		$this->dfp_slots = array();
-	}
-
-	/**
-	 * Add a DFP slot
-	 * @param string $slotname
-	 *
-	 * @since 0.1
-	 */
-	public function add_slot( $slotname ) {
-		$this->dfp_slots[] = $slotname;
-	}
-
-	/**
-	 * Returns the network appropriate targeting tags
-	 *
-	 * @since 0.1
-	 */
-	public function get_dfp_targetting() {
-		$fn = 'googletag.pubads().setTargeting';
-		$tag_attrs = '';
-		foreach ( $this->targeting_tags as $k => $v ) {
-			if ( is_array( $v ) && ! empty( $v ) ) {
-				foreach ( $v as $tag )
-					$tag_attrs .= $fn . "( '$k', " . json_encode( $v ) . " );\n";
-			} else {
-				$tag_attrs .= $fn . "( '$k', '$v' );\n";
-			}
-		}
-
-		$tags_and_cats = self::get_tags_and_categories();
-		if ( ! empty( $tags_and_cats ) ) {
-			$tag_attrs .= $fn . "( 'Tag', " . json_encode( $tags_and_cats ) . " );\n";
-		}
-
-		return $tag_attrs;
 	}
 
 	/**
