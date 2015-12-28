@@ -13,8 +13,9 @@ class AdControl_Params {
 			get_option( 'adcontrol_advanced_settings', array() )
 		);
 		$this->url = ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST']  . $_SERVER['REQUEST_URI'];
-		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) )
+		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) ) {
 			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
+		}
 
 		$this->blog_id = Jetpack::get_option( 'id', 0 );
 		$this->mobile_device = jetpack_is_mobile( 'any', true );
@@ -22,7 +23,7 @@ class AdControl_Params {
 		$this->targeting_tags = array(
 			'AdControl' => 1,
 			'BlogId'    => Jetpack::is_development_mode() ? 0 : Jetpack::get_option( 'id' ),
-			'Domain'    => esc_url( home_url() ),
+			'Domain'    => esc_url( parse_url( home_url(), PHP_URL_HOST ) ),
 			'PageURL'   => esc_url( $this->url ),
 			'LangId'    => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
 			'AdSense'   => empty( $this->options['adsense_fallback_set'] ) ? 0 : 1,
