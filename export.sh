@@ -20,6 +20,7 @@ if [ ! -d "$dest" ]; then
 fi
 
 cp adcontrol.php $dest
+cp uninstall.php $dest
 cp readme.txt $dest
 cp -R css $dest
 cp -R js $dest
