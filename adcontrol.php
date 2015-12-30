@@ -8,6 +8,7 @@ Author: Automattic
 Version: 1.0.1
 Author URI: http://automattic.com
 Text Domain: adcontrol
+Domain Path: /languages
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
 

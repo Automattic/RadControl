@@ -188,15 +188,15 @@ HTML;
 	function userdash_show_settings() {
 		$href = 'https://wordpress.com/ads/earnings/' . $this->blog_id;
 		if ( $this->is_paused() ) {
-			echo '<div class="updated"><p><strong>' . __( 'WordAds is paused. Please choose which visitors should see ads.', $this->plugin_options_key ) . '</strong></p></div>';
+			echo '<div class="updated"><p><strong>' . __( 'WordAds is paused. Please choose which visitors should see ads.', 'adcontrol' ) . '</strong></p></div>';
 		}
 
 		if ( 0 !== $this->blog_id ):
 		?>
 		<p>
-			<em><?php _e( 'Please login to our secure servers on WordPress.com to see your earnings details.', $this->plugin_options_key ); ?></em>
+			<em><?php _e( 'Please login to our secure servers on WordPress.com to see your earnings details.', 'adcontrol' ); ?></em>
 			<a class="button-secondary" href="<?php echo $href; ?>" target="_blank" style="margin-left:5px;height:22px;line-height:20px;">
-				<?php _e( 'Show Me', $this->plugin_options_key ); ?>
+				<?php _e( 'Show Me', 'adcontrol' ); ?>
 			</a>
 		</p>
 		<?php endif ?>
@@ -205,7 +205,7 @@ HTML;
 			wp_nonce_field( 'update-options' );
 			settings_fields( $this->active_tab );
 			do_settings_sections( $this->active_tab );
-			submit_button( __( 'Save Changes' ), 'primary' );
+			submit_button( __( 'Save Changes', 'adcontrol' ), 'primary' );
 			?>
 		</form>
 
@@ -236,10 +236,10 @@ HTML;
 	 */
 	function admin_menu() {
 		add_options_page(
-			__( 'AdControl Settings', $this->plugin_options_key ),
+			__( 'AdControl Settings', 'adcontrol' ),
 			'AdControl',
 			'manage_options',
-			$this->plugin_options_key,
+			'adcontrol',
 			array( $this, 'userdash_show_page' )
 		);
 	}
@@ -302,7 +302,7 @@ HTML;
 
 		add_settings_field(
 			'adcontrol_userdash_show_to_logged_in_id',
-			__( 'Show ads to:', $this->plugin_options_key ),
+			__( 'Show ads to:', 'adcontrol' ),
 			array( $this, 'setting_show_to_logged_in' ),
 			$this->basic_settings_key,
 			$section_name,
@@ -311,7 +311,7 @@ HTML;
 
 		add_settings_field(
 			'adcontrol_userdash_leaderboard_id',
-			__( 'Enable header unit:', $this->plugin_options_key ),
+			__( 'Enable header unit:', 'adcontrol' ),
 			array( $this, 'setting_leaderboard' ),
 			$this->basic_settings_key,
 			$section_name,
@@ -322,14 +322,14 @@ HTML;
 		$section_name = 'adcontrol_section_general_tos';
 		add_settings_section(
 			$section_name,
-			__( 'WordAds Terms of Service', $this->plugin_options_key ),
+			__( 'WordAds Terms of Service', 'adcontrol' ),
 			'__return_null',
 			$this->basic_settings_key
 		);
 
 		add_settings_field(
 			'adcontrol_userdash_tos_id',
-			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service%s', $this->plugin_options_key ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">', '</a>' ),
+			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service%s', 'adcontrol' ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">', '</a>' ),
 			array( $this, 'setting_tos' ),
 			$this->basic_settings_key,
 			$section_name,
@@ -346,11 +346,11 @@ HTML;
 			$show_to_logged_in = 'yes';
 		?>
 		<p><input type="radio" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[show_to_logged_in]" id="radio_show_to_logged_in" value="yes" <?php checked( $show_to_logged_in, 'yes' ); ?>/>
-		<label for="radio_show_to_logged_in"> <?php _e( 'Every visitor', $this->plugin_options_key ); ?></label></p>
+		<label for="radio_show_to_logged_in"> <?php _e( 'Every visitor', 'adcontrol' ); ?></label></p>
 		<p><input type="radio" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[show_to_logged_in]" id="radio_hide_from_logged_in" value="no" <?php checked( $show_to_logged_in, 'no' ); ?>/>
-		<label for="radio_hide_from_logged_in"><?php _e( 'Every visitor, except logged-in users (fewer impressions)', $this->plugin_options_key ); ?></label></p>
+		<label for="radio_hide_from_logged_in"><?php _e( 'Every visitor, except logged-in users (fewer impressions)', 'adcontrol' ); ?></label></p>
 		<p><input type="radio" name="<?php echo esc_attr( $this->basic_settings_key ); ?>[show_to_logged_in]" id="radio_hide_from_everyone" value="pause" <?php checked( $show_to_logged_in, 'pause' ); ?>/>
-		<label for="radio_hide_from_everyone"><?php _e( 'Do not show any ads', $this->plugin_options_key ); ?></label></p>
+		<label for="radio_hide_from_everyone"><?php _e( 'Do not show any ads', 'adcontrol' ); ?></label></p>
 		<?php
 	}
 
@@ -369,7 +369,7 @@ HTML;
 		if ( 'signed' != $this->get_option( 'tos' ) ) {
 			echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[tos]" id="chk_agreement" value="signed" /></p>';
 		} else {
-			echo '<span class="checkmark"></span>' .  __( 'Thank you for accepting the WordAds Terms of Service', $this->plugin_options_key );
+			echo '<span class="checkmark"></span>' .  __( 'Thank you for accepting the WordAds Terms of Service', 'adcontrol' );
 		}
 	}
 
