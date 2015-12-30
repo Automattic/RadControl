@@ -3,7 +3,7 @@ Contributors: Automattic, derekspringer, egill
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -33,6 +33,11 @@ Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help gett
 
 == Changelog ==
 
+= 1.0.2 =
+
+* Text domain fixes.
+* Added missing uninstall.php.
+
 = 1.0.1 =
 
 Cleanup and backend fixes.
@@ -40,11 +45,3 @@ Cleanup and backend fixes.
 = 1.0 =
 
 Plugin streamlining and cleanup before release.
-
-= 0.2 =
-
-Updated plugin to use IPONWEB and WP.com REST API.
-
-= 0.1 =
-
-First cut of the plugin which includes belowpost ad as well as optional AdSense fallback.
