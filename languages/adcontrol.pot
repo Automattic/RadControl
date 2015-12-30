@@ -1,0 +1,134 @@
+# Copyright (C) 2015 AdControl
+# This file is distributed under the same license as the AdControl package.
+msgid ""
+msgstr ""
+"Project-Id-Version: AdControl 1.0.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/radcontrol\n"
+"POT-Creation-Date: 2015-12-30 20:26:35+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: adcontrol.php:212 adcontrol.php:303 php/widgets.php:48
+msgid "About these ads"
+msgstr ""
+
+#: php/admin.php:62
+msgid "AdControl still requires the following actions to activate:"
+msgstr ""
+
+#: php/admin.php:66 php/admin.php:172
+msgid ""
+"We are still waiting for your %sapplication%s to be approved. In the mean "
+"time, feel free to %scontact us%s with any questions."
+msgstr ""
+
+#: php/admin.php:76 php/admin.php:153
+msgid "Please accept the %sWordAds Terms of Service%s in your %sSettings%s."
+msgstr ""
+
+#: php/admin.php:151 php/admin.php:170 php/admin.php:239 php/no-jetpack.php:75
+msgid "AdControl Settings"
+msgstr ""
+
+#: php/admin.php:191
+msgid "WordAds is paused. Please choose which visitors should see ads."
+msgstr ""
+
+#: php/admin.php:197
+msgid ""
+"Please login to our secure servers on WordPress.com to see your earnings "
+"details."
+msgstr ""
+
+#: php/admin.php:199
+msgid "Show Me"
+msgstr ""
+
+#: php/admin.php:208
+msgid "Save Changes"
+msgstr ""
+
+#: php/admin.php:298
+msgid "Configuration Options"
+msgstr ""
+
+#: php/admin.php:305
+msgid "Show ads to:"
+msgstr ""
+
+#: php/admin.php:314
+msgid "Enable header unit:"
+msgstr ""
+
+#: php/admin.php:325
+msgid "WordAds Terms of Service"
+msgstr ""
+
+#: php/admin.php:332
+msgid "I have read and agree to the %sWordAds Terms of Service%s"
+msgstr ""
+
+#: php/admin.php:349
+msgid "Every visitor"
+msgstr ""
+
+#: php/admin.php:351
+msgid "Every visitor, except logged-in users (fewer impressions)"
+msgstr ""
+
+#: php/admin.php:353
+msgid "Do not show any ads"
+msgstr ""
+
+#: php/admin.php:372
+msgid "Thank you for accepting the WordAds Terms of Service"
+msgstr ""
+
+#: php/api.php:32 php/api.php:74
+msgid "Error connecting to API."
+msgstr ""
+
+#: php/no-jetpack.php:31 php/no-jetpack.php:77
+msgid ""
+"AdControl requires %sJetpack%s to be installed and connected at this time. "
+"%sHelp getting started.%s"
+msgstr ""
+
+#: php/widgets.php:18
+msgid "AdControl Widget"
+msgstr ""
+
+#: php/widgets.php:19
+msgid "Insert an AdControl ad wherever you can place a widget."
+msgstr ""
+
+#: php/widgets.php:75
+msgid "Tag Dimensions:"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "AdControl"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://wordads.co/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Harness WordPress.com's advertising partners for your own website. Requires "
+"<a href=\"http://jetpack.me/\" target=\"_blank\">Jetpack</a> to be installed "
+"and connected."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Automattic"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://automattic.com"
+msgstr ""
