@@ -5,7 +5,7 @@ Plugin Name: AdControl
 Plugin URI: http://wordads.co/
 Description: Harness WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://automattic.com
 Text Domain: adcontrol
 Domain Path: /languages
@@ -27,12 +27,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '1.0.2' );
+define( 'ADCONTROL_VERSION', '1.0.3' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL', plugins_url( '/', __FILE__ ) );
 define( 'ADCONTROL_API_TEST_ID', '26942' );
+
+add_action( 'plugins_loaded', array( 'AdControl', 'plugin_textdomain'), 99 );
 
 require_once( ADCONTROL_ROOT . '/php/widgets.php' );
 require_once( ADCONTROL_ROOT . '/php/api.php' );
@@ -109,12 +111,6 @@ class AdControl {
 		if ( self::is_infinite_scroll() ) {
 			return;
 		}
-
-		load_plugin_textdomain(
-			'adcontrol',
-			false,
-			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
-		);
 
 		if ( is_admin() ) {
 			require_once( ADCONTROL_ROOT . '/php/admin.php' );
@@ -373,6 +369,19 @@ HTML;
 			AdControl_API::update_tos_status_from_api();
 			AdControl_API::update_wordads_status_from_api();
 		}
+	}
+
+	/**
+	 * Load language files
+	 *
+	 * @since 1.0.3
+	 */
+	public static function plugin_textdomain() {
+		load_plugin_textdomain(
+			'adcontrol',
+			false,
+			plugin_basename( dirname( __FILE__ ) ) . '/languages/'
+		);
 	}
 }
 
