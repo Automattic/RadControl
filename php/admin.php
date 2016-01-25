@@ -9,6 +9,7 @@ class AdControl_Admin {
 		'show_to_logged_in',
 		'tos',
 		'leaderboard',
+		'leaderboard_mobile',
 		'wordads_approved',
 		'wordads_active',
 	);
@@ -105,13 +106,13 @@ HTML;
 	/**
 	 * @since 0.1
 	 */
-	function get_option( $key ) {
+	function get_option( $key, $default = null ) {
 		// Options are limited to those specified in $this->valid_settings
 		if ( ! in_array( $key, $this->valid_settings ) ) {
 			return;
 		}
 
-		$option = null;
+		$option = $default;
 		if ( isset( $this->options[ $key ] ) ) {
 			$option = $this->options[ $key ];
 		} elseif ( isset( $this->options_advanced[ $key ] ) ) {
@@ -228,6 +229,9 @@ HTML;
 		$to_save['leaderboard'] =
 			isset( $settings['leaderboard'] ) && $settings['leaderboard'] ? 1 : 0;
 
+		$to_save['leaderboard_mobile'] =
+			isset( $settings['leaderboard_mobile'] ) && $settings['leaderboard_mobile'] ? 1 : 0;
+
 		return $to_save;
 	}
 
@@ -318,6 +322,15 @@ HTML;
 			array( 'label_for' => 'leaderboard' )
 		);
 
+		add_settings_field(
+			'adcontrol_userdash_leaderboard_mobile_id',
+			__( 'Enable mobile header unit:', 'adcontrol' ),
+			array( $this, 'setting_leaderboard_mobile' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'leaderboard_mobile' )
+		);
+
 		// TOS section of the form
 		$section_name = 'adcontrol_section_general_tos';
 		add_settings_section(
@@ -360,6 +373,14 @@ HTML;
 	function setting_leaderboard() {
 		$checked = checked( $this->get_option( 'leaderboard' ), 1, false );
 		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[leaderboard]" id="leaderboard" value="1" ' . $checked . ' /></p>';
+	}
+
+	/**
+	 * @since 1.0.3
+	 */
+	function setting_leaderboard_mobile() {
+		$checked = checked( $this->get_option( 'leaderboard_mobile', $this->get_option( 'leaderboard', 0 ) ), 1, false );
+		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[leaderboard_mobile]" id="leaderboard_mobile" value="1" ' . $checked . ' /></p>';
 	}
 
 	/**

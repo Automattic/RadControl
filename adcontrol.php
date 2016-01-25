@@ -81,8 +81,9 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function option( $option, $default = false ) {
-		if ( ! isset( $this->params->options[$option] ) )
+		if ( ! isset( $this->params->options[$option] ) ) {
 			return $default;
+		}
 
 		return $this->params->options[$option];
 	}
@@ -151,7 +152,7 @@ class AdControl {
 		add_filter( 'the_content', array( $this, 'insert_ad' ) );
 		add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
-		if ( ! empty( $this->params->options['leaderboard'] ) ) {
+		if ( ! empty( $this->option( 'leaderboard' ) ) ) {
 			add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
 		}
 	}
@@ -205,8 +206,6 @@ HTML;
 	 * @since 0.2
 	 */
 	function insert_head_iponweb() {
-		$about = __( 'About these ads', 'adcontrol' );
-
 		echo <<<HTML
 		<!-- IPONWEB header script -->
 		<script type="text/javascript">
@@ -238,9 +237,6 @@ HTML;
 					st = "text/javascript";
 				d.write('<scr' + 'ipt type="' + st + '" src="' + src + '"><\/scr' + 'ipt>');
 			})(window.document, window.__ATA);
-			jQuery(window).ready(function () {
-				jQuery("a.wpa-about").text("$about");
-			});
 		</script>
 HTML;
 	}
@@ -264,7 +260,9 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_header_ad() {
-		echo $this->get_ad( 'top' );
+		if ( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) ) {
+			echo $this->get_ad( 'top' );
+		}
 	}
 
 	/**
