@@ -36,6 +36,7 @@ Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help gett
 = 1.0.3 =
 
 * More text domain fixes.
+* Added option for turning off leaderboard on mobile.
 
 = 1.0.2 =
 
