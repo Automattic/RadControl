@@ -152,7 +152,7 @@ class AdControl {
 		add_filter( 'the_content', array( $this, 'insert_ad' ) );
 		add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
-		if ( ! empty( $this->option( 'leaderboard' ) ) ) {
+		if ( $this->option( 'leaderboard' ) ) {
 			add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
 		}
 	}
