@@ -17,6 +17,7 @@ class AdControl_API {
 	 * @since 0.2
 	 */
 	public static function get_tos_status() {
+		global $ac_tos_response;
 		if ( Jetpack::is_development_mode() ) {
 			return true;
 		}
@@ -27,7 +28,7 @@ class AdControl_API {
 		}
 
 		$endpoint = sprintf( '/sites/%d/wordads/tos', Jetpack::get_option( 'id' ) );
-		$response = Jetpack_Client::wpcom_json_api_request_as_blog( $endpoint );
+		$ac_tos_response = $response = Jetpack_Client::wpcom_json_api_request_as_blog( $endpoint );
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return new WP_Error( 'api_error', __( 'Error connecting to API.', 'adcontrol' ), $response );
 		}
@@ -59,6 +60,7 @@ class AdControl_API {
 	 * @since 0.2
 	 */
 	public static function get_wordads_status() {
+		global $ac_status_response;
 		if ( Jetpack::is_development_mode() ) {
 			self::$wordads_status = array(
 				'approved' => true,
@@ -69,7 +71,7 @@ class AdControl_API {
 		}
 
 		$endpoint = sprintf( '/sites/%d/wordads/status', Jetpack::get_option( 'id' ) );
-		$response = Jetpack_Client::wpcom_json_api_request_as_blog( $endpoint );
+		$ac_status_response = $response = Jetpack_Client::wpcom_json_api_request_as_blog( $endpoint );
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return new WP_Error( 'api_error', __( 'Error connecting to API.', 'adcontrol' ), $response );
 		}

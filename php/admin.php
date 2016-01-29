@@ -53,6 +53,30 @@ class AdControl_Admin {
 				( ! $this->get_option( 'tos' ) || ! $this->get_option( 'wordads_approved' ) ) ) {
 			add_action( 'admin_notices', array( $this, 'alert_setup_steps' ) );
 		}
+
+		if ( isset( $_GET['ac_debug'] ) ) {
+			add_action( 'admin_notices', array( $this, 'debug_output' ) );
+		}
+	}
+
+	/**
+	 * Output the API connection debug
+	 * @since 1.0.4
+	 */
+	function debug_output() {
+		global $ac_tos_response, $ac_status_response;
+		$response = 'tos' == $_GET['ac_debug'] ? $ac_tos_response : $ac_status_response;
+		if ( empty( $response ) ) {
+			$response = 'No response from API :(';
+		} else {
+			$response = print_r( $response, 1 );
+		}
+
+		echo <<<HTML
+		<div class="notice updated is-dismissible">
+			<pre>$response</pre>
+		</div>
+HTML;
 	}
 
 	/**
@@ -82,13 +106,13 @@ class AdControl_Admin {
 			$missing .= "<li>$notice</li>";
 		}
 
-        echo <<<HTML
-        <div class="notice error is-dismissible">
-        	<p>$requires</p>
-        	<ul style="list-style:inherit;padding-left:40px;">
-        		$missing
-        	</ul>
-        </div>
+		echo <<<HTML
+		<div class="notice error is-dismissible">
+			<p>$requires</p>
+			<ul style="list-style:inherit;padding-left:40px;">
+				$missing
+			</ul>
+		</div>
 HTML;
 	}
 

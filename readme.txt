@@ -2,8 +2,8 @@
 Contributors: automattic, derekspringer, egill
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
-Tested up to: 4.4
-Stable tag: 1.0.3
+Tested up to: 4.4.1
+Stable tag: 1.0.4
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -32,6 +32,10 @@ Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help gett
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.0.4 =
+
+* Added some API debug options.
 
 = 1.0.3 =
 
