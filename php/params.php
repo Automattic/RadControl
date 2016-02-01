@@ -23,8 +23,8 @@ class AdControl_Params {
 		$this->targeting_tags = array(
 			'AdControl' => 1,
 			'BlogId'    => Jetpack::is_development_mode() ? 0 : Jetpack::get_option( 'id' ),
-			'Domain'    => esc_url( parse_url( home_url(), PHP_URL_HOST ) ),
-			'PageURL'   => esc_url( $this->url ),
+			'Domain'    => esc_js( parse_url( home_url(), PHP_URL_HOST ) ),
+			'PageURL'   => esc_js( $this->url ),
 			'LangId'    => false !== strpos( get_bloginfo( 'language' ), 'en' ) ? 1 : 0, // TODO something else?
 			'AdSense'   => empty( $this->options['adsense_fallback_set'] ) ? 0 : 1,
 			'AdSafe'    => 1, // TODO
