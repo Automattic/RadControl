@@ -5,7 +5,7 @@ Plugin Name: AdControl
 Plugin URI: http://wordads.co/
 Description: Harness WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 1.0.5
+Version: 1.0.6
 Author URI: http://automattic.com
 Text Domain: adcontrol
 Domain Path: /languages
@@ -315,8 +315,7 @@ HTML;
 	 * @since 0.1
 	 */
 	public static function check_jetpack() {
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		if ( ! is_plugin_active( 'jetpack/jetpack.php' )
+		if ( ! class_exists( 'Jetpack' )
 				|| ! method_exists( 'Jetpack_Client', 'wpcom_json_api_request_as_blog' )
 				|| ! ( Jetpack::is_active() || Jetpack::is_development_mode() ) ) {
 
