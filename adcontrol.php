@@ -260,7 +260,19 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_header_ad() {
-		if ( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) ) {
+		if (
+			( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) )
+			&& (
+			/**
+			 * Allow third-party tools to disable the display of header ads.
+			 *
+			 * @since 1.0.7
+			 *
+			 * @param bool true Should the header ad be displayed. Default to true.
+			 */
+			true == apply_filters( 'radcontrol_header_ad_show', true )
+			)
+		) {
 			echo $this->get_ad( 'top' );
 		}
 	}
