@@ -2,8 +2,8 @@
 Contributors: automattic, derekspringer, egill
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
-Tested up to: 4.4.1
-Stable tag: 1.0.6
+Tested up to: 4.5
+Stable tag: 1.1
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -33,9 +33,13 @@ Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help gett
 
 == Changelog ==
 
-= 1.0.6 =
+= 1.1 =
 
-* Updated Jetpack check for non-traditional JP installations.
+* Updated Jetpack check for non-traditional installations.
+* Updated debug output to use better color scheme. Green = good, red = problem.
+* Added filters to disable units ad-hoc.
+  1. `adcontrol_header_disable` set to true will prevent header unit from displaying.
+  2. `adcontrol_inpost_disable` set to true will prevent the in post unit from displaying.
 
 = 1.0.5 =
 
