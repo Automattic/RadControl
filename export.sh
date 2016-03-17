@@ -6,6 +6,22 @@ if [ ! -f "adcontrol.php" ]; then
     exit
 fi
 
+stable=$(sed -n 's/Stable tag: \(.*\)$/\1/p' readme.txt)
+version=$(sed -n 's/Version: \(.*\)$/\1/p' adcontrol.php)
+const=$(sed -n "s/define( 'ADCONTROL_VERSION', '\(.*\)' );/\1/p" adcontrol.php)
+
+if [ "$stable" != "$version" ]; then
+	echo "Stable/Version mismatch"
+	echo "$stable : $version"
+	exit
+fi
+
+if [ "$stable" != "$const" ]; then
+	echo "Stable/Const mismatch"
+	echo "$stable : $const"
+	exit
+fi
+
 dest="$1"
 if [ $# -eq 0 ]; then
     echo "No arguments supplied"
