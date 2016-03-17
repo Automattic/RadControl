@@ -5,7 +5,7 @@ Plugin Name: AdControl
 Plugin URI: http://wordads.co/
 Description: Harness WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 1.0.6
+Version: 1.1
 Author URI: http://automattic.com
 Text Domain: adcontrol
 Domain Path: /languages
@@ -27,7 +27,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '1.0.5' );
+define( 'ADCONTROL_VERSION', '1.1' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
@@ -247,7 +247,15 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_ad( $content ) {
-		if ( ! $this->params->should_show() ) {
+		/**
+		 * Allow third-party tools to disable the display of in post ads.
+		 *
+		 * @since 1.1
+		 *
+		 * @param bool true Should the in post unit be disabled. Default to false.
+		 */
+		$disable = apply_filters( 'adcontrol_inpost_disable', false );
+		if ( ! $this->params->should_show() || $disable ) {
 			return $content;
 		}
 
@@ -260,19 +268,19 @@ HTML;
 	 * @since 0.1
 	 */
 	function insert_header_ad() {
-		if (
-			( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) )
-			&& (
-			/**
-			 * Allow third-party tools to disable the display of header ads.
-			 *
-			 * @since 1.0.7
-			 *
-			 * @param bool true Should the header ad be displayed. Default to true.
-			 */
-			true == apply_filters( 'radcontrol_header_ad_show', true )
-			)
-		) {
+		/**
+		 * Allow third-party tools to disable the display of header ads.
+		 *
+		 * @since 1.1
+		 *
+		 * @param bool true Should the header unit be disabled. Default to false.
+		 */
+		$disable = apply_filters( 'adcontrol_header_disable', false );
+		if ( $disable ) {
+			return;
+		}
+
+		if ( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) ) {
 			echo $this->get_ad( 'top' );
 		}
 	}
