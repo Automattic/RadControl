@@ -78,8 +78,13 @@ class AdControl_Admin {
 		$status = $this->get_option( 'wordads_approved' ) ?
 			'<span style="color:green;">Yes</span>' :
 			'<span style="color:red;">No</span>';
+
+		$type = $this->get_option( 'tos' ) && $this->get_option( 'wordads_approved' ) ?
+			'updated' :
+			'error';
+
 		echo <<<HTML
-		<div class="notice updated is-dismissible">
+		<div class="notice $type is-dismissible">
 			<p>TOS: $tos | Status: $status</p>
 			<pre>$response</pre>
 		</div>
