@@ -18,8 +18,10 @@ Make sure you [apply to WordAds](https://wordads.co/signup/) for each site you w
 Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help getting started.](http://jetpack.me/support/getting-started-with-jetpack/)
 
 New in version 1.1! Developers can use the following filters to disable units ad hoc:
-1. `adcontrol_header_disable` set to true will prevent header unit from displaying.
-2. `adcontrol_inpost_disable` set to true will prevent the in post unit from displaying.
+
+`adcontrol_header_disable` set to true will prevent header unit from displaying.
+
+`adcontrol_inpost_disable` set to true will prevent the in post unit from displaying.
 
 == Installation ==
 
