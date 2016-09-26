@@ -17,14 +17,15 @@ class AdControl_Amazon {
 	}
 
 	function insert_head_amazon() {
+		$data_tags = ( AdControl_Params::is_cloudflare() ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
-		<script type="text/javascript" src="//c.amazon-adsystem.com/aax2/amzn_ads.js"></script>
-		<script type="text/javascript">
+		<script$data_tags type="text/javascript" src="//c.amazon-adsystem.com/aax2/amzn_ads.js"></script>
+		<script$data_tags type="text/javascript">
 			try {
 				amznads.getAds("3033");
 			} catch(e) { /* ignore */ }
 		</script>
-		<script type="text/javascript">
+		<script$data_tags type="text/javascript">
 			var a9_p = amznads.getKeys();
 			if ("undefined" != typeof a9_p && "" != a9_p && null !== a9_p && "[object Array]" === Object.prototype.toString.call(a9_p)) {
 				var a = "",

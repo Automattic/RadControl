@@ -16,7 +16,7 @@ class AdControl_Params {
 		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) ) {
 			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
 		}
-
+		$this->cloudflare = $this->is_cloudflare();
 		$this->blog_id = Jetpack::get_option( 'id', 0 );
 		$this->mobile_device = jetpack_is_mobile( 'any', true );
 		$this->theme = wp_get_theme()->Name;
@@ -67,6 +67,27 @@ class AdControl_Params {
 	}
 
 	/**
+	 * @return boolean true if site is being served via CloudFlare
+	 *
+	 * @since 1.1.1
+	 */
+	public function is_cloudflare() {
+		if ( defined( 'ADCONTROL_CLOUDFLARE' ) ) {
+			return true;
+		}
+		if ( isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
+			return true;
+		}
+		if ( isset( $_SERVER['HTTP_CF_IPCOUNTRY'] ) ) {
+			return true;
+		}
+		if ( isset( $_SERVER['HTTP_CF_VISITOR'] ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * @return boolean true if user is browsing in iOS device
 	 *
 	 * @since 0.1
@@ -84,11 +105,13 @@ class AdControl_Params {
 	public function get_device() {
 		global $agent_info;
 
-		if ( ! empty( $this->mobile_device ) )
+		if ( ! empty( $this->mobile_device ) ) {
 			return $this->mobile_device;
+		}
 
-		if ( $agent_info->is_ipad() )
+		if ( $agent_info->is_ipad() ) {
 			return 'ipad';
+		}
 
 		return 'desktop';
 	}
@@ -99,8 +122,9 @@ class AdControl_Params {
 	 * @since 0.1
 	 */
 	public function get_page_type() {
-		if ( ! empty( $this->page_type ) )
+		if ( ! empty( $this->page_type ) ) {
 			return $this->page_type;
+		}
 
 		if ( self::is_static_home() ) {
 			$this->page_type = 'static_home';
@@ -162,14 +186,17 @@ class AdControl_Params {
 	public static function should_show_mobile() {
 		global $wp_query;
 
-		if ( ! in_the_loop() || ! did_action( 'wp_head' ) )
+		if ( ! in_the_loop() || ! did_action( 'wp_head' ) ) {
 			return false;
+		}
 
-		if ( is_single() || ( is_page() && ! is_home() ) )
+		if ( is_single() || ( is_page() && ! is_home() ) ) {
 			return true;
+		}
 
-		if ( ( is_home() || is_archive() ) && 0 == $wp_query->current_post )
+		if ( ( is_home() || is_archive() ) && 0 == $wp_query->current_post ) {
 			return true;
+		}
 
 		return false;
 	}

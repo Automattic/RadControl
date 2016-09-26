@@ -3,7 +3,7 @@ Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.6
-Stable tag: 1.1
+Stable tag: 1.1.1
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -17,11 +17,9 @@ Make sure you [apply to WordAds](https://wordads.co/signup/) for each site you w
 
 Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help getting started.](http://jetpack.me/support/getting-started-with-jetpack/)
 
-New in version 1.1! Developers can use the following filters to disable units ad hoc:
+New in version 1.1.1! Developers can use the following constant to enable support for CloudFlare's Rocket Loader (if the automatic detection isn't working for them):
 
-`adcontrol_header_disable` set to true will prevent header unit from displaying.
-
-`adcontrol_inpost_disable` set to true will prevent the in post unit from displaying.
+`ADCONTROL_CLOUDFLARE` set to true will prevent the ad scripts from being processed by CloudFlare's Rocket Loader.
 
 == Installation ==
 
@@ -38,6 +36,11 @@ New in version 1.1! Developers can use the following filters to disable units ad
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.1.1 =
+* Added automatic detection for sites using CloudFlare (Rocket Loader), excluding ad scripts from being included in the optimizations done by Rocket Loader.
+* Added a constant to manually turn on CloudFlare support (Rocket Loader)
+ 1. 'ADCONTROL_CLOUDFLARE' set to true will add a tag to the script tags to prevent Rocket Loader from including them in its optimization process, sometimes causing problems with ads loading properly.
 
 = 1.1 =
 

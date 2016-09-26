@@ -81,11 +81,11 @@ class AdControl {
 	 * @since 0.1
 	 */
 	function option( $option, $default = false ) {
-		if ( ! isset( $this->params->options[$option] ) ) {
+		if ( ! isset( $this->params->options[ $option ] ) ) {
 			return $default;
 		}
 
-		return $this->params->options[$option];
+		return $this->params->options[ $option ];
 	}
 
 	/**
@@ -188,8 +188,9 @@ class AdControl {
 		$domain = $this->params->targeting_tags['Domain'];
 		$pageURL = $this->params->targeting_tags['PageURL'];
 		$adsafe = $this->params->targeting_tags['AdSafe'];
+		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
-		<script type="text/javascript">
+		<script$data_tags type="text/javascript">
 			var _ipw_custom = {
 				wordAds: '1',
 				domain:  '$domain',
@@ -206,9 +207,10 @@ HTML;
 	 * @since 0.2
 	 */
 	function insert_head_iponweb() {
+		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
 		<!-- IPONWEB header script -->
-		<script type="text/javascript">
+		<script$data_tags type="text/javascript">
 			window.__ATA = {
 				scriptSrc: '//s.pubmine.com/showad.js',
 				slotPrefix: 'automattic-id-',
@@ -306,9 +308,9 @@ HTML;
 				$width = 300;
 				$height = 250;
 			}
-
+			$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 			$snippet = <<<HTML
-			<script type='text/javascript'>
+			<script$data_tags type='text/javascript'>
 				(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
 			</script>
 HTML;

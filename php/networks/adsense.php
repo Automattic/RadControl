@@ -11,8 +11,9 @@ class AdControl_Adsense {
 		if ( ! empty( $url ) )
 			$url = 'google_page_url = "' . esc_url( $url ) . '";';
 
+		$data_tags = ( AdControl_Params::is_cloudflare() ) ? ' data-cfasync="false"' : '';
 		$output = '
-		<script type="text/javascript">
+		<script' . $data_tags . ' type="text/javascript">
 		<!--
 		google_ad_client = "ca-' . esc_attr( $pub ) . '";
 		google_ad_slot = "' . esc_attr( $tag ) . '";
@@ -21,7 +22,7 @@ class AdControl_Adsense {
 		$url
 		//-->
 		</script>
-		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
+		<script' . $data_tags . ' src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
 		return $output;
 	}
 
@@ -31,14 +32,15 @@ class AdControl_Adsense {
 	 * @since 0.1
 	 */
 	public static function get_asynchronous_adsense( $pub, $tag, $width, $height, $url = '' ) {
+		$data_tags = ( AdControl_Params::is_cloudflare() ) ? ' data-cfasync="false"' : '';
 		// TODO URL
 		return <<<HTML
-		<script type="text/javascript" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<script$data_tags async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 		<ins class="adsbygoogle"
 			 style="display:inline-block;width:{$width}px;height:{$height}px"
 			 data-ad-client="ca-$pub"
 			 data-ad-slot="$tag"></ins>
-		<script type="text/javascript">(adsbygoogle = window.adsbygoogle || []).push({});</script>
+		<script$data_tags type="text/javascript">(adsbygoogle = window.adsbygoogle || []).push({});</script>
 HTML;
 	}
 }
