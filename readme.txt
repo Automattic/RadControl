@@ -38,6 +38,7 @@ New in version 1.1.1! Developers can use the following constant to enable suppor
 == Changelog ==
 
 = 1.1.1 =
+
 * Added automatic detection for sites using CloudFlare (Rocket Loader), excluding ad scripts from being included in the optimizations done by Rocket Loader.
 * Added a constant to manually turn on CloudFlare support (Rocket Loader)
  1. 'ADCONTROL_CLOUDFLARE' set to true will add a tag to the script tags to prevent Rocket Loader from including them in its optimization process, sometimes causing problems with ads loading properly.
