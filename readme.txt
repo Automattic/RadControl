@@ -17,9 +17,9 @@ Make sure you [apply to WordAds](https://wordads.co/signup/) for each site you w
 
 Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help getting started.](http://jetpack.me/support/getting-started-with-jetpack/)
 
-New in version 1.1.1! Developers can use the following constant to enable support for CloudFlare's Rocket Loader (if the automatic detection isn't working for them):
+New in version 1.1.1! Developers can use the following constant on wp-config to enable support for CloudFlare's Rocket Loader (if the automatic detection isn't working for them):
 
-`ADCONTROL_CLOUDFLARE` set to true will prevent the ad scripts from being processed by CloudFlare's Rocket Loader.
+`define( 'ADCONTROL_CLOUDFLARE', true );` prevents the ad scripts from being processed by CloudFlare's Rocket Loader.
 
 == Installation ==
 
@@ -41,7 +41,7 @@ New in version 1.1.1! Developers can use the following constant to enable suppor
 
 * Added automatic detection for sites using CloudFlare (Rocket Loader), excluding ad scripts from being included in the optimizations done by Rocket Loader.
 * Added a constant to manually turn on CloudFlare support (Rocket Loader)
- 1. 'ADCONTROL_CLOUDFLARE' set to true will add a tag to the script tags to prevent Rocket Loader from including them in its optimization process, sometimes causing problems with ads loading properly.
+ 1. 'define( 'ADCONTROL_CLOUDFLARE', true );' in wp-config will add a tag to the script tags to prevent Rocket Loader from including them in its optimization process, which can cause problems with ads loading properly.
 
 = 1.1 =
 
