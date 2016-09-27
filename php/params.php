@@ -16,7 +16,7 @@ class AdControl_Params {
 		if ( ! ( false === strpos( $this->url, '?' ) ) && ! isset( $_GET['p'] ) ) {
 			$this->url = substr( $this->url, 0, strpos( $this->url, '?' ) );
 		}
-		$this->cloudflare = $this->is_cloudflare();
+		$this->cloudflare = self::is_cloudflare();
 		$this->blog_id = Jetpack::get_option( 'id', 0 );
 		$this->mobile_device = jetpack_is_mobile( 'any', true );
 		$this->theme = wp_get_theme()->Name;
@@ -71,7 +71,7 @@ class AdControl_Params {
 	 *
 	 * @since 1.1.1
 	 */
-	public function is_cloudflare() {
+	public static function is_cloudflare() {
 		if ( defined( 'ADCONTROL_CLOUDFLARE' ) ) {
 			return true;
 		}
@@ -84,6 +84,7 @@ class AdControl_Params {
 		if ( isset( $_SERVER['HTTP_CF_VISITOR'] ) ) {
 			return true;
 		}
+
 		return false;
 	}
 
