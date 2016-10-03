@@ -49,12 +49,13 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 		$section_id = 0 === $adcontrol->params->blog_id ? ADCONTROL_API_TEST_ID : $adcontrol->params->blog_id . '3';
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
+		$data_tags = ( $adcontrol->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<< HTML
 		<div class="wpcnt">
 			<div class="wpa">
 				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
 				<div class="u {$instance['unit']}">
-					<script type='text/javascript'>
+					<script$data_tags type='text/javascript'>
 						(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
 					</script>
 				</div>

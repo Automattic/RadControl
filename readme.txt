@@ -3,7 +3,7 @@ Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.6.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -36,6 +36,10 @@ New in version 1.1.1! Developers can use the following constant on wp-config to 
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.1.2 =
+
+* Added CloudFlare detection for widget.
 
 = 1.1.1 =
 
