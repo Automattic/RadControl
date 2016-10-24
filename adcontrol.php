@@ -182,7 +182,7 @@ class AdControl {
 
 	/**
 	 * IPONWEB metadata used by the various scripts
-	 * @return [type] [description]
+	 * @return void
 	 */
 	function insert_head_meta() {
 		$domain = $this->params->targeting_tags['Domain'];
