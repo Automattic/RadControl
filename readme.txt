@@ -3,7 +3,7 @@ Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.6.1
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -17,9 +17,7 @@ Make sure you [apply to WordAds](https://wordads.co/signup/) for each site you w
 
 Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help getting started.](http://jetpack.me/support/getting-started-with-jetpack/)
 
-New in version 1.1.1! Developers can use the following constant on wp-config to enable support for CloudFlare's Rocket Loader (if the automatic detection isn't working for them):
-
-`define( 'ADCONTROL_CLOUDFLARE', true );` prevents the ad scripts from being processed by CloudFlare's Rocket Loader.
+New in version 1.1.3 Moved inline JavaScript in the header to an external JavaScript.
 
 == Installation ==
 
@@ -36,6 +34,9 @@ New in version 1.1.1! Developers can use the following constant on wp-config to 
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.1.3 =
+* Changed the bulk of the JavaScript in the header from being inline to an external JavaScript.
 
 = 1.1.2 =
 
