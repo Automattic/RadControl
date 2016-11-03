@@ -209,37 +209,7 @@ HTML;
 	function insert_head_iponweb() {
 		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
-		<!-- IPONWEB header script -->
-		<script$data_tags type="text/javascript">
-			window.__ATA = {
-				scriptSrc: '//s.pubmine.com/showad.js',
-				slotPrefix: 'automattic-id-',
-				customParams: _ipw_custom,
-				initAd: function(o) {
-					var o = o || {},
-						g = window,
-						d = g.document,
-						wr = d.write,
-						id = g.__ATA.id();
-					wr.call(d, '<div id="' + id + '" data-section="' + (o.sectionId || 0) + '"' + (o.type ? ('data-type="' + o.type + '"') : '') + ' ' + (o.forcedUrl ? ('data-forcedurl="' + o.forcedUrl + '"') : '') + ' style="width:' + (o.width || 0) + 'px; height:' + (o.height || 0) + 'px;">');
-					g.__ATA.displayAd(id);
-					wr.call(d, '</div>');
-				},
-				displayAd: function(id) {
-					window.__ATA.ids = window.__ATA.ids || {};
-					window.__ATA.ids[id] = 1;
-				},
-				id: function() {
-					return window.__ATA.slotPrefix + (parseInt(Math.random() * 10000, 10) + 1 + (new Date()).getMilliseconds());
-				}
-			};
-			(function(d, ata) {
-				var pr = "https:" === d.location.protocol ? "https:" : "http:",
-					src = pr + ata.scriptSrc,
-					st = "text/javascript";
-				d.write('<scr' + 'ipt type="' + st + '" src="' + src + '"><\/scr' + 'ipt>');
-			})(window.document, window.__ATA);
-		</script>
+		<script$data_tags type="text/javascript" src="//s.pubmine.com/head.js"></script>
 HTML;
 	}
 
