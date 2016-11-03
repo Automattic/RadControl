@@ -10,33 +10,12 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 
 	private static $allowed_tags = array( 'mrec', 'wideskyscraper' );
 
-	private $options = array();
-
 	function __construct() {
 		parent::__construct(
 			'adcontrol_sidebar_widget',
 			__( 'AdControl Widget', 'adcontrol' ),
 			array( 'description' => __( 'Insert an AdControl ad wherever you can place a widget.', 'adcontrol' ) )
 		);
-
-		$this->options = array_merge(
-			get_option( 'adcontrol_settings',  array() )
-		);
-	}
-
-	/**
-	 * Convenience function for grabbing options from params->options
-	 * @param  string $option the option to grab
-	 * @param  mixed  $default (optional)
-	 * @return option or $default if not set
-	 *
-	 * @since 0.1
-	 */
-	function option( $option, $default = false ) {
-		if ( ! isset( $this->options[$option] ) )
-			return $default;
-
-		return $this->options[$option];
 	}
 
 	public function widget( $args, $instance ) {
@@ -53,7 +32,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 		echo <<< HTML
 		<div class="wpcnt">
 			<div class="wpa">
-				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
+				<a class="wpa-about" href="https://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
 				<div class="u {$instance['unit']}">
 					<script$data_tags type='text/javascript'>
 						(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);

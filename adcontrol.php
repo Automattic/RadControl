@@ -290,7 +290,7 @@ HTML;
 		return <<<HTML
 		<div class="wpcnt">
 			<div class="wpa">
-				<a class="wpa-about" href="http://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
+				<a class="wpa-about" href="https://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
 				<div id="ac-$spot" class="u $spot">
 					$snippet
 				</div>
