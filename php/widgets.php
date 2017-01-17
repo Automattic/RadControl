@@ -24,7 +24,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 			return false;
 		}
 
-		$about = __( 'About these ads', 'adcontrol' );
+		$about = __( 'Advertisements', 'adcontrol' );
 		$section_id = 0 === $adcontrol->params->blog_id ? ADCONTROL_API_TEST_ID : $adcontrol->params->blog_id . '3';
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
