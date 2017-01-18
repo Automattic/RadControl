@@ -64,7 +64,8 @@ class AdControl_API {
 		if ( Jetpack::is_development_mode() ) {
 			self::$wordads_status = array(
 				'approved' => true,
-				'active'   => true
+				'active'   => true,
+				'house'    => true,
 			);
 
 			return self::$wordads_status;
@@ -79,7 +80,8 @@ class AdControl_API {
 		$body = json_decode( wp_remote_retrieve_body( $response ) );
 		self::$wordads_status = array(
 			'approved' => $body->approved,
-			'active'   => $body->active
+			'active'   => $body->active,
+			'house'    => $body->house,
 		);
 
 		return self::$wordads_status;
@@ -96,7 +98,7 @@ class AdControl_API {
 			self::get_wordads_status();
 		}
 
-		return self::$wordads_status['approved'];
+		return self::$wordads_status['approved'] ? '1' : '0';
 	}
 
 	/**
@@ -110,7 +112,21 @@ class AdControl_API {
 			self::get_wordads_status();
 		}
 
-		return self::$wordads_status['active'];
+		return self::$wordads_status['active'] ? '1' : '0';
+	}
+
+	/**
+	 * Returns status of WordAds house ads.
+	 * @return boolean true if WP.com house ads should be shown
+	 *
+	 * @since 1.2
+	 */
+	public static function is_wordads_house() {
+		if ( is_null( self::$wordads_status ) ) {
+			self::get_wordads_status();
+		}
+
+		return self::$wordads_status['house'] ? '1' : '0';
 	}
 
 	/**
@@ -124,6 +140,7 @@ class AdControl_API {
 			$options = get_option( 'adcontrol_settings', array() );
 			$options['wordads_approved'] = self::is_wordads_approved();
 			$options['wordads_active'] = self::is_wordads_active();
+			$options['wordads_house'] = self::is_wordads_house();
 			update_option( 'adcontrol_settings', $options );
 		}
 	}

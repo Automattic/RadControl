@@ -3,7 +3,7 @@ Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.7.1
-Stable tag: 1.1.4
+Stable tag: 1.2
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -35,7 +35,14 @@ New in version 1.1.3 Moved inline JavaScript in the header to an external JavaSc
 
 == Changelog ==
 
+= 1.2 =
+
+* Added support for house ads while we wait for site to get approved with our partner networks.
+* Replaced "About these ads" notice with "Advertisements" so Google doesn't get cranky.
+* Default values for Widgets should prevent some errors in cases where the widget can show up before values are set.
+
 = 1.1.3 =
+
 * Changed the bulk of the JavaScript in the header from being inline to an external JavaScript.
 
 = 1.1.2 =

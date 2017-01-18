@@ -12,6 +12,7 @@ class AdControl_Admin {
 		'leaderboard_mobile',
 		'wordads_approved',
 		'wordads_active',
+		'wordads_house'
 	);
 	private $active_tab = 'adcontrol_settings';
 	private $options = array();
@@ -78,6 +79,7 @@ class AdControl_Admin {
 		$status = $this->get_option( 'wordads_approved' ) ?
 			'<span style="color:green;">Yes</span>' :
 			'<span style="color:red;">No</span>';
+		$house = $this->get_option( 'wordads_house' ) ? 'Yes' : 'No';
 
 		$type = $this->get_option( 'tos' ) && $this->get_option( 'wordads_approved' ) ?
 			'updated' :
@@ -85,7 +87,7 @@ class AdControl_Admin {
 
 		echo <<<HTML
 		<div class="notice $type is-dismissible">
-			<p>TOS: $tos | Status: $status</p>
+			<p>TOS: $tos | Status: $status | House: $house</p>
 			<pre>$response</pre>
 		</div>
 HTML;

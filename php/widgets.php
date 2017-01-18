@@ -24,19 +24,47 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 			return false;
 		}
 
+		if ( ! isset( $instance['unit'] ) ) {
+			$instance['unit'] = 'mrec';
+		}
+
 		$about = __( 'Advertisements', 'adcontrol' );
 		$section_id = 0 === $adcontrol->params->blog_id ? ADCONTROL_API_TEST_ID : $adcontrol->params->blog_id . '3';
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
-		$data_tags = ( $adcontrol->params->cloudflare ) ? ' data-cfasync="false"' : '';
+
+		$snippet = '';
+		if ( $adcontrol->option( 'wordads_house', true ) ) {
+			$ad_url = 'https://s0.wp.com/wp-content/blog-plugins/wordads/house/';
+			if ( 'leaderboard' == $instance['unit'] && ! $this->params->mobile_device ) {
+				$ad_url .= 'leaderboard.png';
+			} else if ( 'wideskyscraper' == $instance['unit'] ) {
+				$ad_url .= 'widesky.png';
+			} else {
+				$ad_url .= 'mrec.png';
+			}
+
+			$snippet = <<<HTML
+			<a href="https://wordpress.com/create/" target="_blank">
+				<img src="$ad_url" alt="WordPress.com: Grow Your Business" width="$width" height="$height" />
+			</a>
+HTML;
+		} else {
+			$section_id = 0 === $adcontrol->params->blog_id ? ADCONTROL_API_TEST_ID : $adcontrol->params->blog_id . '3';
+			$data_tags = ( $adcontrol->params->cloudflare ) ? ' data-cfasync="false"' : '';
+			$snippet = <<<HTML
+			<script$data_tags type='text/javascript'>
+				(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
+			</script>
+HTML;
+		}
+
 		echo <<< HTML
 		<div class="wpcnt">
 			<div class="wpa">
 				<a class="wpa-about" href="https://en.wordpress.com/about-these-ads/" rel="nofollow">$about</a>
 				<div class="u {$instance['unit']}">
-					<script$data_tags type='text/javascript'>
-						(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
-					</script>
+					$snippet
 				</div>
 			</div>
 		</div>

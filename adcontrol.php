@@ -5,7 +5,7 @@ Plugin Name: AdControl
 Plugin URI: http://wordads.co/
 Description: Harness WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 1.1.4
+Version: 1.2
 Author URI: http://automattic.com
 Text Domain: adcontrol
 Domain Path: /languages
@@ -231,7 +231,8 @@ HTML;
 			return $content;
 		}
 
-		return $content . $this->get_ad( 'belowpost' );
+		$ad_type = $this->option( 'wordads_house', true ) ? 'house' : 'iponweb';
+		return $content . $this->get_ad( 'belowpost', $ad_type );
 	}
 
 	/**
@@ -253,7 +254,8 @@ HTML;
 		}
 
 		if ( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) ) {
-			echo $this->get_ad( 'top' );
+			$ad_type = $this->option( 'wordads_house', true ) ? 'house' : 'iponweb';
+			echo $this->get_ad( 'top', $ad_type );
 		}
 	}
 
@@ -283,6 +285,23 @@ HTML;
 			<script$data_tags type='text/javascript'>
 				(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
 			</script>
+HTML;
+		} else if ( 'house' == $type ) {
+			$width = 300;
+			$height = 250;
+			$ad_url = 'https://s0.wp.com/wp-content/blog-plugins/wordads/house/';
+			if ( 'top' == $spot && ! $this->params->mobile_device ) {
+				$width = 728;
+				$height = 90;
+				$ad_url .= 'leaderboard.png';
+			} else {
+				$ad_url .= 'mrec.png';
+			}
+
+			$snippet = <<<HTML
+			<a href="https://wordpress.com/create/" target="_blank">
+				<img src="$ad_url" alt="WordPress.com: Grow Your Business" width="$width" height="$height" />
+			</a>
 HTML;
 		}
 
