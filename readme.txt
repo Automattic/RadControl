@@ -35,6 +35,11 @@ New in version 1.1.3 Moved inline JavaScript in the header to an external JavaSc
 
 == Changelog ==
 
+= 1.2.1 =
+
+* Removed link from "Advertisements" notice
+* Updated house ads to HTML5
+
 = 1.2 =
 
 * Added support for house ads while we wait for site to get approved with our partner networks.
