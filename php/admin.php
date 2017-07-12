@@ -10,6 +10,7 @@ class AdControl_Admin {
 		'tos',
 		'leaderboard',
 		'leaderboard_mobile',
+		'second_belowpost',
 		'wordads_approved',
 		'wordads_active',
 		'wordads_house'
@@ -270,6 +271,9 @@ HTML;
 		$to_save['leaderboard_mobile'] =
 			isset( $settings['leaderboard_mobile'] ) && $settings['leaderboard_mobile'] ? 1 : 0;
 
+		$to_save['second_belowpost'] =
+			isset( $settings['second_belowpost'] ) && $settings['second_belowpost'] ? 1 : 0;
+
 		return $to_save;
 	}
 
@@ -353,7 +357,7 @@ HTML;
 
 		add_settings_field(
 			'adcontrol_userdash_leaderboard_id',
-			__( 'Enable header unit:', 'adcontrol' ),
+			__( 'Enable header ad:', 'adcontrol' ),
 			array( $this, 'setting_leaderboard' ),
 			$this->basic_settings_key,
 			$section_name,
@@ -362,11 +366,20 @@ HTML;
 
 		add_settings_field(
 			'adcontrol_userdash_leaderboard_mobile_id',
-			__( 'Enable mobile header unit:', 'adcontrol' ),
+			__( 'Enable mobile header ad:', 'adcontrol' ),
 			array( $this, 'setting_leaderboard_mobile' ),
 			$this->basic_settings_key,
 			$section_name,
 			array( 'label_for' => 'leaderboard_mobile' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_second_belowpost_id',
+			__( 'Enable extra in-post ad:', 'adcontrol' ),
+			array( $this, 'setting_second_belowpost' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'setting_second_belowpost' )
 		);
 
 		// TOS section of the form
@@ -419,6 +432,15 @@ HTML;
 	function setting_leaderboard_mobile() {
 		$checked = checked( $this->get_option( 'leaderboard_mobile', $this->get_option( 'leaderboard', 0 ) ), 1, false );
 		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[leaderboard_mobile]" id="leaderboard_mobile" value="1" ' . $checked . ' /></p>';
+	}
+
+	// adcontrol_userdash_second_belowpost_id
+	/**
+	 * @since 1.0
+	 */
+	function setting_second_belowpost() {
+		$checked = checked( $this->get_option( 'second_belowpost', true ), 1, false );
+		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[second_belowpost]" id="second_belowpost" value="1" ' . $checked . ' /></p>';
 	}
 
 	/**

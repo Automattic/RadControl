@@ -5,7 +5,7 @@ Plugin Name: AdControl
 Plugin URI: http://wordads.co/
 Description: Harness WordPress.com's advertising partners for your own website. Requires <a href="http://jetpack.me/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 1.2.1
+Version: 1.3
 Author URI: http://automattic.com
 Text Domain: adcontrol
 Domain Path: /languages
@@ -33,6 +33,7 @@ define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
 define( 'ADCONTROL_URL', plugins_url( '/', __FILE__ ) );
 define( 'ADCONTROL_API_TEST_ID', '26942' );
+define( 'ADCONTROL_API_TEST_ID2', '114160' );
 
 add_action( 'plugins_loaded', array( 'AdControl', 'plugin_textdomain'), 99 );
 
@@ -270,25 +271,37 @@ HTML;
 			$section_id = ADCONTROL_API_TEST_ID;
 			$width = 300;
 			$height = 250;
+			$second_belowpost = '';
 			if ( 'top' == $spot ) {
 				// mrec for mobile, leaderboard for desktop
 				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '2';
 				$width = $this->params->mobile_device ? 300 : 728;
 				$height = $this->params->mobile_device ? 250 : 90;
-			} else if ( 'belowpost' ) {
+			} else if ( 'belowpost' == $spot ) {
 				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '1';
 				$width = 300;
 				$height = 250;
+				if ( $this->option( 'second_belowpost', true ) ) {
+					$section_id2 = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID2 : $this->params->blog_id . '4';
+					$second_belowpost =
+						"g.__ATA.initAd({collapseEmpty:'after', sectionId:$section_id, width:$width, height:$height});";
+				}
 			}
 			$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 			$snippet = <<<HTML
 			<script$data_tags type='text/javascript'>
-				(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
+				(function(g){
+					g.__ATA.initAd({collapseEmpty:'after', sectionId:$section_id, width:$width, height:$height});
+					$second_belowpost
+				})(window);
 			</script>
 HTML;
 		} else if ( 'house' == $type ) {
 			$leaderboard = 'top' == $spot && ! $this->params->mobile_device;
 			$snippet = $this->get_house_ad( $leaderboard ? 'leaderboard' : 'mrec' );
+			if ( 'belowpost' == $spot && $this->option( 'second_belowpost', true ) ) {
+				$snippet .= $this->get_house_ad( $leaderboard ? 'leaderboard' : 'mrec' );
+			}
 		}
 
 		$about = __( 'Advertisements', 'adcontrol' );
