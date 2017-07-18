@@ -27,7 +27,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '1.2.1' );
+define( 'ADCONTROL_VERSION', '1.3' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
@@ -126,7 +126,6 @@ class AdControl {
 		}
 
 		$this->insert_adcode();
-		$this->insert_extras();
 	}
 
 	/**
@@ -156,15 +155,6 @@ class AdControl {
 		if ( $this->option( 'leaderboard' ) ) {
 			add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
 		}
-	}
-
-	/**
-	 * Add the actions/filters to insert extra-network features.
-	 *
-	 * @since 0.1
-	 */
-	private function insert_extras() {
-		require_once( ADCONTROL_ROOT . '/php/networks/amazon.php' );
 	}
 
 	/**
@@ -211,6 +201,7 @@ HTML;
 		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
 		<script$data_tags type="text/javascript" src="//s.pubmine.com/head.js"></script>
+		<script$data_tags type="text/javascript" src="//static.criteo.net/js/ld/publishertag.js"></script>
 HTML;
 	}
 
@@ -267,6 +258,7 @@ HTML;
 	 */
 	function get_ad( $spot, $type = 'iponweb' ) {
 		$snippet = '';
+		$blocker_unit = 'mrec';
 		if ( 'iponweb' == $type ) {
 			$section_id = ADCONTROL_API_TEST_ID;
 			$width = 300;
@@ -277,6 +269,7 @@ HTML;
 				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '2';
 				$width = $this->params->mobile_device ? 300 : 728;
 				$height = $this->params->mobile_device ? 250 : 90;
+				$blocker_unit = $this->params->mobile_device ? 'top_mrec' : 'top';
 			} else if ( 'belowpost' == $spot ) {
 				$section_id = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID : $this->params->blog_id . '1';
 				$width = 300;
@@ -284,7 +277,7 @@ HTML;
 				if ( $this->option( 'second_belowpost', true ) ) {
 					$section_id2 = 0 === $this->params->blog_id ? ADCONTROL_API_TEST_ID2 : $this->params->blog_id . '4';
 					$second_belowpost =
-						"g.__ATA.initAd({collapseEmpty:'after', sectionId:$section_id, width:$width, height:$height});";
+						"g.__ATA.initAd({collapseEmpty:'after', sectionId:$section_id2, width:$width, height:$height});";
 				}
 			}
 			$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
@@ -304,6 +297,11 @@ HTML;
 			}
 		}
 
+		$ad_blocker_ad = 'iponweb' == $type ? $this->get_adblocker_ad( $blocker_unit ) : '';
+		if ( 'iponweb' == $type && 'belowpost' == $spot && $this->option( 'second_belowpost', true ) ) {
+			$ad_blocker_ad .= $this->get_adblocker_ad( 'mrec2' );
+		}
+
 		$about = __( 'Advertisements', 'adcontrol' );
 		return <<<HTML
 		<div class="wpcnt">
@@ -312,8 +310,51 @@ HTML;
 				<div id="ac-$spot" class="u $spot">
 					$snippet
 				</div>
+				$ad_blocker_ad
 			</div>
 		</div>
+HTML;
+	}
+
+	/**
+	 * Get Criteo Acceptable Ad unit
+	 * @param  string $unit mrec, mrec2, widesky, top, top_mrec
+	 *
+	 * @since 1.3
+	 */
+	public function get_adblocker_ad( $unit = 'mrec' ) {
+		$criteo_id = mt_rand();
+		$height = 250;
+		$width = 300;
+		$zone_id = 388248;
+		if ( 'mrec2' == $unit ) { // 2nd belowpost
+			$zone_id = 837497;
+		} else if ( 'widesky' == $unit ) { // sidebar
+			$zone_id = 563902;
+			$width = 160;
+			$height= 600;
+		} else if ( 'top' == $unit ) { // top leaderboard
+			$zone_id = 563903;
+			$width = 728;
+			$height = 90;
+		} else if ( 'top_mrec' == $unit ) { // top mrec
+			$zone_id = 563903;
+		}
+
+		return <<<HTML
+		<div id="crt-$criteo_id" style="width:{$width}px;height:{$height}px;"></div>
+		<script type="text/javascript">
+		var o = document.getElementById('crt-$criteo_id');
+		if ("undefined"!=typeof Criteo) {
+			var p = o.parentNode;
+			p.style.setProperty('display', 'inline-block', 'important');
+			o.style.setProperty('display', 'block', 'important');
+			Criteo.DisplayAcceptableAdIfAdblocked({zoneid:$zone_id,containerid:"crt-$criteo_id",collapseContainerIfNotAdblocked:true,"callifnotadblocked": function () {var o = document.getElementById('crt-$criteo_id'); o.style.setProperty('display','none','important');o.style.setProperty('visbility','hidden','important'); } });
+		} else {
+			o.style.setProperty('display', 'none', 'important');
+			o.style.setProperty('visibility', 'hidden', 'important');
+		}
+		</script>
 HTML;
 	}
 
