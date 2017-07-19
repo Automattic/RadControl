@@ -153,7 +153,16 @@ class AdControl {
 		add_filter( 'the_excerpt', array( $this, 'insert_ad' ) );
 
 		if ( $this->option( 'leaderboard' ) ) {
-			add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
+			switch ( get_stylesheet() ) {
+				case 'twentyseventeen':
+				case 'twentyfifteen':
+				case 'twentyfourteen':
+					add_action( 'wp_footer', array( $this, 'insert_header_ad_special' ) );
+					break;
+				default:
+					add_action( 'wp_head', array( $this, 'insert_header_ad' ), 100 );
+					break;
+			}
 		}
 	}
 
@@ -252,6 +261,49 @@ HTML;
 	}
 
 	/**
+	 * Special cases for inserting header unit via jQuery
+	 *
+	 * @since 1.3
+	 */
+	function insert_header_ad_special() {
+		/**
+		 * Allow third-party tools to disable the display of header ads.
+		 *
+		 * @module wordads
+		 *
+		 * @since 1.1
+		 *
+		 * @param bool true Should the header unit be disabled. Default to false.
+		 */
+		if ( apply_filters( 'adcontrol_header_disable', false ) ) {
+			return;
+		}
+
+		$selector = '#content';
+		switch ( get_stylesheet() ) {
+			case 'twentyseventeen':
+				$selector = '#content';
+				break;
+			case 'twentyfifteen':
+				$selector = '#main';
+				break;
+			case 'twentyfourteen':
+				$selector = 'article:first';
+				break;
+		}
+
+		if ( ! $this->params->mobile_device || $this->option( 'leaderboard_mobile', true ) ) {
+			$ad_type = $this->option( 'wordads_house' ) ? 'house' : 'iponweb';
+			echo $this->get_ad( 'top', $ad_type );
+			echo <<<HTML
+			<script type="text/javascript">
+				jQuery('.wpcnt-header').insertBefore('$selector');
+			</script>
+HTML;
+		}
+	}
+
+	/**
 	 * Get the ad for the spot and type.
 	 * @param  string $spot top, side, or belowpost
 	 * @param  string $type iponweb or adsense
@@ -302,9 +354,10 @@ HTML;
 			$ad_blocker_ad .= $this->get_adblocker_ad( 'mrec2' );
 		}
 
+		$header = 'top' == $spot ? 'wpcnt-header' : '';
 		$about = __( 'Advertisements', 'adcontrol' );
 		return <<<HTML
-		<div class="wpcnt">
+		<div class="wpcnt $header">
 			<div class="wpa">
 				<span class="wpa-about">$about</span>
 				<div id="ac-$spot" class="u $spot">
