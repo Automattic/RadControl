@@ -210,7 +210,7 @@ HTML;
 		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
 		<script$data_tags type="text/javascript" src="//s.pubmine.com/head.js"></script>
-		<script$data_tags type="text/javascript" src="//static.criteo.net/js/ld/publishertag.js"></script>
+		<script$data_tags type="text/javascript" src="https://static.criteo.net/js/ld/publishertag.js"></script>
 HTML;
 	}
 
