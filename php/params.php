@@ -32,6 +32,22 @@ class AdControl_Params {
 	}
 
 	/**
+	 * Convenience function for grabbing options from $this->options
+	 * @param  string $option the option to grab
+	 * @param  mixed  $default (optional)
+	 * @return option or $default if not set
+	 *
+	 * @since 1.3
+	 */
+	function option( $option, $default = false ) {
+		if ( ! isset( $this->options[ $option ] ) ) {
+			return $default;
+		}
+
+		return $this->options[ $option ];
+	}
+
+	/**
 	 * Convenience function to collect tags and categories of current page
 	 *
 	 * @since 0.1
@@ -165,8 +181,24 @@ class AdControl_Params {
 	 *
 	 * @since 0.1
 	 */
-	public static function should_show() {
+	public function should_show() {
 		global $wp_query;
+		if ( ( is_front_page() || is_home() ) && ! $this->option( 'display_front_page', true ) ) {
+			return false;
+		}
+
+		if ( is_single() && ! $this->option( 'display_post', true ) ) {
+			return false;
+		}
+
+		if ( is_page() && ! $this->option( 'display_page', true ) ) {
+			return false;
+		}
+
+		if ( is_archive() && ! $this->option( 'display_archive', true ) ) {
+			return false;
+		}
+
 		if ( is_single() || ( is_page() && ! is_home() ) ) {
 			return true;
 		}

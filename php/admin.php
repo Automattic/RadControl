@@ -11,6 +11,10 @@ class AdControl_Admin {
 		'leaderboard',
 		'leaderboard_mobile',
 		'second_belowpost',
+		'display_front_page',
+		'display_post',
+		'display_page',
+		'display_archive',
 		'wordads_approved',
 		'wordads_active',
 		'wordads_house'
@@ -274,6 +278,18 @@ HTML;
 		$to_save['second_belowpost'] =
 			isset( $settings['second_belowpost'] ) && $settings['second_belowpost'] ? 1 : 0;
 
+		$to_save['display_front_page'] =
+			isset( $settings['display_front_page'] ) && $settings['display_front_page'] ? 1 : 0;
+
+		$to_save['display_post'] =
+			isset( $settings['display_post'] ) && $settings['display_post'] ? 1 : 0;
+
+		$to_save['display_page'] =
+			isset( $settings['display_page'] ) && $settings['display_page'] ? 1 : 0;
+
+		$to_save['display_archive'] =
+			isset( $settings['display_archive'] ) && $settings['display_archive'] ? 1 : 0;
+
 		return $to_save;
 	}
 
@@ -379,7 +395,52 @@ HTML;
 			array( $this, 'setting_second_belowpost' ),
 			$this->basic_settings_key,
 			$section_name,
-			array( 'label_for' => 'setting_second_belowpost' )
+			array( 'label_for' => 'second_belowpost' )
+		);
+
+		// Display section of the form
+		$section_name = 'adcontrol_display_settings';
+		add_settings_section(
+			$section_name,
+			__( 'Show In-Post Ads On', 'adcontrol' ),
+			'__return_null',
+			$this->basic_settings_key
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_front_page_id',
+			__( 'Front Page', 'adcontrol' ),
+			array( $this, 'setting_front_page' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'display_front_page' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_post_id',
+			__( 'Posts', 'adcontrol' ),
+			array( $this, 'setting_post' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'display_post' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_page_id',
+			__( 'Pages', 'adcontrol' ),
+			array( $this, 'setting_page' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'display_page' )
+		);
+
+		add_settings_field(
+			'adcontrol_userdash_archive_id',
+			__( 'Archives', 'adcontrol' ),
+			array( $this, 'setting_archive' ),
+			$this->basic_settings_key,
+			$section_name,
+			array( 'label_for' => 'display_archive' )
 		);
 
 		// TOS section of the form
@@ -434,13 +495,44 @@ HTML;
 		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[leaderboard_mobile]" id="leaderboard_mobile" value="1" ' . $checked . ' /></p>';
 	}
 
-	// adcontrol_userdash_second_belowpost_id
 	/**
 	 * @since 1.0
 	 */
 	function setting_second_belowpost() {
 		$checked = checked( $this->get_option( 'second_belowpost', true ), 1, false );
 		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[second_belowpost]" id="second_belowpost" value="1" ' . $checked . ' /></p>';
+	}
+
+	/**
+	 * @since 1.0
+	 */
+	function setting_front_page() {
+		$checked = checked( $this->get_option( 'display_front_page', true ), 1, false );
+		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[display_front_page]" id="display_front_page" value="1" ' . $checked . ' /></p>';
+	}
+
+		/**
+	 * @since 1.0
+	 */
+	function setting_post() {
+		$checked = checked( $this->get_option( 'display_post', true ), 1, false );
+		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[display_post]" id="display_post" value="1" ' . $checked . ' /></p>';
+	}
+
+		/**
+	 * @since 1.0
+	 */
+	function setting_page() {
+		$checked = checked( $this->get_option( 'display_page', true ), 1, false );
+		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[display_page]" id="display_page" value="1" ' . $checked . ' /></p>';
+	}
+
+		/**
+	 * @since 1.0
+	 */
+	function setting_archive() {
+		$checked = checked( $this->get_option( 'display_archive', true ), 1, false );
+		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[display_archive]" id="display_archive" value="1" ' . $checked . ' /></p>';
 	}
 
 	/**
