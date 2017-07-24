@@ -334,11 +334,11 @@ HTML;
 			}
 			$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 			$snippet = <<<HTML
-			<script$data_tags type='text/javascript'>
-				(function(g){
+			<script$data_tags id='s$section_id' type='text/javascript'>
+				(function(g){if('undefined'!=typeof g.__ATA){
 					g.__ATA.initAd({collapseEmpty:'after', sectionId:$section_id, width:$width, height:$height});
 					$second_belowpost
-				})(window);
+				}})(window);
 			</script>
 HTML;
 		} else if ( 'house' == $type ) {
@@ -350,14 +350,28 @@ HTML;
 		}
 
 		$ad_blocker_ad = 'iponweb' == $type ? $this->get_adblocker_ad( $blocker_unit ) : '';
-		if ( 'iponweb' == $type && 'belowpost' == $spot && $this->option( 'second_belowpost', true ) ) {
-			$ad_blocker_ad .= $this->get_adblocker_ad( 'mrec2' );
+		$second_belowpost_css = '';
+		$double_mrec = '';
+		if ( 'belowpost' == $spot && $this->option( 'second_belowpost', true ) ) {
+			if ( 'iponweb' == $type ) {
+				$ad_blocker_ad .= $this->get_adblocker_ad( 'mrec2' );
+			}
+
+			$double_mrec = 'wpmrec2x';
+			$second_belowpost_css = <<<HTML
+			<style type="text/css">
+			div.wpmrec2x{max-width:610px;}
+			div.wpmrec2x div.u > div{float:left;margin-right:10px;}
+			div.wpmrec2x div.u > div:nth-child(3n){margin-right:0px;}
+			</style>
+HTML;
 		}
 
 		$header = 'top' == $spot ? 'wpcnt-header' : '';
 		$about = __( 'Advertisements', 'adcontrol' );
 		return <<<HTML
-		<div class="wpcnt $header">
+		$second_belowpost_css
+		<div class="wpcnt $header $double_mrec">
 			<div class="wpa">
 				<span class="wpa-about">$about</span>
 				<div id="ac-$spot" class="u $spot">
