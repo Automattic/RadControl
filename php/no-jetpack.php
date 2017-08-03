@@ -29,8 +29,8 @@ class AdControl_No_Jetpack {
 	function alert_jetpack() {
 		$notice = sprintf(
 			__( 'AdControl requires %sJetpack%s to be installed and connected at this time. %sHelp getting started.%s', 'adcontrol' ),
-			'<a href="http://jetpack.me/" target="_blank">', '</a>',
-			'<a href="http://jetpack.me/support/getting-started-with-jetpack/" target="_blank">', '</a>'
+			'<a href="https://jetpack.com/" target="_blank">', '</a>',
+			'<a href="https://jetpack.com/support/getting-started-with-jetpack/" target="_blank">', '</a>'
 		);
 
         echo <<<HTML
@@ -46,7 +46,7 @@ HTML;
 	 * @since 0.1
 	 */
 	function settings_link( $links ) {
-		$settings_link = '<a href="http://jetpack.me/" target="_blank">Install Jetpack</a>';
+		$settings_link = '<a href="https://jetpack.com/" target="_blank">Install Jetpack</a>';
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
@@ -75,8 +75,8 @@ HTML;
 		$settings = __( 'AdControl Settings', 'adcontrol' );
 		$notice = sprintf(
 			__( 'AdControl requires %sJetpack%s to be installed and connected at this time. %sHelp getting started.%s', 'adcontrol' ),
-			'<a href="http://jetpack.me/" target="_blank">', '</a>',
-			'<a href="http://jetpack.me/support/getting-started-with-jetpack/" target="_blank">', '</a>'
+			'<a href="https://jetpack.com/" target="_blank">', '</a>',
+			'<a href="https://jetpack.com/support/getting-started-with-jetpack/" target="_blank">', '</a>'
 		);
 
 		echo <<<HTML

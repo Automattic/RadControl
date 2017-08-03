@@ -454,7 +454,7 @@ HTML;
 
 		add_settings_field(
 			'adcontrol_userdash_tos_id',
-			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service%s', 'adcontrol' ), '<br /><a href="http://wordpress.com/tos-wordads/" target="_blank">', '</a>' ),
+			sprintf( __( 'I have read and agree to the %sWordAds Terms of Service%s', 'adcontrol' ), '<br /><a href="https://wordpress.com/tos-wordads/" target="_blank">', '</a>' ),
 			array( $this, 'setting_tos' ),
 			$this->basic_settings_key,
 			$section_name,

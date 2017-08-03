@@ -15,14 +15,14 @@ AdControl is a new service from Automattic that extends our advertising scale an
 
 Make sure you [apply to WordAds](https://wordads.co/signup/) for each site you want to run AdControl on.
 
-Requires [Jetpack](http://jetpack.me/) to be installed and connected. [Help getting started.](http://jetpack.me/support/getting-started-with-jetpack/)
+Requires [Jetpack](https://jetpack.com/) to be installed and connected. [Help getting started.](https://jetpack.com/support/getting-started-with-jetpack/)
 
 New in version 1.1.3 Moved inline JavaScript in the header to an external JavaScript.
 
 == Installation ==
 
 1. [Apply to WordAds](https://wordads.co/signup/) for each site you want to run AdControl on.
-1. [Install and activate Jetpack.](http://wordpress.org/plugins/jetpack/installation/)
+1. [Install and activate Jetpack.](https://wordpress.org/plugins/jetpack/installation/)
 1. Upload `AdControl` to the `/wp-content/plugins/` directory.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Fill in other options in the Dashboard -> Settings -> AdControl page.

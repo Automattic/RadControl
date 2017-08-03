@@ -22,7 +22,7 @@ class AdControl_Adsense {
 		$url
 		//-->
 		</script>
-		<script' . $data_tags . ' src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
+		<script' . $data_tags . ' src="//pagead2.googlesyndication.com/pagead/show_ads.js"></script>';
 		return $output;
 	}
 
