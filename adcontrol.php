@@ -209,8 +209,25 @@ HTML;
 	function insert_head_iponweb() {
 		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
+		<link rel='dns-prefetch' href='//s.pubmine.com' />
+		<link rel='dns-prefetch' href='//x.bidswitch.net' />
+		<link rel='dns-prefetch' href='//static.criteo.net' />
+		<link rel='dns-prefetch' href='//ib.adnxs.com' />
+		<link rel='dns-prefetch' href='//aax.amazon-adsystem.com' />
+		<link rel='dns-prefetch' href='//bidder.criteo.com' />
+		<link rel='dns-prefetch' href='//cas.criteo.com' />
+		<link rel='dns-prefetch' href='//gum.criteo.com' />
+		<link rel='dns-prefetch' href='//ads.pubmatic.com' />
+		<link rel='dns-prefetch' href='//gads.pubmatic.com' />
+		<link rel='dns-prefetch' href='//tpc.googlesyndication.com' />
+		<link rel='dns-prefetch' href='//ad.doubleclick.net' />
+		<link rel='dns-prefetch' href='//googleads.g.doubleclick.net' />
+		<link rel='dns-prefetch' href='//www.googletagservices.com' />
+		<link rel='dns-prefetch' href='//cdn.switchadhub.com' />
+		<link rel='dns-prefetch' href='//delivery.g.switchadhub.com' />
+		<link rel='dns-prefetch' href='//delivery.swid.switchadhub.com' />
 		<script$data_tags type="text/javascript" src="//s.pubmine.com/head.js"></script>
-		<script$data_tags type="text/javascript" src="https://static.criteo.net/js/ld/publishertag.js"></script>
+		<script$data_tags type="text/javascript" src="//static.criteo.net/js/ld/publishertag.js"></script>
 HTML;
 	}
 
@@ -332,6 +349,7 @@ HTML;
 						"g.__ATA.initAd({collapseEmpty:'after', sectionId:$section_id2, width:$width, height:$height});";
 				}
 			}
+
 			$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 			$snippet = <<<HTML
 			<script$data_tags id='s$section_id' type='text/javascript'>

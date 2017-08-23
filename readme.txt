@@ -3,7 +3,7 @@ Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.8.1
-Stable tag: 1.3.1
+Stable tag: 1.3
 
 Harness WordPress.com's advertising partners for your own website.
 
