@@ -2,7 +2,7 @@
 Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
-Tested up to: 4.8.1
+Tested up to: 4.9
 Stable tag: 1.3
 
 Harness WordPress.com's advertising partners for your own website.
@@ -37,7 +37,10 @@ New in version 1.1.3 Moved inline JavaScript in the header to an external JavaSc
 
 = 1.3 =
 
+* New options to control which page types below post ads appear on.
 * Added option for 2nd below post ad unit.
+* Some tweaks for 'twenty(fourteen|fifteen|seventeen)' themes.
+* Some speed/prefetch optimizations.
 
 = 1.2.1 =
 
