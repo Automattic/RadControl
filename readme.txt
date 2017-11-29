@@ -2,8 +2,8 @@
 Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
-Tested up to: 4.9
-Stable tag: 1.3
+Tested up to: 4.9.1
+Stable tag: 1.3.1
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -34,6 +34,10 @@ New in version 1.1.3 Moved inline JavaScript in the header to an external JavaSc
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.3.1 =
+
+* Updated to new header tag.
 
 = 1.3 =
 

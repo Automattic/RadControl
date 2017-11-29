@@ -5,7 +5,7 @@ Plugin Name: AdControl
 Plugin URI: https://wordads.co/
 Description: Harness WordPress.com's advertising partners for your own website. Requires <a href="https://jetpack.com/" target="_blank">Jetpack</a> to be installed and connected.
 Author: Automattic
-Version: 1.3
+Version: 1.3.1
 Author URI: https://automattic.com
 Text Domain: adcontrol
 Domain Path: /languages
@@ -27,7 +27,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'ADCONTROL_VERSION', '1.3' );
+define( 'ADCONTROL_VERSION', '1.3.1' );
 define( 'ADCONTROL_ROOT', dirname( __FILE__ ) );
 define( 'ADCONTROL_BASENAME', plugin_basename( __FILE__ ) );
 define( 'ADCONTROL_FILE_PATH', ADCONTROL_ROOT . '/' . basename( __FILE__ ) );
@@ -185,18 +185,16 @@ class AdControl {
 	 * @return void
 	 */
 	function insert_head_meta() {
-		$domain = $this->params->targeting_tags['Domain'];
-		$pageURL = $this->params->targeting_tags['PageURL'];
-		$adsafe = $this->params->targeting_tags['AdSafe'];
+		$themename = esc_js( get_stylesheet() );
+		$pagetype = intval( $this->params->get_page_type_ipw() );
 		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
 		<script$data_tags type="text/javascript">
-			var _ipw_custom = {
-				wordAds: '1',
-				domain:  '$domain',
-				pageURL: '$pageURL',
-				adSafe:  '$adsafe'
-			};
+			var __ATA_PP = { pt: $pagetype, ht: 3, tn: '$themename', amp: false };
+			var __ATA = __ATA || {};
+			__ATA.cmd = __ATA.cmd || [];
+			__ATA.criteo = __ATA.criteo || {};
+			__ATA.criteo.cmd = __ATA.criteo.cmd || [];
 		</script>
 HTML;
 	}
