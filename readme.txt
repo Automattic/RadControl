@@ -2,8 +2,8 @@
 Contributors: automattic, derekspringer, egill, jeherve
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
-Tested up to: 4.9.1
-Stable tag: 1.3.1
+Tested up to: 4.9.2
+Stable tag: 1.4
 
 Harness WordPress.com's advertising partners for your own website.
 
@@ -16,8 +16,6 @@ AdControl is a new service from Automattic that extends our advertising scale an
 Make sure you [apply to WordAds](https://wordads.co/signup/) for each site you want to run AdControl on.
 
 Requires [Jetpack](https://jetpack.com/) to be installed and connected. [Help getting started.](https://jetpack.com/support/getting-started-with-jetpack/)
-
-New in version 1.1.3 Moved inline JavaScript in the header to an external JavaScript.
 
 == Installation ==
 
@@ -34,6 +32,12 @@ New in version 1.1.3 Moved inline JavaScript in the header to an external JavaSc
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.4 =
+
+* Updated to new `async` ad loads.
+* Defaulted header unit to on upon activation.
+* Updated widget section ids to auto-increment.
 
 = 1.3.1 =
 

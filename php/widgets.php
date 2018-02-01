@@ -9,6 +9,7 @@
 class AdControl_Sidebar_Widget extends WP_Widget {
 
 	private static $allowed_tags = array( 'mrec', 'wideskyscraper' );
+	private static $num_widgets = 0;
 
 	function __construct() {
 		parent::__construct(
@@ -28,10 +29,14 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 			$instance['unit'] = 'mrec';
 		}
 
+		self::$num_widgets++;
 		$about = __( 'Advertisements', 'adcontrol' );
-		$section_id = 0 === $adcontrol->params->blog_id ? ADCONTROL_API_TEST_ID : $adcontrol->params->blog_id . '3';
 		$width = AdControl::$ad_tag_ids[$instance['unit']]['width'];
 		$height = AdControl::$ad_tag_ids[$instance['unit']]['height'];
+		$unit_id = 1 == self::$num_widgets ? 3 : self::$num_widgets + 3; // 2nd belowpost is '4'
+		$section_id = 0 === $adcontrol->params->blog_id ?
+			ADCONTROL_API_TEST_ID :
+			$adcontrol->params->blog_id . $unit_id;
 
 		$snippet = '';
 		if ( $adcontrol->option( 'wordads_house', true ) ) {
@@ -44,13 +49,7 @@ class AdControl_Sidebar_Widget extends WP_Widget {
 
 			$snippet = $adcontrol->get_house_ad( $unit );
 		} else {
-			$section_id = 0 === $adcontrol->params->blog_id ? ADCONTROL_API_TEST_ID : $adcontrol->params->blog_id . '3';
-			$data_tags = ( $adcontrol->params->cloudflare ) ? ' data-cfasync="false"' : '';
-			$snippet = <<<HTML
-			<script$data_tags type='text/javascript'>
-				(function(g){g.__ATA.initAd({sectionId:$section_id, width:$width, height:$height});})(window);
-			</script>
-HTML;
+			$snippet = $adcontrol->get_ad_snippet( $section_id, $height, $width );
 		}
 
 		echo <<< HTML

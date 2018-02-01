@@ -483,7 +483,7 @@ HTML;
 	 * @since 1.0
 	 */
 	function setting_leaderboard() {
-		$checked = checked( $this->get_option( 'leaderboard' ), 1, false );
+		$checked = checked( $this->get_option( 'leaderboard', 1 ), 1, false );
 		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[leaderboard]" id="leaderboard" value="1" ' . $checked . ' /></p>';
 	}
 
@@ -491,7 +491,7 @@ HTML;
 	 * @since 1.0.3
 	 */
 	function setting_leaderboard_mobile() {
-		$checked = checked( $this->get_option( 'leaderboard_mobile', $this->get_option( 'leaderboard', 0 ) ), 1, false );
+		$checked = checked( $this->get_option( 'leaderboard_mobile', $this->get_option( 'leaderboard', 1 ) ), 1, false );
 		echo '<p><input type="checkbox" name="' . $this->basic_settings_key . '[leaderboard_mobile]" id="leaderboard_mobile" value="1" ' . $checked . ' /></p>';
 	}
 
