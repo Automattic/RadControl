@@ -195,7 +195,7 @@ class AdControl {
 		$data_tags = ( $this->params->cloudflare ) ? ' data-cfasync="false"' : '';
 		echo <<<HTML
 		<script$data_tags type="text/javascript">
-			var __ATA_PP = { pt: $pagetype, ht: 3, tn: '$themename', amp: false };
+			var __ATA_PP = { pt: $pagetype, ht: 3, tn: '$themename', amp: false, siteid: $this->params->blog_id };
 			var __ATA = __ATA || {};
 			__ATA.cmd = __ATA.cmd || [];
 			__ATA.criteo = __ATA.criteo || {};
