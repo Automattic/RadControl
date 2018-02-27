@@ -1,5 +1,5 @@
 === AdControl ===
-Contributors: automattic, derekspringer, egill, jeherve
+Contributors: automattic, derekspringer, egill, jeherve, rclations
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
 Tested up to: 4.9.2
