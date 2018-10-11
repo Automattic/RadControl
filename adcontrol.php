@@ -391,6 +391,25 @@ HTML;
 		$data_tags = $this->params->cloudflare ? ' data-cfasync="false"' : '';
 		$adblock_ad = $this->get_adblocker_ad( $adblock_unit );
 
+		if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
+
+      add_action( 'amp_post_template_css', array( $this, 'add_ad_styles' ) );
+
+			$blog_id =  substr( $section_id, 0, -1 );
+			$section = substr( $section_id, -1 );
+			return <<<HTML
+      <div style="padding-bottom:15px;width:{$width}px;height:{$height}px;$css">
+        <amp-ad width="{$width}" height="{$height}"
+          type="pubmine"
+          data-section="{$section}"
+          data-pt="1"
+          data-ht="2"
+          data-siteid="{$blog_id}">
+        </amp-ad>
+      </div>
+HTML;
+		}
+
 		return <<<HTML
 		<div style="padding-bottom:15px;width:{$width}px;height:{$height}px;$css">
 			<div id="atatags-{$section_id}">
@@ -409,7 +428,35 @@ HTML;
 		</div>
 HTML;
 	}
+	/**
+	 * Add AMP Customizer preview styles.
+	 */
+	 public function add_ad_styles() {
+	?>
+	.wpa {
+		position: relative;
+		overflow: hidden;
+		display: inline-block;
+		max-width: 100%;
+	}
 
+	.wpa-about {
+		position: absolute;
+		top: 5px;
+		left: 0;
+		right: 0;
+		display: block;
+		margin-top: 0;
+		color: #888;
+		font: 10px/1 "Open Sans",Arial,sans-serif!important;
+		text-align: left!important;
+		text-decoration: none!important;
+		opacity: .85;
+		border-bottom: none!important;
+		box-shadow: none!important;
+	}
+	<?php
+	}
 	/**
 	 * Get Criteo Acceptable Ad unit
 	 * @param  string $unit mrec, mrec2, widesky, top, top_mrec
