@@ -9,7 +9,7 @@ Harness WordPress.com's advertising partners for your own website.
 
 == Description ==
 
-Please note: this plugin is officially depricated. If you are still interested in using this service please utilize [the offical Ads module included in Jetpack.](https://jetpack.com/features/traffic/ads/)
+Please note: this plugin is officially deprecated. If you are still interested in using this service please utilize [the offical Ads module included in Jetpack.](https://jetpack.com/features/traffic/ads/)
 
 With traditional advertising relationships a publisher or blogger has two relationships and platforms--one for publishing and the other for advertising. AdControl combines the two partnerships into one.
 

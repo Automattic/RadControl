@@ -105,10 +105,7 @@ HTML;
 	}
 }
 
-add_action(
-	'widgets_init',
-	create_function(
-		'',
-		'return register_widget( "AdControl_Sidebar_Widget" );'
-	)
-);
+add_action( 'widgets_init', 'adcontrol_register_widgets' );
+function adcontrol_register_widgets() {
+	register_widget( "AdControl_Sidebar_Widget" );
+}

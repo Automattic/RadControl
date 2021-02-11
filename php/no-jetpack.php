@@ -18,7 +18,7 @@ class AdControl_No_Jetpack {
 
 		// Alert admins of missing steps on appropriate plugin pages
 		if ( current_user_can( 'manage_options' ) && 'plugins.php' == $pagenow ) {
-			add_action( 'admin_notices', array( $this, 'alert_jetpack' ) );
+			add_action( 'admin_notices', array( $this, 'alert_jetpack' ), 99 );
 		}
 	}
 

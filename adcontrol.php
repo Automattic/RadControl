@@ -552,6 +552,23 @@ HTML;
 	}
 }
 
+add_action( 'admin_notices', 'adcontrol_deprecation_notice', 100 );
+function adcontrol_deprecation_notice() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+
+	$warning = sprintf(
+		'<strong>Please note:</strong> The AdControl plugin is officially deprecated and will cease to function with future Jetpack releases. If you wish to continue using this service please utilize <a href="%s">the offical Ads module included in Jetpack.</a>',
+		'https://jetpack.com/features/traffic/ads/'
+	);
+    ?>
+    <div class="notice notice-warning">
+        <p><?php echo $warning; ?></p>
+    </div>
+    <?php
+}
+
 register_activation_hook( __FILE__, array( 'AdControl', 'activate' ) );
 register_activation_hook( __FILE__, array( 'AdControl_Cron', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'AdControl_Cron', 'deactivate' ) );
