@@ -1,5 +1,18 @@
 <?php
 
+function adcontrol_deprication_notice() {
+	$warning = sprintf(
+		'<strong>Please note:</strong> The AdControl plugin is officially depricated and will cease to function with future Jetpack releases. If you wish to continue using this service please utilize <a href="%s">the offical Ads module included in Jetpack.</a>',
+		'https://jetpack.com/features/traffic/ads/'
+	);
+    ?>
+    <div class="notice notice-warning">
+        <p><?php echo $warning; ?></p>
+    </div>
+    <?php
+}
+add_action( 'admin_notices', 'adcontrol_deprication_notice' );
+
 /**
  * The standard set of admin pages for the user if Jetpack is installed
  */

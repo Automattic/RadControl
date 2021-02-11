@@ -1,13 +1,15 @@
 === AdControl ===
-Contributors: automattic, derekspringer, egill, jeherve, rclations
+Contributors: automattic, derekspringer, jeherve, rclations
 Tags: advertising, ad codes, ads
 Requires at least: 3.4
-Tested up to: 4.9.2
-Stable tag: 1.4
+Tested up to: 5.6.1
+Stable tag: 1.5
 
 Harness WordPress.com's advertising partners for your own website.
 
 == Description ==
+
+Please note: this plugin is officially depricated. If you are still interested in using this service please utilize [the offical Ads module included in Jetpack.](https://jetpack.com/features/traffic/ads/)
 
 With traditional advertising relationships a publisher or blogger has two relationships and platforms--one for publishing and the other for advertising. AdControl combines the two partnerships into one.
 
@@ -32,6 +34,10 @@ Requires [Jetpack](https://jetpack.com/) to be installed and connected. [Help ge
 3. Add an AdControl widget via Dashboard -> Appearance -> Widgets
 
 == Changelog ==
+
+= 1.5 =
+
+* Deprication warning
 
 = 1.4 =
 
