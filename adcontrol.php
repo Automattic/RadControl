@@ -149,6 +149,7 @@ class AdControl {
 		add_action( 'wp_head', array( $this, 'insert_head_meta' ), 20 );
 		add_action( 'wp_head', array( $this, 'insert_head_iponweb' ), 30 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'amp_post_template_css', array( $this, 'insert_head_amp_ad_styles' ) );
 
 		if ( ! apply_filters( 'adcontrol_content_disable', false ) ) {
 			add_filter( 'the_content', array( $this, 'insert_ad' ) );
@@ -233,6 +234,25 @@ HTML;
 		<script$data_tags async type="text/javascript" src="//s.pubmine.com/head.js"></script>
 HTML;
 	}
+
+	/**
+	 * Add Wordads Style in <head> of AMP pages
+	 */
+	function insert_head_amp_ad_styles() {
+
+		if ( ! ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) ) {
+			return;
+		}
+		
+		echo <<<HTML
+		.wpa {
+			position: relative;
+			overflow: hidden;
+			display: inline-block;
+			max-width: 100%;
+		}
+HTML;
+  }
 
 	/**
 	 * Insert the ad onto the page
@@ -390,6 +410,24 @@ HTML;
 		$this->ads[] = array( 'id' => $section_id, 'width' => $width, 'height' => $height );
 		$data_tags = $this->params->cloudflare ? ' data-cfasync="false"' : '';
 		$adblock_ad = $this->get_adblocker_ad( $adblock_unit );
+
+		if ( current_theme_supports('amp') ||
+				( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) ) {
+
+			$blog_id =  substr( $section_id, 0, -1 );
+			$section = substr( $section_id, -1 );
+			return <<<HTML
+			<div style="padding-bottom:15px;width:{$width}px;height:{$height}px;$css">
+				<amp-ad width="{$width}" height="{$height}"
+					type="pubmine"
+					data-section="{$section}"
+					data-pt="1"
+					data-ht="2"
+					data-siteid="{$blog_id}">
+				</amp-ad>
+			</div>
+HTML;
+		}
 
 		return <<<HTML
 		<div style="padding-bottom:15px;width:{$width}px;height:{$height}px;$css">
